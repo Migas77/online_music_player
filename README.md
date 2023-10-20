@@ -13,6 +13,22 @@ python3 -m venv venv
 source venv/bin/activate
 # install requirements
 pip install -r requirements.txt
+# setup database
+python3 manage.py makemigrations MusicPlayer
+python3 manage.py migrate
+# create superuser if you want to
+python3 manage.py createsuperuser
 # run
 python3 manage.py runserver
 ```
+
+### Nota:
+  - Se tiverem problemas com a BD eliminem no vosso repo local a pasta das migrations, pychache e o ficheiro db.sqlite3
+  - Depois voltem a fazer o setup da database
+
+### TODO
+  - Se calhar pensar em usar AbstractAdmin (não sei se será necessário)
+  - Aggregates (xD)
+  - Ordering of playlist
+    - Ordering not working
+    - unique_together = ["playlist", "music", "order_id"] ()
