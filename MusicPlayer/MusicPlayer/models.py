@@ -40,9 +40,6 @@ class Playlist(models.Model):
     author = models.ForeignKey(Listener, on_delete=models.CASCADE)
     musics = models.ManyToManyField(Music, through='Membership')
 
-    class Meta:
-        ordering = ["membership__order_id"]
-
 
 class Membership(models.Model):
     playlist = models.ForeignKey(Playlist, on_delete=models.CASCADE)
@@ -51,5 +48,6 @@ class Membership(models.Model):
 
     class Meta:
         unique_together = ["playlist", "music", "order_id"]
+        ordering = ["order_id"]
 
 
