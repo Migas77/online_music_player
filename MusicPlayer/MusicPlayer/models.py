@@ -25,9 +25,6 @@ class Performer(models.Model):
     image = models.ImageField(null=True)
     description = models.CharField(max_length=10000, blank=True)
 
-    class Meta:
-        abstract = True
-
 
 class Artist(Performer):
     pass
@@ -41,14 +38,12 @@ class Album(MediaContent):
     name = models.CharField(max_length=100)
     release_date = models.DateField()
     image = models.ImageField(null=True)
-    artist = models.ForeignKey(Artist, on_delete=models.CASCADE, null=True)
-    band = models.ForeignKey(Band, on_delete=models.CASCADE, null=True)
+    Performer = models.ForeignKey(Performer, on_delete=models.CASCADE, null=True)
 
 
 class Music(MediaContent):
     genre = models.CharField(max_length=50, null=True)
-    artist = models.ForeignKey(Artist, on_delete=models.CASCADE)
-    band = models.ForeignKey(Band, on_delete=models.CASCADE)
+    performer = models.ForeignKey(Performer, on_delete=models.CASCADE)
     album = models.ForeignKey(Album, on_delete=models.CASCADE, null=True)
     image = models.ImageField(null=True)
     audio_file = models.FileField(blank=True, null=True)
