@@ -32,12 +32,12 @@
                             </div>
                             <p class="card-text">
                                 {% for artist in song.artist.all %}
-                                    {{ artist.name }}
+                                <a href="{% url 'artist_info' artist.name %}">{{ artist.name }}</a>
                                     {% if not forloop.last %}, {% endif %}
                                 {% endfor %}
                             </p>
                             <div>
-                                <audio controls >
+                                <audio controls style="width: 100%;">
                                     <source src="{{ song.audio_file.url }}" type="audio/mpeg">
                                     Your browser does not support the audio element.
                                 </audio>

@@ -5,6 +5,7 @@ from django.contrib.auth.models import AbstractUser  # User model from django
 class Listener(AbstractUser):
     followers = models.ManyToManyField('self')
 
+
 class MediaContent(models.Model):
     name = models.CharField(max_length=50)
     release_date = models.DateTimeField(auto_now_add=True)
@@ -19,21 +20,35 @@ class MediaContent(models.Model):
         abstract = True
 
 
-class Artist(models.Model):
+class Performer(models.Model):
     name = models.CharField(max_length=50)
-    isBand = models.BooleanField(default=False)
+    image = models.ImageField(null=True)
+    description = models.CharField(max_length=10000, blank=True)
+
+    class Meta:
+        abstract = True
+
+
+class Artist(Performer):
+    pass
+
+
+class Band(Performer):
+    members = models.ManyToManyField(Artist, related_name='bands')
+
 
 class Album(MediaContent):
     name = models.CharField(max_length=100)
     release_date = models.DateField()
     image = models.ImageField(null=True)
     artist = models.ForeignKey(Artist, on_delete=models.CASCADE, null=True)
+    band = models.ForeignKey(Band, on_delete=models.CASCADE, null=True)
 
 
 class Music(MediaContent):
-    # don't need to add more arguments
     genre = models.CharField(max_length=50, null=True)
-    artist = models.ManyToManyField(Artist)
+    artist = models.ForeignKey(Artist, on_delete=models.CASCADE)
+    band = models.ForeignKey(Band, on_delete=models.CASCADE)
     album = models.ForeignKey(Album, on_delete=models.CASCADE, null=True)
     image = models.ImageField(null=True)
     audio_file = models.FileField(blank=True, null=True)
@@ -53,5 +68,3 @@ class Membership(models.Model):
     class Meta:
         unique_together = ["playlist", "music", "order_id"]
         ordering = ["order_id"]
-
-
