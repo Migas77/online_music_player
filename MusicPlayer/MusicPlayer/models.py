@@ -5,7 +5,6 @@ from django.contrib.auth.models import AbstractUser  # User model from django
 class Listener(AbstractUser):
     followers = models.ManyToManyField('self')
 
-
 class MediaContent(models.Model):
     name = models.CharField(max_length=50)
     release_date = models.DateTimeField(auto_now_add=True)
@@ -20,30 +19,35 @@ class MediaContent(models.Model):
         abstract = True
 
 
-class Music(MediaContent):
-    # don't need to add more arguments
-    pass
-
-
-class Album(MediaContent):
-    musics = models.ManyToManyField(Music)
-
-
 class Artist(models.Model):
     name = models.CharField(max_length=50)
     isBand = models.BooleanField(default=False)
-    musics = models.ManyToManyField(Music)
-    albums = models.ManyToManyField(Album)
+
+class Album(MediaContent):
+    name = models.CharField(max_length=100)
+    release_date = models.DateField()
+    image = models.ImageField(null=True)
+    artist = models.ForeignKey(Artist, on_delete=models.CASCADE, null=True)
+
+
+class Music(MediaContent):
+    # don't need to add more arguments
+    genre = models.CharField(max_length=50, null=True)
+    artist = models.ManyToManyField(Artist)
+    album = models.ForeignKey(Album, on_delete=models.CASCADE, null=True)
+    image = models.ImageField(null=True)
+    audio_file = models.FileField(blank=True, null=True)
 
 
 class Playlist(models.Model):
-    author = models.ForeignKey(Listener, on_delete=models.CASCADE)
+    name = models.CharField(max_length=50, null=True)
+    author = models.ForeignKey(Listener, on_delete=models.CASCADE, null=True)
     musics = models.ManyToManyField(Music, through='Membership')
 
 
 class Membership(models.Model):
-    playlist = models.ForeignKey(Playlist, on_delete=models.CASCADE)
-    music = models.ForeignKey(Music, on_delete=models.CASCADE)
+    playlist = models.ForeignKey(Playlist, on_delete=models.CASCADE, null=True)
+    music = models.ForeignKey(Music, on_delete=models.CASCADE, null=True)
     order_id = models.PositiveIntegerField()
 
     class Meta:

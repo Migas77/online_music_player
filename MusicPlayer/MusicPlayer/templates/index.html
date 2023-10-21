@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+    <section class="py-3 text-center container">
+        <div class="row ">
+            <div class="col-lg-6 col-md-8 mx-auto">
+                <h1 class="fw-light">Songs</h1>
+                <p class="lead text-body-secondary">Music Streaming</p>
+                <form class="input-group justify-content-center" role="search">
+                    <input class="form-control mx-2" type="search" placeholder="Search" aria-label="Search">
+                    <div class="input-group-append mx-2">
+                        <button class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </section>
+    <div class="album ">
+        <div class="pe-5">
+            <div class="row justify-content-center my-3">
+                {% for song in songs %}
+                    <div class="card m-2 col-lg-2 col-md-3 col-sm-4 col-6">
+                        <img src="{{ song.image.url }}" class="card-img-top" alt="Musis Photo"/>
+                        <div class="card-body">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <h4>{{ song.name }}</h4>
+                                <div>
+                                    <a href="" class="btn"><i class="fa fa-heart"></i></a>
+                                </div>
+                            </div>
+                            <p class="card-text">
+                                {% for artist in song.artist.all %}
+                                    {{ artist.name }}
+                                    {% if not forloop.last %}, {% endif %}
+                                {% endfor %}
+                            </p>
+                            <div>
+                                <audio controls >
+                                    <source src="{{ song.audio_file.url }}" type="audio/mpeg">
+                                    Your browser does not support the audio element.
+                                </audio>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
