@@ -6,7 +6,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Django WebProject</title>
+    <title>Music Player</title>
 
     {% load static %}
 
@@ -38,10 +38,16 @@
                     <a class="nav-link" aria-current="page" href="#">About us</a>
                 </li>
             </ul>
-            <div class="d-flex flex-column flex-lg-row">
-                <a class="btn btn-primary m-2" href="">Log in</a>
-                <a class="btn btn-secondary m-2" href="">Sign up</a>
-            </div>
+            {% if user.is_authenticated %}
+                <div class="d-flex flex-column flex-lg-row">
+                    <a class="btn btn-primary m-2" href="{% url 'logout' %}">Logout</a>
+                </div>
+            {% else %}
+                <div class="d-flex flex-column flex-lg-row">
+                    <a class="btn btn-primary m-2" href="{% url 'login' %}">Log in</a>
+                    <a class="btn btn-secondary m-2" href="">Sign up</a>
+                </div>
+            {% endif %}
         </div>
     </div>
 </nav>
@@ -57,7 +63,7 @@
     <ul class="nav justify-content-center border-bottom pb-3 mb-3">
         <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Diana Miranda (107457)</a></li>
         <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">José Gameiro (108840)</a></li>
-        <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Miguel Belchior ()</a></li>
+        <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Miguel Figueiredo (108287)</a></li>
     </ul>
     <p class="text-center text-body-secondary">Universidade de Aveiro</p>
 </footer>
