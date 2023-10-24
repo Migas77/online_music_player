@@ -31,10 +31,7 @@
                                 </div>
                             </div>
                             <p class="card-text">
-                                {% for artist in song.artist.all %}
-                                <a href="{% url 'artist_info' artist.name %}">{{ artist.name }}</a>
-                                    {% if not forloop.last %}, {% endif %}
-                                {% endfor %}
+                                <a href="{% url 'artist_info' song.performer.name %}">{{ song.performer.name }}</a>
                             </p>
                             <div>
                                 <audio controls style="width: 100%;">

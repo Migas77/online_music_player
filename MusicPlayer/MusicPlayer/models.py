@@ -38,7 +38,7 @@ class Album(MediaContent):
     name = models.CharField(max_length=100)
     release_date = models.DateField()
     image = models.ImageField(null=True)
-    Performer = models.ForeignKey(Performer, on_delete=models.CASCADE, null=True)
+    performer = models.ForeignKey(Performer, on_delete=models.CASCADE, null=True)
 
 
 class Music(MediaContent):

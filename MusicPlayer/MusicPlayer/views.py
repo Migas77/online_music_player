@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from django.shortcuts import render
-from .models import Listener, MediaContent, Album, Music, Artist, Playlist, Membership
+from .models import Listener, MediaContent, Album, Music, Artist, Playlist, Membership, Performer
 
 def home(request):
     songs = Music.objects.all()
@@ -11,7 +11,10 @@ def home(request):
         'user': request.user,
         'songs': songs,
     }
+    for song in songs:
+        print(f"Song: {song.name}, Performer: {song.performer.name if song.performer else 'No Performer'}")
     return render(request, 'index.html', tparams)
+
 def contact(request):
     tparams = {
         'title': 'Contact',
@@ -19,6 +22,7 @@ def contact(request):
         'year': datetime.now().year,
     }
     return render(request, 'contact.html', tparams)
+
 def about(request):
     tparams = {
         'title': 'About',
@@ -31,9 +35,9 @@ def about(request):
 def artistInformation(request, artist_name):
     """Get the details, musics and albums from an artist"""
 
-    artist_details = Artist.objects.get(name=artist_name)
-    artist_albums = Album.objects.get(artist__name=artist_name)
-    artist_musics = Music.objects.get(artist__name=artist_name)
+    artist_details = Performer.objects.get(name=artist_name)
+    artist_albums = Album.objects.filter(performer=artist_details)
+    artist_musics = Music.objects.filter(performer=artist_details)
 
     tparams = {
         'user': request.user,
@@ -42,4 +46,3 @@ def artistInformation(request, artist_name):
         'artist_musics': artist_musics
     }
     return render(request, 'artist.html', tparams)
-
