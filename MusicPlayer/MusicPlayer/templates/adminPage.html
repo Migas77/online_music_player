@@ -1,0 +1,32 @@
+{% extends "layout.html" %} {% block content %} {% load static %}
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{% static 'css/adminPage.css' %}"
+/>
+<div>
+  <h1>Admin Panel</h1>
+  <h2>Songs</h2>
+  <div class="tasks">
+    <button class="btn" href="">Add</button>
+    <button class="btn" href="">Delete</button>
+    <button class="btn" href="">Update</button>
+  </div>
+  <hr />
+  <h2>Artists</h2>
+  <div class="tasks">
+    <button class="btn" href="">Add</button>
+    <button class="btn" href="">Delete</button>
+    <button class="btn" href="">Update</button>
+  </div>
+  <hr />
+  <h2>Bands</h2>
+  <div class="tasks">
+    <button class="btn" href="">Add</button>
+    <button class="btn" href="">Delete</button>
+    <button class="btn" href="">Update</button>
+  </div>
+  <hr />
+</div>
+
+{% endblock %}

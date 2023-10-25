@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from django.shortcuts import render
-from .models import Listener, MediaContent, Album, Music, Artist, Playlist, Membership, Performer
+from .models import Listener, MediaContent, Album, Music, Artist, Playlist, Membership, Performer, Band
 from .forms import MusicSearchForm
 
 def home(request):
@@ -56,4 +56,19 @@ def artistInformation(request, artist_name):
         'artist_musics': artist_musics
     }
     return render(request, 'artist.html', tparams)
+
+def adminPanel(request):
+    """Get the details, musics and albums from an artist"""
+
+    songs = Music.objects.all()
+    albums = Album.objects.all()
+    artists = Performer.objects.all()
+    bands = Band.objects.all()
+    tparams = {
+        'songs': songs,
+        'albums': albums,
+        'artists': artists,
+        'bands': bands
+    }
+    return render(request, 'adminPage.html', tparams)
 

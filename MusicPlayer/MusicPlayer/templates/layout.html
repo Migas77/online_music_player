@@ -55,7 +55,7 @@
         </li>
         {% if user.is_authenticated and user.is_superuser %}
         <li class="nav-item">
-          <a class="nav-link" href="#">
+          <a class="nav-link" href="{% url 'adminPanel' %}">
             <img
               src="{% static 'images/admin.png' %}"
               alt="Administrator Panel"
