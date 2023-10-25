@@ -24,19 +24,19 @@
     <nav class="navbar">
       <ul class="navbar-nav">
         <li class="logo">
-          <a class="nav-link" href="/login">
+          <a class="nav-link" href="{% url 'home' %}">
             <img src="{% static 'images/logo.png' %}" />
             <span class="link-text">Music Streaming</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="./Home.html">
+          <a class="nav-link" href="{% url 'home' %}">
             <img src="{% static 'images/home.jpeg' %}" alt="Home" />
             <span class="link-text">Home</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="./About.html">
+          <a class="nav-link" href="{% url 'about' %}">
             <img src="{% static 'images/aboutus.jpeg' %}" alt="About us" />
             <span class="link-text">About us</span>
           </a>
@@ -63,7 +63,8 @@
             <span class="link-text">Administrator Panel</span>
           </a>
         </li>
-        {% endif %} {% if user.is_authenticated %}
+        {% endif %}
+        {% if user.is_authenticated %}
         <li class="nav-item">
           <a class="nav-link" href="{% url 'logout' %}">
             <img src="{% static 'images/user.jpeg' %}" alt="Log Out" />
@@ -72,12 +73,12 @@
         </li>
         {% else %}
         <li class="nav-item">
-          <a class="nav-link" href="/login/">
+          <a class="nav-link" href="{% url 'login' %}">
             <img src="{% static 'images/user.jpeg' %}" alt="Rating & Review" />
             <span class="link-text">Log In</span>
           </a>
         </li>
-        {%endif%}
+        {% endif %}
       </ul>
     </nav>
 

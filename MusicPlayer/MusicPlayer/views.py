@@ -1,10 +1,10 @@
 from datetime import datetime
 
 from django.shortcuts import render, redirect
-from .models import Listener, MediaContent, Album, Music, Artist, Playlist, Membership, Performer
+from .models import Listener, MediaContent, Album, Music, Artist, Playlist, Membership, Performer, Band
 from django.contrib.auth import views as auth_views
-from MusicPlayer.forms import LoginForm, SignUpForm
-
+from MusicPlayer.forms import LoginForm, SignUpForm, MusicSearchForm
+from django.contrib.auth import login
 
 # Custom User
 def home(request):
@@ -34,13 +34,9 @@ def login_signup(request, *args, **kwargs):
         print("here: ", request.POST)
         sign_up_form = SignUpForm(request.POST)
         if sign_up_form.is_valid():
-            #email = sign_up_form.cleaned_data["email"]
-            #username = sign_up_form.cleaned_data["username"]
-            #password = sign_up_form.cleaned_data["password"]
-            print("VALID")
-            sign_up_form.save()
+
+            login(request, user=sign_up_form.save())
             return redirect('home')
-        print("NOT VALID", sign_up_form.errors)
     else:
         print("request.method == 'GET'")
         sign_up_form = SignUpForm()

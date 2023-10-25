@@ -56,3 +56,7 @@ class SignUpForm(BaseUserCreationForm):
             'placeholder': 'Confirm Password',
             'id': 'InputPassword2'
         })
+
+
+class MusicSearchForm(forms.Form):
+    query = forms.CharField(label="Song Title", max_length=50, required=False)
