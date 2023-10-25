@@ -1,24 +1,35 @@
-{% extends "layout.html" %}
-
-{% block content %}
-    <form action="." method="post">
-        {% csrf_token %}
-        <div class="card d-flex justify-content-center align-items-center" style="position: absolute;top: 50%; left: 50%; width: 35%; height: 70%; transform: translate(-50%, -50%)">
-            <h1 class="mb-4">Sign in</h1>
-            <div class="mb-4">
-                {{ form.username }}
-            </div>
-            <div class="mb-4">
-                {{ form.password }}
-            </div>
-            <div class="mb-4 form-check">
-                <input type="checkbox" class="form-check-input" id="exampleCheck1" checked />
-                <label class="form-check-label" for="exampleCheck1">Always sign in on this device</label>
-            </div>
-            <div class="mb-4">
-                <button type="submit" class="btn btn-primary">Submit</button>
-            </div>
-        </div>
-    </form>
+{% extends "layout.html" %} {% block content %}
+<form action="." method="post">
+  {% csrf_token %}
+  <div
+    class="card d-flex justify-content-center align-items-center"
+    style="
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 35%;
+      height: 70%;
+      transform: translate(-50%, -50%);
+    "
+  >
+    <h1 class="mb-4">Sign in</h1>
+    <div class="mb-4">{{ form.username }}</div>
+    <div class="mb-4">{{ form.password }}</div>
+    <div class="mb-4 form-check">
+      <input
+        type="checkbox"
+        class="form-check-input"
+        id="exampleCheck1"
+        checked
+      />
+      <label class="form-check-label" for="exampleCheck1"
+        >Always sign in on this device</label
+      >
+    </div>
+    <div class="mb-4">
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+  </div>
+</form>
 
 {% endblock %}
