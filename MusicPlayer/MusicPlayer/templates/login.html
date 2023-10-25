@@ -1,24 +1,45 @@
-{% extends "layout.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify - Music On The Go</title>
 
+    {% load static %}
+
+    <link rel="stylesheet" type="text/css" href="{% static 'css/login.css' %}" />
+</head>
 {% block content %}
-    <form action="." method="post">
-        {% csrf_token %}
-        <div class="card d-flex justify-content-center align-items-center" style="position: absolute;top: 50%; left: 50%; width: 35%; height: 70%; transform: translate(-50%, -50%)">
-            <h1 class="mb-4">Sign in</h1>
-            <div class="mb-4">
-                {{ form.username }}
-            </div>
-            <div class="mb-4">
-                {{ form.password }}
-            </div>
-            <div class="mb-4 form-check">
-                <input type="checkbox" class="form-check-input" id="exampleCheck1" checked />
-                <label class="form-check-label" for="exampleCheck1">Always sign in on this device</label>
-            </div>
-            <div class="mb-4">
-                <button type="submit" class="btn btn-primary">Submit</button>
-            </div>
+<body>
+    <div class="main">
+        <a href="/"><label class="brand"><img src="{% static 'images/logo.png' %}" />Spotify</label></a>
+        <input type="checkbox" id="chk" aria-hidden="true"/>
+        <div class="singup">
+            <form>
+                <label for="chk" aria-hidden="true" >Sign up</label>
+                <input type="text" name="txt" placeholder="User name" />
+                <input type="email" name="email" placeholder="Email"/>
+                <input type="password" name="pswd" placeholder="Password"/>
+                <button class="button"><a href="/">Sign up</a></button>
+            </form>
         </div>
-    </form>
+
+        <div class="login">
+            <form action="." method="post">
+                {% csrf_token %}
+                <label for="chk" aria-hidden="true" >Log in</label>
+                <div>
+                    {{ form.username }}
+                </div>
+                <div>
+                    {{ form.password }}
+                </div>
+                <button class="button" type="submit">Log in</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
 
 {% endblock %}
