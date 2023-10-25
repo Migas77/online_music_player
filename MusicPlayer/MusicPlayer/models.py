@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
-
+from django.utils.translation import gettext_lazy as _
 
 class ListenerManager(BaseUserManager):
     def create_user(self, email, username, password):
@@ -27,6 +27,7 @@ class ListenerManager(BaseUserManager):
 class Listener(AbstractUser):
     followers = models.ManyToManyField('self')
     objects = ListenerManager()
+    email = models.EmailField(_("email address"), blank=True, unique=True)
 
     class Meta:
         verbose_name = 'Listener'

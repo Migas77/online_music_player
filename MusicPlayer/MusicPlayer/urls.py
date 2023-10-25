@@ -16,14 +16,21 @@ Including another URLconf
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
-from . import views
+from MusicPlayer import views
+from MusicPlayer.forms import LoginForm, SignUpForm
 from django.contrib.auth import views as auth_views
 from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     # login_signup / logout
-    path('login_signup/', views.login_signup, name='login'),
+    # Tanto aqui como em views.sign_up temos de mandar sempre dois forms
+    # porque estão na mesma página
+        path('login_signup/', auth_views.LoginView.as_view(
+            template_name='login.html', authentication_form=LoginForm, next_page='home',
+            extra_context={"SignUpForm": SignUpForm()}
+        ), name='login_signup'),
+    path('sign_up', views.sign_up, name='signup'),
     path('logout/', auth_views.LogoutView.as_view(next_page='home'), name='logout'),
     # others
     path('', views.home, name='home'),

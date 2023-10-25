@@ -6,6 +6,7 @@ from django.contrib.auth import views as auth_views
 from MusicPlayer.forms import LoginForm, SignUpForm, MusicSearchForm
 from django.contrib.auth import login
 
+
 # Custom User
 def home(request):
     if 'query' in request.GET:
@@ -29,25 +30,24 @@ def home(request):
     return render(request, 'index.html', tparams)
 
 
-def login_signup(request, *args, **kwargs):
+def sign_up(request):
+    # this view is just intended to be posted from the sign_up form
+    # however if the user tries to access through the url he can
+    from django.contrib import messages
+    messages.error(request, "toa")
     if request.method == 'POST':
-        print("here: ", request.POST)
         sign_up_form = SignUpForm(request.POST)
         if sign_up_form.is_valid():
-
             login(request, user=sign_up_form.save())
             return redirect('home')
     else:
-        print("request.method == 'GET'")
         sign_up_form = SignUpForm()
-    # temos de mandar sempre os dois porque estão na mesma página
-    # portanto não dá para fazer isso apenas com LoginView no forms.py
     return auth_views.LoginView.as_view(
-            template_name='login.html',
-            authentication_form=LoginForm,
-            next_page='home',
-            extra_context={"SignUpForm": sign_up_form}
-    )(request, *args, **kwargs)
+        template_name='login.html',
+        authentication_form=LoginForm,
+        next_page='home',
+        extra_context={"SignUpForm": sign_up_form},
+    )(request)
 
 
 def contact(request):
@@ -84,6 +84,7 @@ def artistInformation(request, artist_name):
     }
     return render(request, 'artist.html', tparams)
 
+
 def adminPanel(request):
     """Get the details, musics and albums from an artist"""
 
@@ -98,4 +99,3 @@ def adminPanel(request):
         'bands': bands
     }
     return render(request, 'adminPage.html', tparams)
-

@@ -13,21 +13,26 @@
 <body>
     <div class="main">
         <a href="/"><label class="brand"><img src="{% static 'images/logo.png' %}" />Spotify</label></a>
-        <input type="checkbox" id="chk" aria-hidden="true" checked/>
+        {% if SignUpForm.errors %}
+        <input type="checkbox" id="chk" aria-hidden="true"/> <!--SIGNIN-->
+        {% else %}
+        <input type="checkbox" id="chk" aria-hidden="true" checked/> <!--LOGIN-->
+        {% endif %}
+
         <div class="singup">
-            <form action="." method="post">
+            <form action="{% url 'signup' %}" method="post">
                 {% csrf_token %}
                 <label for="chk" aria-hidden="true" style="margin: 30px;">Sign up</label>
                 {{ SignUpForm.email }}
                 {{ SignUpForm.username }}
                 {{ SignUpForm.password1 }}
                 {{ SignUpForm.password2 }}
-                <button class="button"><a href="/">Sign up</a></button>
+                <button class="button" type="submit">Sign up</button>
             </form>
         </div>
 
       <div class="login">
-        <form action="." method="post">
+        <form action="{% url 'login_signup' %}" method="post">
           {% csrf_token %}
           <label for="chk" aria-hidden="true">Log in</label>
           <div>{{ form.username }}</div>
