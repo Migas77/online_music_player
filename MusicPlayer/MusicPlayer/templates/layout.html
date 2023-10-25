@@ -1,80 +1,98 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
-
-    <title>Music Player</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Music Streaming</title>
 
     {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/Home.css' %}" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'css/Navbar.css' %}"
+    />
+    <link
+      rel="stylesheet"
+      media="screen and (max-width: 1100px)"
+      href="{% static 'css/responsive.css' %}"
+    />
+  </head>
 
-    <!-- Bootstrap core CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <!-- Custom styles for this template -->
-    <link rel="stylesheet" type="text/css" href="{% static 'css/site.css' %}"/>
-</head>
+  <body>
+    <nav class="navbar">
+      <ul class="navbar-nav">
+        <li class="logo">
+          <a class="nav-link" href="/login">
+            <img src="{% static 'images/logo.png' %}" />
+            <span class="link-text">Music Streaming</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="./Home.html">
+            <img src="{% static 'images/home.jpeg' %}" alt="Home" />
+            <span class="link-text">Home</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="./About.html">
+            <img src="{% static 'images/aboutus.jpeg' %}" alt="About us" />
+            <span class="link-text">About us</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="./Library.html">
+            <img src="{% static 'images/headphones.jpeg' %}" alt="Library" />
+            <span class="link-text">Library</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">
+            <img src="{% static 'images/playlist.jpg' %}" alt="Request Songs" />
+            <span class="link-text">Request Songs</span>
+          </a>
+        </li>
+        {% if user.is_authenticated and user.is_superuser %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'adminPanel' %}">
+            <img
+              src="{% static 'images/admin.png' %}"
+              alt="Administrator Panel"
+            />
+            <span class="link-text">Administrator Panel</span>
+          </a>
+        </li>
+        {% endif %} {% if user.is_authenticated %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'logout' %}">
+            <img src="{% static 'images/user.jpeg' %}" alt="Log Out" />
+            <span class="link-text">Log Out</span>
+          </a>
+        </li>
+        {% else %}
+        <li class="nav-item">
+          <a class="nav-link" href="/login/">
+            <img src="{% static 'images/user.jpeg' %}" alt="Rating & Review" />
+            <span class="link-text">Log In</span>
+          </a>
+        </li>
+        {%endif%}
+      </ul>
+    </nav>
 
-<body>
-
-
-<nav class="navbar navbar-expand-lg fixed-top bg-body-tertiary">
-    <div class="container-fluid">
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarExample" aria-controls="navbarExample" aria-expanded="false"
-                aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <h2 class="navbar-brand">Music Streaming</h2>
-        <div class="collapse navbar-collapse" id="navbarExample">
-            <ul class="navbar-nav me-auto mb-0">
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="#">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" aria-current="page" href="#">About us</a>
-                </li>
-            </ul>
-            {% if user.is_authenticated %}
-                <div class="d-flex flex-column flex-lg-row">
-                    <a class="btn btn-primary m-2" href="{% url 'logout' %}">Logout</a>
-                </div>
-            {% else %}
-                <div class="d-flex flex-column flex-lg-row">
-                    <a class="btn btn-primary m-2" href="{% url 'login' %}">Log in</a>
-                    <a class="btn btn-secondary m-2" href="">Sign up</a>
-                </div>
-            {% endif %}
-        </div>
-    </div>
-</nav>
-
-<main role="main">
-    <div class="">
+    <main>
+      <div class="">
         <p></p>
         {% block content %} {% endblock %}
-    </div> <!-- /container -->
-</main>
+      </div>
+      <!-- /container -->
+    </main>
 
-<footer class="bg-body-tertiary fixed-bottom ">
-    <ul class="nav justify-content-center border-bottom pb-3 mb-3">
-        <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Diana Miranda (107457)</a></li>
-        <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">José Gameiro (108840)</a></li>
-        <li class="nav-item"><a href="#" class="nav-link px-2 text-body-secondary">Miguel Figueiredo (108287)</a></li>
-    </ul>
-    <p class="text-center text-body-secondary">Universidade de Aveiro</p>
-</footer>
-
-<!-- JQuery and Bootstrap core
-================================================== -->
-<!-- Placed at the end of the document so the pages load faster -->
-<script src="{% static 'scripts/jquery-3.4.1.min.js' %}"></script>
-<script src="{% static 'scripts/popper.min.js' %}"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-        crossorigin="anonymous"></script>
-</body>
+    <script src="{% static 'scripts/script.js' %}"></script>
+    <script
+      src="https://kit.fontawesome.com/d5b2540b36.js"
+      crossorigin="anonymous"
+    ></script>
+  </body>
 </html>

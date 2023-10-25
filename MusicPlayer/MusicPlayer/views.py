@@ -8,12 +8,21 @@ from MusicPlayer.forms import LoginForm, SignUpForm
 
 # Custom User
 def home(request):
-    songs = Music.objects.all()
+    if 'query' in request.GET:
+        form = MusicSearchForm(request.GET)
+        if form.is_valid():
+            query = form.cleaned_data['query']
+            songs = Music.objects.filter(name__icontains=query)
+    else:
+        form = MusicSearchForm()
+        songs = Music.objects.all()
+
     tparams = {
         'title': 'Home Page',
         'year': datetime.now().year,
         'user': request.user,
         'songs': songs,
+        'form': form
     }
     for song in songs:
         print(f"Song: {song.name}, Performer: {song.performer.name if song.performer else 'No Performer'}")
@@ -78,3 +87,19 @@ def artistInformation(request, artist_name):
         'artist_musics': artist_musics
     }
     return render(request, 'artist.html', tparams)
+
+def adminPanel(request):
+    """Get the details, musics and albums from an artist"""
+
+    songs = Music.objects.all()
+    albums = Album.objects.all()
+    artists = Performer.objects.all()
+    bands = Band.objects.all()
+    tparams = {
+        'songs': songs,
+        'albums': albums,
+        'artists': artists,
+        'bands': bands
+    }
+    return render(request, 'adminPage.html', tparams)
+

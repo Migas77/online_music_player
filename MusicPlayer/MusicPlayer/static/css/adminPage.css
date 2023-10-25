@@ -1,0 +1,17 @@
+.btn {
+    font-size: 17px;
+    background: transparent;
+    border: none;
+    padding: 1em 1.5em;
+    color: #fff;
+    text-transform: uppercase;
+    transition: .5s ease;
+  }
+
+  
+  .btn:hover {
+    color: black;
+    background-color: #ceceef;
+    transition-delay: .3s;
+    
+  }

@@ -48,7 +48,7 @@ class MediaContent(models.Model):
 
 class Performer(models.Model):
     name = models.CharField(max_length=50)
-    image = models.ImageField(null=True)
+    image = models.ImageField(blank=True)
     description = models.CharField(max_length=10000, blank=True)
 
 
@@ -64,26 +64,26 @@ class Album(MediaContent):
     name = models.CharField(max_length=100)
     release_date = models.DateField()
     image = models.ImageField(null=True)
-    performer = models.ForeignKey(Performer, on_delete=models.CASCADE, null=True)
+    performer = models.ForeignKey(Performer, on_delete=models.CASCADE)
 
 
 class Music(MediaContent):
-    genre = models.CharField(max_length=50, null=True)
+    genre = models.CharField(max_length=50)
     performer = models.ForeignKey(Performer, on_delete=models.CASCADE)
-    album = models.ForeignKey(Album, on_delete=models.CASCADE, null=True)
-    image = models.ImageField(null=True)
-    audio_file = models.FileField(blank=True, null=True)
+    album = models.ForeignKey(Album, on_delete=models.CASCADE, blank=True)
+    image = models.ImageField()
+    audio_file = models.FileField()
 
 
 class Playlist(models.Model):
-    name = models.CharField(max_length=50, null=True)
-    author = models.ForeignKey(Listener, on_delete=models.CASCADE, null=True)
+    name = models.CharField(max_length=50)
+    author = models.ForeignKey(Listener, on_delete=models.CASCADE)
     musics = models.ManyToManyField(Music, through='Membership')
 
 
 class Membership(models.Model):
-    playlist = models.ForeignKey(Playlist, on_delete=models.CASCADE, null=True)
-    music = models.ForeignKey(Music, on_delete=models.CASCADE, null=True)
+    playlist = models.ForeignKey(Playlist, on_delete=models.CASCADE)
+    music = models.ForeignKey(Music, on_delete=models.CASCADE)
     order_id = models.PositiveIntegerField()
 
     class Meta:
