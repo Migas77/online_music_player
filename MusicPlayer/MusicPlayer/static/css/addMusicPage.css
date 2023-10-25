@@ -1,0 +1,46 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  
+}
+
+form {
+  padding: 20px;
+}
+
+form input,
+form textarea {
+  margin: 10px 0;
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+input[type="text"] {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: transparent;
+  color: white;
+}
+
+input[type="submit"] {
+  background-color: #de9af3;
+  color: rgb(0, 0, 0);
+  width: fit-content;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.addMusicClass {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  color: white;
+  background-color: transparent;
+  margin: 10px 0;
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+}

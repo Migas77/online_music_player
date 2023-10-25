@@ -3,7 +3,7 @@ from datetime import datetime
 from django.shortcuts import render, redirect
 from .models import Listener, MediaContent, Album, Music, Artist, Playlist, Membership, Performer, Band
 from django.contrib.auth import views as auth_views
-from MusicPlayer.forms import LoginForm, SignUpForm, MusicSearchForm, AddArtistForm
+from MusicPlayer.forms import LoginForm, SignUpForm, MusicSearchForm, AddArtistForm, AddMusicForm
 from django.contrib.auth import login
 
 
@@ -26,9 +26,6 @@ def home(request):
         'form': form
     }
 
-    artists = Artist.objects.all()
-    for artist in artists:
-        print(f"Artist: {artist.name}")
     for song in songs:
         print(f"Song: {song.name}, Performer: {song.performer.name if song.performer else 'No Performer'}")
     return render(request, 'index.html', tparams)
@@ -117,3 +114,23 @@ def addArtist(request):
         form = AddArtistForm()
 
     return render(request, 'addArtist.html', {'form': form})
+
+def addMusic(request):
+    if request.method == 'POST':
+        form = AddMusicForm(request.POST, request.FILES)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            genre = form.cleaned_data['genre']
+            album = form.cleaned_data['album']
+            performer = form.cleaned_data['performer']
+            image = form.cleaned_data['image']
+            audio = form.cleaned_data['audio_file']
+            duration = form.cleaned_data['duration']  # Adicione esta linha
+
+            music = Music(name=name, genre=genre, album=album, performer=performer, image=image, audio_file=audio, duration=duration)
+            music.save()
+            return redirect('adminPanel')
+    else:
+        form = AddMusicForm()
+
+    return render(request, 'addMusic.html', {'form': form})

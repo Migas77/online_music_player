@@ -39,4 +39,5 @@ urlpatterns = [
     path('artist/<str:artist_name>/', views.artistInformation, name="artist_info"),
     path('adminPanel/', views.adminPanel, name='adminPanel'),
     path('adminPanel/addArtist/', views.addArtist, name='addArtist'),
+    path('adminPanel/addMusic/', views.addMusic, name='addMusic'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -67,3 +67,12 @@ class AddArtistForm(forms.ModelForm):
     class Meta:
         model = Artist
         fields = ['name', 'description', 'image']
+
+class AddMusicForm(forms.ModelForm):
+    class Meta:
+        model = Music
+        fields = ['name', 'genre', 'duration','album','performer','image', 'audio_file']
+        widgets = {
+            'album': forms.Select(attrs={'class': 'addMusicClass'}),
+            'performer': forms.Select(attrs={'class': 'addMusicClass'}),
+        }

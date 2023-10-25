@@ -31,6 +31,8 @@ class Listener(AbstractUser):
 
     class Meta:
         verbose_name = 'Listener'
+    def __str__(self):
+        return self.username
 
 
 class MediaContent(models.Model):
@@ -45,6 +47,9 @@ class MediaContent(models.Model):
     class Meta:
         unique_together = ['name', 'release_date']
         abstract = True
+    
+    def __str__(self):
+        return self.name
 
 
 class Performer(models.Model):
@@ -52,13 +57,20 @@ class Performer(models.Model):
     image = models.ImageField(blank=True)
     description = models.CharField(max_length=10000, blank=True)
 
+    def __str__(self):
+        return self.name
+
 
 class Artist(Performer):
+    def __str__(self):
+        return self.name   
     pass
 
 
 class Band(Performer):
     members = models.ManyToManyField(Artist, related_name='bands')
+    def __str__(self):
+        return self.name
 
 
 class Album(MediaContent):
@@ -66,6 +78,8 @@ class Album(MediaContent):
     release_date = models.DateField()
     image = models.ImageField(null=True)
     performer = models.ForeignKey(Performer, on_delete=models.CASCADE)
+    def __str__(self):
+        return self.name
 
 
 class Music(MediaContent):
@@ -74,12 +88,16 @@ class Music(MediaContent):
     album = models.ForeignKey(Album, on_delete=models.CASCADE, blank=True)
     image = models.ImageField()
     audio_file = models.FileField()
+    def __str__(self):
+        return self.name
 
 
 class Playlist(models.Model):
     name = models.CharField(max_length=50)
     author = models.ForeignKey(Listener, on_delete=models.CASCADE)
     musics = models.ManyToManyField(Music, through='Membership')
+    def __str__(self):
+        return self.name
 
 
 class Membership(models.Model):
