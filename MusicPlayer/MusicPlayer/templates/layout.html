@@ -48,17 +48,36 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/login/">
-            <img src="{% static 'images/user.jpeg' %}" alt="Rating & Review" />
-            <span class="link-text">Log In</span>
-          </a>
-        </li>
-        <li class="nav-item">
           <a class="nav-link" href="#">
             <img src="{% static 'images/playlist.jpg' %}" alt="Request Songs" />
             <span class="link-text">Request Songs</span>
           </a>
         </li>
+        {% if user.is_authenticated and user.is_superuser %}
+        <li class="nav-item">
+          <a class="nav-link" href="#">
+            <img
+              src="{% static 'images/admin.png' %}"
+              alt="Administrator Panel"
+            />
+            <span class="link-text">Administrator Panel</span>
+          </a>
+        </li>
+        {% endif %} {% if user.is_authenticated %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'logout' %}">
+            <img src="{% static 'images/user.jpeg' %}" alt="Log Out" />
+            <span class="link-text">Log Out</span>
+          </a>
+        </li>
+        {% else %}
+        <li class="nav-item">
+          <a class="nav-link" href="/login/">
+            <img src="{% static 'images/user.jpeg' %}" alt="Rating & Review" />
+            <span class="link-text">Log In</span>
+          </a>
+        </li>
+        {%endif%}
       </ul>
     </nav>
 
