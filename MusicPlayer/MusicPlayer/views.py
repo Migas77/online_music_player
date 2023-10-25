@@ -3,7 +3,7 @@ from datetime import datetime
 from django.shortcuts import render, redirect
 from .models import Listener, MediaContent, Album, Music, Artist, Playlist, Membership, Performer, Band
 from django.contrib.auth import views as auth_views
-from MusicPlayer.forms import LoginForm, SignUpForm, MusicSearchForm
+from MusicPlayer.forms import LoginForm, SignUpForm, MusicSearchForm, AddArtistForm
 from django.contrib.auth import login
 
 
@@ -25,6 +25,10 @@ def home(request):
         'songs': songs,
         'form': form
     }
+
+    artists = Artist.objects.all()
+    for artist in artists:
+        print(f"Artist: {artist.name}")
     for song in songs:
         print(f"Song: {song.name}, Performer: {song.performer.name if song.performer else 'No Performer'}")
     return render(request, 'index.html', tparams)
@@ -86,8 +90,6 @@ def artistInformation(request, artist_name):
 
 
 def adminPanel(request):
-    """Get the details, musics and albums from an artist"""
-
     songs = Music.objects.all()
     albums = Album.objects.all()
     artists = Performer.objects.all()
@@ -99,3 +101,19 @@ def adminPanel(request):
         'bands': bands
     }
     return render(request, 'adminPage.html', tparams)
+
+def addArtist(request):
+    if request.method == 'POST':
+        form = AddArtistForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            description = form.cleaned_data['description']
+            image = form.cleaned_data['image']
+
+            artist = Artist(name=name, description=description, image=image)
+            artist.save()
+            return redirect('adminPanel')
+    else:
+        form = AddArtistForm()
+
+    return render(request, 'addArtist.html', {'form': form})

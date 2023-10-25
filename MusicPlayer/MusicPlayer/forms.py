@@ -1,6 +1,7 @@
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django import forms
 from django.contrib.auth import get_user_model
+from .models import Artist, Performer, Music, Album, Playlist, Membership, Band
 
 User = get_user_model()  # custom user model
 
@@ -60,3 +61,9 @@ class SignUpForm(UserCreationForm):
 
 class MusicSearchForm(forms.Form):
     query = forms.CharField(label="Song Title", max_length=50, required=False)
+
+#formulario para adicionar um artista
+class AddArtistForm(forms.ModelForm):
+    class Meta:
+        model = Artist
+        fields = ['name', 'description', 'image']
