@@ -10,17 +10,18 @@
 
     <link rel="stylesheet" type="text/css" href="{% static 'css/login.css' %}" />
 </head>
-{% block content %}
 <body>
     <div class="main">
         <a href="/"><label class="brand"><img src="{% static 'images/logo.png' %}" />Spotify</label></a>
-        <input type="checkbox" id="chk" aria-hidden="true"/>
+        <input type="checkbox" id="chk" aria-hidden="true" checked/>
         <div class="singup">
-            <form>
-                <label for="chk" aria-hidden="true" >Sign up</label>
-                <input type="text" name="txt" placeholder="User name" />
-                <input type="email" name="email" placeholder="Email"/>
-                <input type="password" name="pswd" placeholder="Password"/>
+            <form action="." method="post">
+                {% csrf_token %}
+                <label for="chk" aria-hidden="true" style="margin: 30px;">Sign up</label>
+                {{ SignUpForm.email }}
+                {{ SignUpForm.username }}
+                {{ SignUpForm.password1 }}
+                {{ SignUpForm.password2 }}
                 <button class="button"><a href="/">Sign up</a></button>
             </form>
         </div>
@@ -42,4 +43,3 @@
 </body>
 </html>
 
-{% endblock %}

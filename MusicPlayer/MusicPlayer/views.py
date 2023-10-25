@@ -1,8 +1,12 @@
 from datetime import datetime
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import Listener, MediaContent, Album, Music, Artist, Playlist, Membership, Performer
+from django.contrib.auth import views as auth_views
+from MusicPlayer.forms import LoginForm, SignUpForm
 
+
+# Custom User
 def home(request):
     songs = Music.objects.all()
     tparams = {
@@ -15,6 +19,32 @@ def home(request):
         print(f"Song: {song.name}, Performer: {song.performer.name if song.performer else 'No Performer'}")
     return render(request, 'index.html', tparams)
 
+
+def login_signup(request, *args, **kwargs):
+    if request.method == 'POST':
+        print("here: ", request.POST)
+        sign_up_form = SignUpForm(request.POST)
+        if sign_up_form.is_valid():
+            #email = sign_up_form.cleaned_data["email"]
+            #username = sign_up_form.cleaned_data["username"]
+            #password = sign_up_form.cleaned_data["password"]
+            print("VALID")
+            sign_up_form.save()
+            return redirect('home')
+        print("NOT VALID", sign_up_form.errors)
+    else:
+        print("request.method == 'GET'")
+        sign_up_form = SignUpForm()
+    # temos de mandar sempre os dois porque estão na mesma página
+    # portanto não dá para fazer isso apenas com LoginView no forms.py
+    return auth_views.LoginView.as_view(
+            template_name='login.html',
+            authentication_form=LoginForm,
+            next_page='home',
+            extra_context={"SignUpForm": sign_up_form}
+    )(request, *args, **kwargs)
+
+
 def contact(request):
     tparams = {
         'title': 'Contact',
@@ -23,6 +53,7 @@ def contact(request):
     }
     return render(request, 'contact.html', tparams)
 
+
 def about(request):
     tparams = {
         'title': 'About',
@@ -30,6 +61,7 @@ def about(request):
         'year': datetime.now().year,
     }
     return render(request, 'about.html', tparams)
+
 
 # endpoint /artist/<str:artist_name>
 def artistInformation(request, artist_name):

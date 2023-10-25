@@ -1,9 +1,35 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser  # User model from django
+from django.contrib.auth.models import AbstractUser, BaseUserManager
 
 
+class ListenerManager(BaseUserManager):
+    def create_user(self, email, username, password):
+        if not email:
+            raise ValueError('Email is required!')
+        if not username:
+            raise ValueError('Username is required!')
+
+        user = self.model(email=self.normalize_email(email), username=username)
+        user.set_password(password)
+        user.save()
+        return user
+
+    def create_superuser(self, email, username, password):
+        user = self.create_user(email, username, password)
+        user.is_superuser = True
+        user.is_admin = True
+        user.is_staff = True
+        user.save()
+        return user
+
+
+# Custom User
 class Listener(AbstractUser):
     followers = models.ManyToManyField('self')
+    objects = ListenerManager()
+
+    class Meta:
+        verbose_name = 'Listener'
 
 
 class MediaContent(models.Model):
