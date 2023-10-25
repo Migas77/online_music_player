@@ -41,9 +41,38 @@ body::-webkit-scrollbar-thumb {
     background: #6649b8;
 }
 
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+}
+
+.btn{
+    background-color: #b5a0ef;
+    border: none;
+    color: black;
+    padding: 0.5rem 1rem;
+    border-radius: 0.3rem;
+    cursor: pointer;
+    transition: 0.3s ease-in;
+}
+
+.form input[type="text"] {
+    background-color: transparent;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    color: #ffffff;
+    padding: .375rem .75rem;
+    height: auto;
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+
+
 .container {
     height: 100vh;
     display: flex;
+    margin-top: 2rem;
 }
 
 .songitem {
@@ -105,3 +134,4 @@ body::-webkit-scrollbar-thumb {
     opacity: 0;
     transition: 1s ease-in;
 }
+

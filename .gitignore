@@ -157,3 +157,15 @@ cython_debug/
 
 # migrations
 migrations/
+
+# audio
+*.mp3
+*.wav
+
+# imagens
+*.jpg
+*.png
+*.jpeg
+*.gif
+*.svg
+

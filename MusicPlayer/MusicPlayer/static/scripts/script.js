@@ -26,7 +26,7 @@ function getSongInfo() {
         let performer = item.getElementsByClassName('songPerformer')[0].innerText;
         let audioUrl = item.getElementsByClassName('songItemPlay')[0].getAttribute('data-song-url');
         let coverPath = item.getElementsByTagName('img')[0].src;
-
+        console.log("song name: " + songName);
         // Create a song info object
         let songInfo = {
             songName: songName + ' - ' + performer,
@@ -59,16 +59,13 @@ playButtons.forEach((button, index) => {
     });
 });
 
-function updateUI() {
-    masterSongName.innerText = songs[songIndex].songName;
-}
-
 function togglePlay() {
     if (audioElement.paused || audioElement.currentTime <= 0) {
         audioElement.play();
         masterPlay.classList.remove('fa-play-circle');
         masterPlay.classList.add('fa-pause-circle');
         gif.style.opacity = 1;
+        masterSongName.innerText = songs[songIndex].songName;
     } else {
         audioElement.pause();
         masterPlay.classList.remove('fa-pause-circle');
@@ -86,7 +83,7 @@ document.getElementById('next').addEventListener('click', () => {
     songIndex = (songIndex + 1) % songs.length;
     audioElement.src = songs[songIndex].audioUrl;
     audioElement.currentTime = 0;
-    updateUI();
+    masterSongName.innerText = songs[songIndex].songName;
     togglePlay();
 });
 
@@ -94,7 +91,7 @@ document.getElementById('previous').addEventListener('click', () => {
     songIndex = (songIndex - 1 + songs.length) % songs.length;
     audioElement.src = songs[songIndex].audioUrl;
     audioElement.currentTime = 0;
-    updateUI();
+    masterSongName.innerText = songs[songIndex].songName;
     togglePlay();
 });
 
@@ -103,4 +100,4 @@ ProgressBar.addEventListener('input', () => {
     audioElement.currentTime = seekTime;
 });
 
-updateUI();
+

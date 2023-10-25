@@ -1,45 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spotify - Music On The Go</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Music Streaming - Music On The Go</title>
 
     {% load static %}
 
-    <link rel="stylesheet" type="text/css" href="{% static 'css/login.css' %}" />
-</head>
-{% block content %}
-<body>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'css/login.css' %}"
+    />
+  </head>
+  {% block content %}
+  <body>
     <div class="main">
-        <a href="/"><label class="brand"><img src="{% static 'images/logo.png' %}" />Spotify</label></a>
-        <input type="checkbox" id="chk" aria-hidden="true"/>
-        <div class="singup">
-            <form>
-                <label for="chk" aria-hidden="true" >Sign up</label>
-                <input type="text" name="txt" placeholder="User name" />
-                <input type="email" name="email" placeholder="Email"/>
-                <input type="password" name="pswd" placeholder="Password"/>
-                <button class="button"><a href="/">Sign up</a></button>
-            </form>
-        </div>
+      <a href="/"
+        ><label class="brand"
+          ><img src="{% static 'images/logo.png' %}" />Music Streaming</label
+        ></a
+      >
+      <input type="checkbox" id="chk" aria-hidden="true" />
+      <div class="singup">
+        <form>
+          <label for="chk" aria-hidden="true">Sign up</label>
+          <input type="text" name="txt" placeholder="User name" />
+          <input type="email" name="email" placeholder="Email" />
+          <input type="password" name="pswd" placeholder="Password" />
+          <button class="button"><a href="/">Sign up</a></button>
+        </form>
+      </div>
 
-        <div class="login">
-            <form action="." method="post">
-                {% csrf_token %}
-                <label for="chk" aria-hidden="true" >Log in</label>
-                <div>
-                    {{ form.username }}
-                </div>
-                <div>
-                    {{ form.password }}
-                </div>
-                <button class="button" type="submit">Log in</button>
-            </form>
-        </div>
+      <div class="login">
+        <form action="." method="post">
+          {% csrf_token %}
+          <label for="chk" aria-hidden="true">Log in</label>
+          <div>{{ form.username }}</div>
+          <div>{{ form.password }}</div>
+          <button class="button" type="submit">Log in</button>
+        </form>
+      </div>
     </div>
-</body>
+  </body>
 </html>
 
 {% endblock %}

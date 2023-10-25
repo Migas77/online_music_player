@@ -1,5 +1,5 @@
 from django.contrib.auth.forms import AuthenticationForm
-
+from django import forms
 
 class LoginForm(AuthenticationForm):
     # AuthenticationForm -> Default Login Form
@@ -20,3 +20,6 @@ class LoginForm(AuthenticationForm):
             'id': 'InputPassword1'
         })
 
+
+class MusicSearchForm(forms.Form):
+    query = forms.CharField(label="Song Title" ,max_length=50, required=False)
