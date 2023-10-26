@@ -6,6 +6,7 @@
 />
 <div class="">
   <section is="addArtist">
+    {% load crispy_forms_tags %}
     <form
       action="."
       method="post"
@@ -15,13 +16,7 @@
       {% csrf_token %}
       <h1 class="margin">Add artist</h1>
       <hr />
-      <div class="form-group">
-        {{ form.name.label_tag }} {{ form.name }}
-        <br />
-        {{ form.description.label_tag }} {{ form.description }}
-        <br />
-        {{ form.image.label_tag }} {{ form.image }}
-      </div>
+      <div class="form-group">{{ form|crispy }}</div>
       <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
           <input type="submit" value="Submit" class="btn-group" />

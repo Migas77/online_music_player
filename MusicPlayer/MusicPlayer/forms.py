@@ -60,20 +60,22 @@ class SignUpForm(BaseUserCreationForm):
 
 
 class MusicSearchForm(forms.Form):
-    query = forms.CharField(label="Song Title", max_length=50, required=False, widget=forms.TextInput(attrs={'class': 'input-secondary', 'placeholder': 'Search for a song'}))
+    query = forms.CharField(label="", max_length=50, required=False, widget=forms.TextInput(attrs={'class': 'input-bordered bg-transparent ml-2', 'placeholder': 'Search for a song'}))
 
 class AddArtistForm(forms.ModelForm):
     class Meta:
         model = Artist
         fields = ['name', 'description', 'image']
 
+
 class AddMusicForm(forms.ModelForm):
     class Meta:
         model = Music
         fields = ['name', 'genre', 'duration','album','performer','image', 'audio_file']
         widgets = {
-            'album': forms.Select(attrs={'class': 'addMusicClass'}),
+            'album': forms.Select(attrs={'class': 'addMusicClass file-input file-input-bordered w-full max-w-xs'}),
             'performer': forms.Select(attrs={'class': 'addMusicClass'}),
+
         }
 
 class AddBandForm(forms.ModelForm):
@@ -81,5 +83,5 @@ class AddBandForm(forms.ModelForm):
         model = Band
         fields = ['name', 'description', 'image', 'members']
         widgets = {
-            'members': forms.CheckboxSelectMultiple(attrs={'class': 'addBandClass'}),
+            'members': forms.CheckboxSelectMultiple(),
         }

@@ -1,11 +1,11 @@
 ﻿{% extends "layout.html" %} {% block content %} {% load static %}
 
-<div class="header_tp">
+<div class="header_tp flex flex-row justify-between items-center">
   <h1 class="margin">Welcome to our Music Streaming Web App</h1>
   {% load crispy_forms_tags %}
-  <form class="form-control flex flex-row items-center" method="get">
+  <form class="form-control flex flex-row flex-grow" method="get">
     {% csrf_token %} {{ form|crispy }}
-    <input class="btn btn-active btn-secondary" type="submit" value="Search" />
+    <button class="btn btn-outline" type="submit">Search</button>
   </form>
 </div>
 <div class="container_tp margin">
