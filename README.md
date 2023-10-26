@@ -28,6 +28,9 @@ python3 manage.py runserver
 
 ### TODO
   - Se calhar pensar em usar AbstractAdmin (não sei se será necessário)
+  - 404 page
+  - filters
+  - optional parameters
   - Definir uniques depois
   - Aggregates (xD)
   - Ordering of playlist
