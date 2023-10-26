@@ -13,7 +13,7 @@ def home(request):
         form = MusicSearchForm(request.POST)
         if form.is_valid():
             query = form.cleaned_data['query']
-            songs = Music.objects.filter(name__icontains=query)
+            songs = Music.objects.filter(name__icontains=query, performer__name__icontains=query, genre__icontains=query, album__name__icontains=query)
     else:
         form = MusicSearchForm()
         songs = Music.objects.all()
