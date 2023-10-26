@@ -60,8 +60,8 @@ class SignUpForm(BaseUserCreationForm):
 
 
 class MusicSearchForm(forms.Form):
-    query = forms.CharField(label="Song Title", max_length=50, required=False)
-#formulario para adicionar um artista
+    query = forms.CharField(label="Song Title", max_length=50, required=False, widget=forms.TextInput(attrs={'class': 'input-secondary', 'placeholder': 'Search for a song'}))
+
 class AddArtistForm(forms.ModelForm):
     class Meta:
         model = Artist

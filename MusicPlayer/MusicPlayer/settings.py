@@ -35,6 +35,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'crispy_forms',
+    'crispy_daisyui',
     'MusicPlayer'
 ]
 
@@ -119,3 +121,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Added
 AUTH_USER_MODEL = 'MusicPlayer.Listener'
+
+CRISPY_TEMPLATE_PACK = 'daisyui'

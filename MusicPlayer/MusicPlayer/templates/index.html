@@ -1,9 +1,11 @@
 ﻿{% extends "layout.html" %} {% block content %} {% load static %}
+
 <div class="header_tp">
   <h1 class="margin">Welcome to our Music Streaming Web App</h1>
-  <form class="form" method="get">
-    {{ form }}
-    <input class="btn_tp" type="submit" value="Search" />
+  {% load crispy_forms_tags %}
+  <form class="form-control flex flex-row items-center" method="get">
+    {% csrf_token %} {{ form|crispy }}
+    <input class="btn btn-active btn-secondary" type="submit" value="Search" />
   </form>
 </div>
 <div class="container_tp margin">
