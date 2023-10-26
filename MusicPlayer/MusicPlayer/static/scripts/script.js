@@ -1,4 +1,4 @@
-﻿console.log("Welcome to Spotify");
+﻿console.log("Welcome to Music Streaming!");
 
 // Inicialize as variáveis
 let audioElement = new Audio();
@@ -6,7 +6,7 @@ let songIndex = 0;
 let ProgressBar = document.getElementById('ProgressBar');
 let gif = document.getElementById('gif');
 let masterPlay = document.getElementById('masterPlay');
-let songItems = Array.from(document.getElementsByClassName('songitem'));
+let songItems = Array.from(document.getElementsByClassName('songitem_tp'));
 let playButtons = Array.from(document.getElementsByClassName('songItemPlay'));
 
 // Add event listener to masterPlay button
@@ -14,7 +14,7 @@ masterPlay.addEventListener('click', togglePlay);
 
 function getSongInfo() {
     // Get all song items
-    let songItems = Array.from(document.getElementsByClassName('songitem'));
+    let songItems = Array.from(document.getElementsByClassName('songitem_tp'));
 
     // Initialize an empty array to store the song info
     let songs = [];

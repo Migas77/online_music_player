@@ -11,15 +11,15 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/login.css' %}" />
 </head>
 <body>
-    <div class="main">
-        <a href="/"><label class="brand"><img src="{% static 'images/logo.png' %}" />Spotify</label></a>
+    <div class="main_ia">
+        <a href="/"><label class="brand_tp"><img src="{% static 'images/logo.png' %}" />Spotify</label></a>
         {% if SignUpForm.errors %}
         <input type="checkbox" id="chk" aria-hidden="true"/> <!--SIGNIN-->
         {% else %}
         <input type="checkbox" id="chk" aria-hidden="true" checked/> <!--LOGIN-->
         {% endif %}
 
-        <div class="singup">
+        <div class="singup_tp">
             <form action="{% url 'signup' %}" method="post">
                 {% csrf_token %}
                 <label for="chk" aria-hidden="true" style="margin: 30px;">Sign up</label>
@@ -27,17 +27,17 @@
                 {{ SignUpForm.username }}
                 {{ SignUpForm.password1 }}
                 {{ SignUpForm.password2 }}
-                <button class="button" type="submit">Sign up</button>
+                <button class="button_tp" type="submit">Sign up</button>
             </form>
         </div>
 
-      <div class="login">
+      <div class="login_tp">
         <form action="{% url 'login_signup' %}" method="post">
           {% csrf_token %}
           <label for="chk" aria-hidden="true">Log in</label>
           <div>{{ form.username }}</div>
           <div>{{ form.password }}</div>
-          <button class="button" type="submit">Log in</button>
+          <button class="button_tp" type="submit">Log in</button>
         </form>
       </div>
     </div>

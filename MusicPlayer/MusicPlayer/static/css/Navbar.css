@@ -1,4 +1,4 @@
-﻿.navbar {
+﻿.navbar_tp {
   width: 5rem;
   height: 100vh;
   position: fixed;
@@ -6,7 +6,7 @@
   transition: width 200ms ease;
 }
 
-.navbar-nav {
+.navbar-nav_tp {
   list-style: none;
   padding: 0;
   margin: 0;
@@ -16,16 +16,16 @@
   height: 10%;
 }
 
-.nav-item {
+.nav-item_tp {
   width: 100%;
 }
 
-.link-text {
+.link-text_tp {
   display: none;
   margin-left: 1rem;
 }
 
-.nav-link {
+.nav-link_tp {
   display: flex;
   align-items: center;
   height: 5rem;
@@ -35,28 +35,28 @@
   transition: 500ms;
 }
 
-.nav-link:hover {
+.nav-link_tp:hover {
   filter: grayscale(0%) opacity(1);
   background: #141418;
   color: #ececec;
 }
 
-.nav-link img {
+.nav-link_tp img {
   width: 2rem;
   min-width: 2rem;
   margin: 0 1.5rem;
   filter: drop-shadow(-3px -5px 0px #AA10D8);
 }
 
-.navbar:hover {
+.navbar_tp:hover {
   width: 20rem;
 }
 
-.navbar:hover .link-text {
+.navbar_tp:hover .link-text_tp {
   display: block;
 }
 
-.logo {
+.logo_tp {
   font-weight: bold;
   text-transform: uppercase;
   margin-bottom: 1rem;
@@ -68,18 +68,18 @@
   width: 100%;
 }
 
-.logo img {
+.logo_tp img {
   transform: rotate(0deg);
   transition: 600ms;
 }
 
-.logo-text {
+.logo-text_tp {
   display: inline;
   position: absolute;
   left: -999px;
   transition: 600ms;
 }
 
-.navbar:hover .logo img {
+.navbar_tp:hover .logo_tp img {
   transform: rotate(-360deg);
 }

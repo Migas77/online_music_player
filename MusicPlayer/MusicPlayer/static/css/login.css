@@ -10,7 +10,7 @@
     background-size: cover;
 }
 
-.main{
+.main_ia{
     width: 500px;
     height: 600px;
     background: red;
@@ -25,7 +25,7 @@
     display: none;
 }
 
-.singup{
+.singup_tp{
     position: relative;
     height: 100%;
     width: 100%;
@@ -64,7 +64,7 @@ input:invalid{
     75% { transform: translateX(4px); }
 }
 
-.button{
+.button_tp{
     width: 250px;
     height: 40px;
     margin: 10px auto;
@@ -82,11 +82,11 @@ input:invalid{
     transition: .5s ease-in-out;
 }
 
-.button:hover{
+.button_tp:hover{
     background: #6d44b8;
 }
 
-.login{
+.login_tp{
     height: 460px;
     background: #eee;
     border-radius: 60% / 10%;
@@ -94,29 +94,29 @@ input:invalid{
     transition: .8s ease-in-out;
 }
 
-.login label{
+.login_tp label{
     color: #573b8a;
     transform: scale(.6);
 }
 
-#chk:checked ~ .login{
+#chk:checked ~ .login_tp{
     transform: translateY(-600px);
 }
 
-#chk:checked ~ .login label{
+#chk:checked ~ .login_tp label{
     transform: scale(1);
 }
 
-#chk:checked ~ .singup label{
+#chk:checked ~ .singup_tp label{
     transform: scale(.6);
 }
 
-.brand img{
+.brand_tp img{
     width: 44px;
     padding: 0 8px;
 }
 
-.brand{
+.brand_tp{
     display: flex;
     align-items: center;
 }

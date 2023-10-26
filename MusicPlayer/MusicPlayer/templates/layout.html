@@ -7,6 +7,12 @@
     <title>Music Streaming</title>
 
     {% load static %}
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@3.9.3/dist/full.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" type="text/css" href="{% static 'css/Home.css' %}" />
     <link
       rel="stylesheet"
@@ -21,61 +27,60 @@
   </head>
 
   <body>
-    <nav class="navbar">
-      <ul class="navbar-nav">
-        <li class="logo">
-          <a class="nav-link" href="{% url 'home' %}">
+    <nav class="navbar_tp">
+      <ul class="navbar-nav_tp">
+        <li class="logo_tp">
+          <a class="nav-link_tp" href="{% url 'home' %}">
             <img src="{% static 'images/logo.png' %}" />
-            <span class="link-text">Music Streaming</span>
+            <span class="link-text_tp">Music Streaming</span>
           </a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'home' %}">
+        <li class="nav-item_tp">
+          <a class="nav-link_tp" href="{% url 'home' %}">
             <img src="{% static 'images/home.jpeg' %}" alt="Home" />
-            <span class="link-text">Home</span>
+            <span class="link-text_tp">Home</span>
           </a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'about' %}">
+        <li class="nav-item_tp">
+          <a class="nav-link_tp" href="{% url 'about' %}">
             <img src="{% static 'images/aboutus.jpeg' %}" alt="About us" />
-            <span class="link-text">About us</span>
+            <span class="link-text_tp">About us</span>
           </a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="./Library.html">
+        <li class="nav-item_tp">
+          <a class="nav-link_tp" href="./Library.html">
             <img src="{% static 'images/headphones.jpeg' %}" alt="Library" />
-            <span class="link-text">Library</span>
+            <span class="link-text_tp">Library</span>
           </a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">
+        <li class="nav-item_tp">
+          <a class="nav-link_tp" href="#">
             <img src="{% static 'images/playlist.jpg' %}" alt="Request Songs" />
-            <span class="link-text">Request Songs</span>
+            <span class="link-text_tp">Request Songs</span>
           </a>
         </li>
         {% if user.is_authenticated and user.is_superuser %}
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'adminPanel' %}">
+        <li class="nav-item_tp">
+          <a class="nav-link_tp" href="{% url 'adminPanel' %}">
             <img
               src="{% static 'images/admin.png' %}"
               alt="Administrator Panel"
             />
-            <span class="link-text">Administrator Panel</span>
+            <span class="link-text_tp">Administrator Panel</span>
           </a>
         </li>
-        {% endif %}
-        {% if user.is_authenticated %}
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'logout' %}">
+        {% endif %} {% if user.is_authenticated %}
+        <li class="nav-item_tp">
+          <a class="nav-link_tp" href="{% url 'logout' %}">
             <img src="{% static 'images/user.jpeg' %}" alt="Log Out" />
-            <span class="link-text">Log Out</span>
+            <span class="link-text_tp">Log Out</span>
           </a>
         </li>
         {% else %}
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'login_signup' %}">
+        <li class="nav-item_tp">
+          <a class="nav-link_tp" href="{% url 'login_signup' %}">
             <img src="{% static 'images/user.jpeg' %}" alt="Rating & Review" />
-            <span class="link-text">Log In</span>
+            <span class="link-text_tp">Log In</span>
           </a>
         </li>
         {% endif %}

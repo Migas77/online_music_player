@@ -1,6 +1,6 @@
-/* navbar */
+/* navbar_tp */
 
-.navbar {
+.navbar_tp {
     width: 100vw;
     height: 5rem;
     position: fixed;
@@ -10,20 +10,20 @@
     transition: width 200ms ease;
 }
 
-.navbar-nav {
+.navbar-nav_tp {
     padding: 0;
     margin: 0;
     display: flex;
     align-items: center;
 }
 
-.nav-link {
+.nav-link_tp {
     display: flex;
     align-items: center;
     height: 5rem;
 }
 
-.logo {
+.logo_tp {
     font-weight: bold;
     text-transform: uppercase;
     margin-bottom: 1rem;
@@ -35,17 +35,17 @@
     width: 100%;
 }
 
-.nav-link img {
+.nav-link_tp img {
     width: 2rem;
     min-width: 2rem;
     margin: 0 1.5rem;
 }
 
-.link-text{
+.link-text_tp{
     color: white;
 }
 
-.nav-item {
+.nav-item_tp {
     display: none;
 }
 
@@ -57,22 +57,22 @@ main {
 }
 
 h2{
-    padding: 1rem 0rem;
+    padding: 1rem 0rem!important;
 }
 
 .margin {
     margin: 0rem 1rem;
 }
 
-.songlist {
+.songlist_tp {
     grid-template-columns: 1fr 1fr;
 }
 
-.songinfo-container {
+.songinfo-container_tp {
     flex-direction: column;
 }
 
-.songinfo {
+.songinfo_tp {
     position: static;
     margin-bottom: 0.5rem;
 }

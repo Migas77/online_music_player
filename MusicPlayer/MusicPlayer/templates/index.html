@@ -1,15 +1,15 @@
 ﻿{% extends "layout.html" %} {% block content %} {% load static %}
-<div class="header">
+<div class="header_tp">
   <h1 class="margin">Welcome to our Music Streaming Web App</h1>
   <form class="form" method="get">
     {{ form }}
-    <input class="btn" type="submit" value="Search" />
+    <input class="btn_tp" type="submit" value="Search" />
   </form>
 </div>
-<div class="container margin">
+<div class="container_tp margin">
   {% for song in songs %}
-  <div class="songlist">
-    <div class="songitem">
+  <div class="songlist_tp">
+    <div class="songitem_tp">
       <img src="{{ song.image.url }}" alt="1" />
       <span class="songName"> {{ song.name }}</span>
       <span class="songPerformer"> {{ song.performer.name }} </span>
@@ -24,10 +24,10 @@
   </div>
   {% endfor %}
 </div>
-<div class="bottom margin">
+<div class="bottom_tp margin">
   <input type="range" name="range" id="ProgressBar" min="0" max="100" />
-  <div class="songinfo-container">
-    <div class="songinfo">
+  <div class="songinfo-container_tp">
+    <div class="songinfo_tp">
       <img
         src="{% static 'images/playing.gif' %}"
         width="45px"
