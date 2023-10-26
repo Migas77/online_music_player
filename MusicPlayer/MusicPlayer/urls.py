@@ -31,7 +31,7 @@ urlpatterns = [
             extra_context={"SignUpForm": SignUpForm()}
         ), name='login_signup'),
     path('sign_up', views.sign_up, name='signup'),
-    path('logout/', auth_views.LogoutView.as_view(next_page='home'), name='logout'),
+    path('logout/', auth_views.LogoutView.as_view(next_page='login_signup'), name='logout'),
     # others
     path('', views.home, name='home'),
     path('contact/', views.contact, name='contact'),

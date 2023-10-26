@@ -16,13 +16,13 @@ class LoginForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
         super(LoginForm, self).__init__(*args, **kwargs)
         self.fields['username'].widget.attrs.update({
-            'class': 'form-control',
+            'class': 'input w-full bg-primary-content',
             'id': 'InputUsername1',
             'placeholder': 'Username',
             'aria-describedby': 'usernameHelp',
         })
         self.fields["password"].widget.attrs.update({
-            'class': 'form-control',
+            'class': 'input w-full bg-primary-content',
             'placeholder': 'Password',
             'id': 'InputPassword1'
         })
@@ -36,31 +36,33 @@ class SignUpForm(BaseUserCreationForm):
     def __init__(self, *args, **kwargs):
         super(SignUpForm, self).__init__(*args, **kwargs)
         self.fields["email"] = forms.EmailField(label='', max_length=40, widget=forms.EmailInput(attrs={
-            'class': 'form-control',
+            'class': 'input-bordered input-sm w-full max-w-xs bg-primary-content',
             'id': 'InputEmail1',
             'placeholder': 'Email',
             'aria-describedby': 'emailHelp',
         }))
         self.fields['username'].widget.attrs.update({
-            'class': 'form-control',
+            'class': 'input-bordered input-sm w-full max-w-xs bg-primary-content',
             'id': 'InputUsername1',
             'placeholder': 'Username',
             'aria-describedby': 'usernameHelp',
         })
         self.fields["password1"].widget.attrs.update({
-            'class': 'form-control',
+            'class': 'input-bordered input-sm w-full max-w-xs bg-primary-content',
             'placeholder': 'Password',
             'id': 'InputPassword1'
         })
         self.fields["password2"].widget.attrs.update({
-            'class': 'form-control',
+            'class': 'input-bordered input-sm w-full max-w-xs bg-primary-content',
             'placeholder': 'Confirm Password',
             'id': 'InputPassword2'
         })
 
 
 class MusicSearchForm(forms.Form):
-    query = forms.CharField(label="", max_length=50, required=False, widget=forms.TextInput(attrs={'class': 'input-bordered bg-transparent ml-2', 'placeholder': 'Search for a song'}))
+    query = forms.CharField(label="", max_length=50, required=False, widget=forms.TextInput(
+        attrs={'class': 'input-bordered bg-transparent ml-2', 'placeholder': 'Search for a song'}))
+
 
 class AddArtistForm(forms.ModelForm):
     class Meta:
@@ -71,12 +73,13 @@ class AddArtistForm(forms.ModelForm):
 class AddMusicForm(forms.ModelForm):
     class Meta:
         model = Music
-        fields = ['name', 'genre', 'duration','album','performer','image', 'audio_file']
+        fields = ['name', 'genre', 'duration', 'album', 'performer', 'image', 'audio_file']
         widgets = {
             'album': forms.Select(attrs={'class': 'addMusicClass file-input file-input-bordered w-full max-w-xs'}),
             'performer': forms.Select(attrs={'class': 'addMusicClass'}),
 
         }
+
 
 class AddBandForm(forms.ModelForm):
     class Meta:

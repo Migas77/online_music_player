@@ -9,8 +9,8 @@ from django.contrib.auth import login
 
 # Custom User
 def home(request):
-    if 'query' in request.GET:
-        form = MusicSearchForm(request.GET)
+    if request.method == 'POST':
+        form = MusicSearchForm(request.POST)
         if form.is_valid():
             query = form.cleaned_data['query']
             songs = Music.objects.filter(name__icontains=query)
@@ -34,8 +34,6 @@ def home(request):
 def sign_up(request):
     # this view is just intended to be posted from the sign_up form
     # however if the user tries to access through the url he can
-    from django.contrib import messages
-    messages.error(request, "toa")
     if request.method == 'POST':
         sign_up_form = SignUpForm(request.POST)
         if sign_up_form.is_valid():
