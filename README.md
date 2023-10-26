@@ -28,6 +28,7 @@ python3 manage.py runserver
 
 ### TODO
   - Se calhar pensar em usar AbstractAdmin (não sei se será necessário)
+  - Definir uniques depois
   - Aggregates (xD)
   - Ordering of playlist
     - Ordering not working
