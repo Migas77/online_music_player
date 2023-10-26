@@ -76,3 +76,11 @@ class AddMusicForm(forms.ModelForm):
             'album': forms.Select(attrs={'class': 'addMusicClass'}),
             'performer': forms.Select(attrs={'class': 'addMusicClass'}),
         }
+
+class AddBandForm(forms.ModelForm):
+    class Meta:
+        model = Band
+        fields = ['name', 'description', 'image', 'members']
+        widgets = {
+            'members': forms.CheckboxSelectMultiple(attrs={'class': 'addBandClass'}),
+        }
