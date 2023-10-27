@@ -213,6 +213,5 @@ def addMusicToQueue(request):
     if music_id not in music_ids:
         music_ids.append(music_id)
         request.session.save()
-    print(request.session["music_ids"])
     return HttpResponse(json.dumps({"success": True}), content_type='application/json')
 
