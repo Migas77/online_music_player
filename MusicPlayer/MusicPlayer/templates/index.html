@@ -1,5 +1,20 @@
 ﻿{% extends "layout.html" %} {% block content %} {% load static %}
+<script src="{% static 'scripts/jquery-3.4.1.min.js' %}"></script>
+<script>
+    // AJAX call to django
 
+    function addMusicToQueue(music_id){
+        $.ajax({
+            url : '{% url "addMusicToQueue" %}',
+            data : {
+              'csrfmiddlewaretoken' : '{{ csrf_token }}',
+              'music_id' : music_id,
+            },
+            method : 'POST'
+        });
+    }
+
+</script>
 <div class="header_tp flex flex-row justify-between items-center">
   <h1 class="margin">Welcome to our Music Streaming Web App</h1>
   {% load crispy_forms_tags %}
@@ -20,6 +35,11 @@
           id="1"
           class="far songItemPlay fa-play-circle"
           data-song-url="{{ song.audio_file.url }}"
+        ></i
+      ></span>
+      <span class="addToQueue" onclick="addMusicToQueue({{ song.id }})"
+        ><i
+          class="fa fa-cloud-download"
         ></i
       ></span>
     </div>

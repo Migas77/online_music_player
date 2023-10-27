@@ -1,4 +1,7 @@
 from datetime import datetime
+
+import json
+from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Listener, MediaContent, Album, Music, Artist, Playlist, Membership, Performer, Band
 from django.contrib.auth import views as auth_views
@@ -195,3 +198,21 @@ def listMusics(request):
         'songs': songs
     }
     return render(request, 'listMusics.html', tparams)
+
+
+# AJAX views
+def is_ajax(request):
+    return request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+
+
+def addMusicToQueue(request):
+    music_id = request.POST["music_id"]
+    if not is_ajax(request) or request.method != 'POST' or not music_id:
+        return redirect('')
+    music_ids = request.session.setdefault("music_ids", [])
+    if music_id not in music_ids:
+        music_ids.append(music_id)
+        request.session.save()
+    print(request.session["music_ids"])
+    return HttpResponse(json.dumps({"success": True}), content_type='application/json')
+
