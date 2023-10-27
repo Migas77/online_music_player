@@ -5,7 +5,7 @@ from django.contrib.auth import views as auth_views
 from MusicPlayer.forms import LoginForm, SignUpForm, MusicSearchForm, AddEditArtistForm, AddEditMusicForm, AddEditBandForm, \
     AddEditAlbumForm
 from django.contrib.auth import login
-
+from django.db.models import Q
 
 # Custom User
 def home(request):
@@ -13,8 +13,8 @@ def home(request):
         form = MusicSearchForm(request.POST)
         if form.is_valid():
             query = form.cleaned_data['query']
-            songs = Music.objects.filter(name__icontains=query, performer__name__icontains=query,
-                                         genre__icontains=query, album__name__icontains=query)
+            songs = Music.objects.filter(Q(name__icontains=query) | Q(performer__name__icontains=query) |
+                                         Q(genre__icontains=query) | Q(album__name__icontains=query))
     else:
         form = MusicSearchForm()
         songs = Music.objects.all()
