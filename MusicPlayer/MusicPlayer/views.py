@@ -3,7 +3,7 @@ from datetime import datetime
 from django.shortcuts import render, redirect
 from .models import Listener, MediaContent, Album, Music, Artist, Playlist, Membership, Performer, Band
 from django.contrib.auth import views as auth_views
-from MusicPlayer.forms import LoginForm, SignUpForm, MusicSearchForm, AddArtistForm, AddMusicForm, AddBandForm
+from MusicPlayer.forms import LoginForm, SignUpForm, MusicSearchForm, AddArtistForm, AddMusicForm, AddBandForm, AddAlbumForm
 from django.contrib.auth import login
 
 
@@ -151,3 +151,27 @@ def addBand(request):
     else:
         form = AddBandForm()
     return render(request, 'addBand.html', {'form': form})
+
+def addAlbum(request):
+    if request.method == 'POST':
+        form = AddAlbumForm(request.POST, request.FILES)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            release_date = form.cleaned_data['release_date']
+            image = form.cleaned_data['image']
+            performer = form.cleaned_data['performer']
+
+            album = Album(name=name, release_date=release_date, image=image, performer=performer)
+            album.save()
+            return redirect('adminPanel')
+    else:
+        form = AddAlbumForm()
+    return render(request, 'addAlbum.html', {'form': form})
+
+def listMusics(request):
+    songs = Music.objects.all()
+    tparams = {
+        'songs': songs
+    }
+    return render(request, 'listMusics.html', tparams)
+

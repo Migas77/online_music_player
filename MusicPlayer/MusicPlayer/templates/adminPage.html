@@ -9,13 +9,12 @@
   <h2>Songs</h2>
   <div class="tasks">
     <a class="btn_tp" href="{% url 'addMusic' %}">Add</a>
-    <a class="btn_tp" href="">Delete</a>
-    <a class="btn_tp" href="">Update</a>
+    <a class="btn_tp" href="{% url 'listMusics' %}">All Songs</a>
   </div>
   <hr />
   <h2>Albuns</h2>
   <div class="tasks">
-    <a class="btn_tp" href="">Add</a>
+    <a class="btn_tp" href="{% url 'addAlbum' %}">Add</a>
     <a class="btn_tp" href="">Delete</a>
     <a class="btn_tp" href="">Update</a>
   </div>

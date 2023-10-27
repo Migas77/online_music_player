@@ -1,0 +1,21 @@
+{% extends "layout.html" %} {% block content %} {% load static %}
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{% static 'css/listMusics.css' %}"
+/>
+{% for song in songs %}
+<div class="card w-96 bg-base-100 shadow-xl">
+  <figure>
+    <img class="image_tp" src="{{ song.image.url }}" alt="Shoes" />
+  </figure>
+  <div class="card-body">
+    <h2 class="card-title">{{ song.name }}</h2>
+    <p>{{ song.performer }}</p>
+    <div class="card-actions justify-end">
+      <div class="badge badge-outline">Edit</div>
+      <div class="badge badge-outline">delete</div>
+    </div>
+  </div>
+</div>
+{% endfor %} {% endblock %}

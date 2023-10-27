@@ -80,11 +80,15 @@ class AddMusicForm(forms.ModelForm):
 
         }
 
-
 class AddBandForm(forms.ModelForm):
     class Meta:
         model = Band
         fields = ['name', 'description', 'image', 'members']
         widgets = {
-            'members': forms.CheckboxSelectMultiple(),
+            'members': forms.CheckboxSelectMultiple(attrs={'class':'flex justify-end'}),
         }
+
+class AddAlbumForm(forms.ModelForm):
+    class Meta:
+        model = Album
+        fields = ['name', 'release_date', 'image', 'performer']
