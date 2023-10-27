@@ -64,13 +64,13 @@ class MusicSearchForm(forms.Form):
         attrs={'class': 'input-bordered bg-transparent ml-2', 'placeholder': 'Search for a song'}))
 
 
-class AddArtistForm(forms.ModelForm):
+class AddEditArtistForm(forms.ModelForm):
     class Meta:
         model = Artist
         fields = ['name', 'description', 'image']
 
 
-class AddMusicForm(forms.ModelForm):
+class AddEditMusicForm(forms.ModelForm):
     class Meta:
         model = Music
         fields = ['name', 'genre', 'duration', 'album', 'performer', 'image', 'audio_file']
@@ -80,7 +80,7 @@ class AddMusicForm(forms.ModelForm):
 
         }
 
-class AddBandForm(forms.ModelForm):
+class AddEditBandForm(forms.ModelForm):
     class Meta:
         model = Band
         fields = ['name', 'description', 'image', 'members']
@@ -88,7 +88,7 @@ class AddBandForm(forms.ModelForm):
             'members': forms.CheckboxSelectMultiple(attrs={'class':'flex justify-end'}),
         }
 
-class AddAlbumForm(forms.ModelForm):
+class AddEditAlbumForm(forms.ModelForm):
     class Meta:
         model = Album
         fields = ['name', 'release_date', 'image', 'performer']

@@ -40,7 +40,7 @@ class MediaContent(models.Model):
     release_date = models.DateTimeField(auto_now_add=True)
     # will set to timezone.now when instance is created
     likes = models.IntegerField(default=0)
-    duration = models.DurationField()
+    duration = models.DurationField(null=True)
     # non mandatory field
     followers = models.ManyToManyField(Listener, blank=True)
 
@@ -54,7 +54,7 @@ class MediaContent(models.Model):
 
 class Performer(models.Model):
     name = models.CharField(max_length=50)
-    image = models.ImageField(blank=True)
+    image = models.ImageField()
     description = models.CharField(max_length=10000, blank=True)
 
     def __str__(self):

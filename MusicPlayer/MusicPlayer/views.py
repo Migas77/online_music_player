@@ -1,9 +1,9 @@
 from datetime import datetime
-
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Listener, MediaContent, Album, Music, Artist, Playlist, Membership, Performer, Band
 from django.contrib.auth import views as auth_views
-from MusicPlayer.forms import LoginForm, SignUpForm, MusicSearchForm, AddArtistForm, AddMusicForm, AddBandForm, AddAlbumForm
+from MusicPlayer.forms import LoginForm, SignUpForm, MusicSearchForm, AddEditArtistForm, AddEditMusicForm, AddEditBandForm, \
+    AddEditAlbumForm
 from django.contrib.auth import login
 
 
@@ -13,7 +13,8 @@ def home(request):
         form = MusicSearchForm(request.POST)
         if form.is_valid():
             query = form.cleaned_data['query']
-            songs = Music.objects.filter(name__icontains=query, performer__name__icontains=query, genre__icontains=query, album__name__icontains=query)
+            songs = Music.objects.filter(name__icontains=query, performer__name__icontains=query,
+                                         genre__icontains=query, album__name__icontains=query)
     else:
         form = MusicSearchForm()
         songs = Music.objects.all()
@@ -97,45 +98,57 @@ def adminPanel(request):
     }
     return render(request, 'adminPage.html', tparams)
 
+
 def addArtist(request):
     if request.method == 'POST':
-        form = AddArtistForm(request.POST, request.FILES)
+        form = AddEditArtistForm(request.POST, request.FILES)
         if form.is_valid():
-            name = form.cleaned_data['name']
-            description = form.cleaned_data['description']
-            image = form.cleaned_data['image']
-
-            artist = Artist(name=name, description=description, image=image)
-            artist.save()
+            form.save()
             return redirect('adminPanel')
     else:
-        form = AddArtistForm()
+        form = AddEditArtistForm()
 
-    return render(request, 'addArtist.html', {'form': form})
+    return render(request, 'add_edit_Artist.html', {'form': form})
+
+
+def editArtist(request, artist_id):
+    artist = get_object_or_404(Artist, id=artist_id)
+    if request.method == 'POST':
+        form = AddEditArtistForm(request.POST, request.FILES, instance=artist)
+        if form.is_valid():
+            form.save()
+            return redirect('adminPanel')
+    else:
+        form = AddEditArtistForm(instance=artist)
+    return render(request, 'add_edit_Artist.html', {'form': form})
+
 
 def addMusic(request):
     if request.method == 'POST':
-        form = AddMusicForm(request.POST, request.FILES)
+        form = AddEditMusicForm(request.POST, request.FILES)
         if form.is_valid():
-            name = form.cleaned_data['name']
-            genre = form.cleaned_data['genre']
-            album = form.cleaned_data['album']
-            performer = form.cleaned_data['performer']
-            image = form.cleaned_data['image']
-            audio = form.cleaned_data['audio_file']
-            duration = form.cleaned_data['duration']  # Adicione esta linha
-
-            music = Music(name=name, genre=genre, album=album, performer=performer, image=image, audio_file=audio, duration=duration)
-            music.save()
+            form.save()
             return redirect('adminPanel')
     else:
-        form = AddMusicForm()
+        form = AddEditMusicForm()
+    return render(request, 'add_edit_Music.html', {'form': form})
 
-    return render(request, 'addMusic.html', {'form': form})
+
+def editMusic(request, music_id):
+    music = get_object_or_404(Music, id=music_id)
+    if request.method == 'POST':
+        form = AddEditMusicForm(request.POST, request.FILES, instance=music)
+        if form.is_valid():
+            form.save()
+            return redirect('adminPanel')
+    else:
+        form = AddEditMusicForm(instance=music)
+    return render(request, 'add_edit_Music.html', {'form': form})
+
 
 def addBand(request):
     if request.method == 'POST':
-        form = AddBandForm(request.POST, request.FILES)
+        form = AddEditBandForm(request.POST, request.FILES)
         if form.is_valid():
             name = form.cleaned_data['name']
             description = form.cleaned_data['description']
@@ -149,24 +162,32 @@ def addBand(request):
             band.members.add(*members)
             return redirect('adminPanel')
     else:
-        form = AddBandForm()
-    return render(request, 'addBand.html', {'form': form})
+        form = AddEditBandForm()
+    return render(request, 'add_edit_Band.html', {'form': form})
+
 
 def addAlbum(request):
     if request.method == 'POST':
-        form = AddAlbumForm(request.POST, request.FILES)
+        form = AddEditAlbumForm(request.POST, request.FILES)
         if form.is_valid():
-            name = form.cleaned_data['name']
-            release_date = form.cleaned_data['release_date']
-            image = form.cleaned_data['image']
-            performer = form.cleaned_data['performer']
-
-            album = Album(name=name, release_date=release_date, image=image, performer=performer)
-            album.save()
+            form.save()
             return redirect('adminPanel')
     else:
-        form = AddAlbumForm()
-    return render(request, 'addAlbum.html', {'form': form})
+        form = AddEditAlbumForm()
+    return render(request, 'add_edit_Album.html', {'form': form})
+
+
+def editAlbum(request, album_id):
+    album = get_object_or_404(Album, id=album_id)
+    if request.method == 'POST':
+        form = AddEditAlbumForm(request.POST, request.FILES, instance=album)
+        if form.is_valid():
+            form.save()
+            return redirect('adminPanel')
+    else:
+        form = AddEditAlbumForm(instance=album)
+    return render(request, 'add_edit_Album.html', {'form': form})
+
 
 def listMusics(request):
     songs = Music.objects.all()
@@ -174,4 +195,3 @@ def listMusics(request):
         'songs': songs
     }
     return render(request, 'listMusics.html', tparams)
-
