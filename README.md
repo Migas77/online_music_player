@@ -31,7 +31,9 @@ python3 manage.py runserver
   - 404 page
   - filters
   - optional parameters
-  - Definir uniques depois
+  - Fazer translations
+  - Fazer cache
+  - Definir uniques depois e colocar catches de IntegirtyError nos forms de Add e Edit
   - Aggregates (xD)
   - Ordering of playlist
     - Ordering not working
