@@ -17,7 +17,9 @@
       <span class="songName card-title"> {{ song.name }}</span>
       <span class="songPerformer m-5"> {{ song.performer.name }} </span>
       <div class="card-actions justify-end">
-        <button class="badge badge-outline">Edit</button>
+        <a class="badge badge-outline" href="{% url 'editMusic' song.id%}"
+          >Edit</a
+        >
         <button
           class="badge badge-outline btn-error"
           onclick="showModal(this)"
