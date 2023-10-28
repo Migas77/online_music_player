@@ -163,9 +163,9 @@ migrations/
 *.wav
 
 # imagens
-*.jpg
-*.png
-*.jpeg
-*.gif
-*.svg
+MusicPlayer/*.jpg
+MusicPlayer/*.png
+MusicPlayer/*.jpeg
+MusicPlayer/*.gif
+MusicPlayer/*.svg
 
