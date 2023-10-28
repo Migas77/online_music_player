@@ -18,6 +18,7 @@ figure {
 .card-body {
     width: 250px!important; /* ou qualquer valor que desejar */
     height: 150px!important;
+    padding: var(--padding-card, 0.5rem)!important;
 }
 
 .container_tp {

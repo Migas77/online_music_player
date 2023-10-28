@@ -35,21 +35,25 @@
 </div>
 <div class="container_tp margin">
   {% for song in songs %}
-  <div class="songlist_tp">
-    <div class="songitem_tp">
-      <img src="{{ song.image.url }}" alt="1" />
-      <span class="songName"> {{ song.name }}</span>
-      <span class="songPerformer"> {{ song.performer.name }} </span>
-      <span class="songlistplay"
-        ><i
-          id="1"
-          class="far songItemPlay fa-play-circle"
-          data-song-url="{{ song.audio_file.url }}"
-        ></i
-      ></span>
-      <span class="addToQueue" onclick="addMusicToQueue({{ song.id }})"
-        ><i class="fa fa-cloud-download"></i
-      ></span>
+  <div class="card_tp bg-base-100 shadow-xl">
+    <div class="songlist_tp">
+      <div class="songitem_tp image-full">
+        <img class="image_tp" src="{{ song.image.url }}" alt="1" />
+        <span class="songName card-title"> {{ song.name }}</span>
+        <span class="songPerformer m-5"> {{ song.performer.name }} </span>
+        <div class="card-actions justify-end">
+          <span class="songlistplay"
+            ><i
+              id="1"
+              class="far songItemPlay fa-play-circle"
+              data-song-url="{{ song.audio_file.url }}"
+            ></i
+          ></span>
+          <span class="addToQueue" onclick="addMusicToQueue('{{ song.id }}')"
+            ><i class="fa fa-cloud-download"></i
+          ></span>
+        </div>
+      </div>
     </div>
   </div>
   {% endfor %}
