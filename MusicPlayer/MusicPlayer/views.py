@@ -232,7 +232,6 @@ def deleteAlbum(request, id):
     album.delete()
     return redirect('listAlbuns')
 
-
 def listArtists(request):
     artists = Artist.objects.all()
     tparams = {
@@ -244,3 +243,26 @@ def deleteArtist(request, id):
     artist = Artist.objects.get(id=id)
     artist.delete()
     return redirect('listArtists')
+
+def listBands(request):
+    bands = Band.objects.all()
+    tparams = {
+        'artists': bands
+    }
+    return render(request, 'listBands.html', tparams)
+
+def deleteBand(request, id):
+    band = Band.objects.get(id=id)
+    band.delete()
+    return redirect('listBands')
+
+def editBand(request, band_id):
+    band = get_object_or_404(Band, id=band_id)
+    if request.method == 'POST':
+        form = AddEditBandForm(request.POST, request.FILES, instance=band)
+        if form.is_valid():
+            form.save()
+            return redirect('adminPanel')
+    else:
+        form = AddEditBandForm(instance=band)
+    return render(request, 'add_edit_Artist.html', {'form': form})

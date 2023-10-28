@@ -53,4 +53,7 @@ urlpatterns = [
     path('adminPanel/listAlbuns/deleteAlbum/<int:id>', views.deleteAlbum, name='deleteAlbum'),
     path('adminPanel/listArtists/', views.listArtists, name='listArtists'),
     path('adminPanel/listArtists/deleteArtist/<int:id>', views.deleteArtist, name='deleteArtist'),
+    path('adminPanel/listBands/', views.listBands, name='listBands'),
+    path('adminPanel/listBands/deleteBand/<int:id>', views.deleteBand, name='deleteBand'),
+    path('adminPanel/editBand/<int:band_id>', views.editBand, name='editBand'),
     ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
