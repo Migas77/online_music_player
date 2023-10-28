@@ -9,24 +9,31 @@ from MusicPlayer.forms import LoginForm, SignUpForm, MusicSearchForm, AddEditArt
     AddEditAlbumForm
 from django.contrib.auth import login
 from django.db.models import Q
+from itertools import groupby
+from operator import attrgetter
 
 # Custom User
 def home(request):
+    
     if request.method == 'POST':
         form = MusicSearchForm(request.POST)
         if form.is_valid():
             query = form.cleaned_data['query']
             songs = Music.objects.filter(Q(name__icontains=query) | Q(performer__name__icontains=query) |
                                          Q(genre__icontains=query) | Q(album__name__icontains=query))
+            
+            songs_by_genre = {genre: list(songs) for genre, songs in groupby(sorted(songs, key=lambda song: song.genre.upper()), key=lambda song: song.genre.upper())}
+
     else:
         form = MusicSearchForm()
         songs = Music.objects.all()
-
+        songs_by_genre = {genre: list(songs) for genre, songs in groupby(sorted(songs, key=lambda song: song.genre.upper()), key=lambda song: song.genre.upper())}
     tparams = {
         'title': 'Home Page',
         'year': datetime.now().year,
         'user': request.user,
         'songs': songs,
+        'songs_by_genre': songs_by_genre,
         'form': form
     }
 

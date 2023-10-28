@@ -39,6 +39,12 @@ h1 {
   padding: 1rem 0rem !important;
 }
 
+h2 {
+  font-size: 1.5rem!important;
+  font-weight: 600!important;
+  padding: 1rem 0rem!important;
+}
+
 main {
   margin-left: 5rem !important;
   padding: 1rem !important;
@@ -103,7 +109,6 @@ body::-webkit-scrollbar-thumb {
 }
 
 .container_tp {
-  height: 100vh;
   display: flex !important;
   align-items: flex-start !important;
   flex-wrap: wrap !important;

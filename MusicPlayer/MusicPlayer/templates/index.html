@@ -33,6 +33,9 @@
 <div class="alert alert-success" id="successMessages" style="opacity: 0">
   <span>Your Music Has Been Added to the Queue!</span>
 </div>
+{% for genre, songs in songs_by_genre.items %}
+<h2 class="margin">{{ genre }}</h2>
+<hr />
 <div class="container_tp margin">
   {% for song in songs %}
   <div class="card_tp bg-base-100 shadow-xl">
@@ -58,6 +61,7 @@
   </div>
   {% endfor %}
 </div>
+{% endfor %}
 <div class="bottom_tp margin">
   <input type="range" name="range" id="ProgressBar" min="0" max="100" />
   <div class="songinfo-container_tp">
