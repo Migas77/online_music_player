@@ -61,7 +61,7 @@ class SignUpForm(BaseUserCreationForm):
 
 class MusicSearchForm(forms.Form):
     query = forms.CharField(label="", max_length=50, required=False, widget=forms.TextInput(
-        attrs={'class': 'input-bordered bg-transparent ml-2', 'placeholder': 'Search for a song'}))
+        attrs={'class': ' bg-transparent', 'placeholder': 'Search for a song'}))
 
 
 class AddEditArtistForm(forms.ModelForm):

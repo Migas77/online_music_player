@@ -25,7 +25,7 @@
 <div class="header_tp flex flex-row justify-between items-center">
   <h1 class="margin">Welcome to our Music Streaming Web App</h1>
   {% load crispy_forms_tags %}
-  <form class="form-control flex flex-row flex-grow" method="post">
+  <form class="search-container" method="post">
     {% csrf_token %} {{ form|crispy }}
     <button class="btn btn-outline" type="submit">Search</button>
   </form>

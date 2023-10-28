@@ -10,7 +10,6 @@ from MusicPlayer.forms import LoginForm, SignUpForm, MusicSearchForm, AddEditArt
 from django.contrib.auth import login
 from django.db.models import Q
 from itertools import groupby
-from operator import attrgetter
 
 # Custom User
 def home(request):
