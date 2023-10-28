@@ -231,3 +231,16 @@ def deleteAlbum(request, id):
     album = Album.objects.get(id=id)
     album.delete()
     return redirect('listAlbuns')
+
+
+def listArtists(request):
+    artists = Artist.objects.all()
+    tparams = {
+        'artists': artists
+    }
+    return render(request, 'listArtists.html', tparams)
+
+def deleteArtist(request, id):
+    artist = Artist.objects.get(id=id)
+    artist.delete()
+    return redirect('listArtists')
