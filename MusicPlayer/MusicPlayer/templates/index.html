@@ -1,26 +1,26 @@
 ﻿{% extends "layout.html" %} {% block content %} {% load static %}
 <script src="{% static 'scripts/jquery-3.4.1.min.js' %}"></script>
 <script>
-    // AJAX call to django
-    function addMusicToQueue(music_id){
-        $.ajax({
-            url : '{% url "addMusicToQueue" %}',
-            data : {
-              'csrfmiddlewaretoken' : '{{ csrf_token }}',
-              'music_id' : music_id,
-            },
-            method : 'POST',
-            success : function (response){
-                if (response.success === true){
-                    let successMessages = $("#successMessages")
-                    successMessages.animate({ opacity: 1 })
-                    setTimeout(function() {
-                        successMessages.animate({ opacity: 0 })
-                    }, 2000);
-                }
-            }
-        });
-    }
+  // AJAX call to django
+  function addMusicToQueue(music_id) {
+    $.ajax({
+      url: '{% url "addMusicToQueue" %}',
+      data: {
+        csrfmiddlewaretoken: "{{ csrf_token }}",
+        music_id: music_id,
+      },
+      method: "POST",
+      success: function (response) {
+        if (response.success === true) {
+          let successMessages = $("#successMessages");
+          successMessages.animate({ opacity: 1 });
+          setTimeout(function () {
+            successMessages.animate({ opacity: 0 });
+          }, 2000);
+        }
+      },
+    });
+  }
 </script>
 <div class="header_tp flex flex-row justify-between items-center">
   <h1 class="margin">Welcome to our Music Streaming Web App</h1>
@@ -30,7 +30,7 @@
     <button class="btn btn-outline" type="submit">Search</button>
   </form>
 </div>
-<div class="alert alert-success" id="successMessages" style="opacity: 0;">
+<div class="alert alert-success" id="successMessages" style="opacity: 0">
   <span>Your Music Has Been Added to the Queue!</span>
 </div>
 <div class="container_tp margin">
@@ -48,9 +48,7 @@
         ></i
       ></span>
       <span class="addToQueue" onclick="addMusicToQueue({{ song.id }})"
-        ><i
-          class="fa fa-cloud-download"
-        ></i
+        ><i class="fa fa-cloud-download"></i
       ></span>
     </div>
   </div>

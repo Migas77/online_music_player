@@ -10,7 +10,7 @@
 
 body {
     background: url("../images/bg.jpg")!important;
-    height: 100vh!important;
+    height: 100%!important;
     background-size: cover!important;
     color: white!important;
     margin: 0!important;
@@ -98,6 +98,7 @@ body::-webkit-scrollbar-thumb {
 
 .songitem_tp img {
     width: 150px;
+    height: 150px;
 }
 
 .songlistplay_tp i img {

@@ -215,3 +215,7 @@ def addMusicToQueue(request):
         request.session.save()
     return HttpResponse(json.dumps({"success": True}), content_type='application/json')
 
+def deleteMusic(request, id):
+    music = Music.objects.get(id=id)
+    music.delete()
+    return redirect('listMusics')

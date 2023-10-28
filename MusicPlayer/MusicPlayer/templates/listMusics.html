@@ -4,18 +4,64 @@
   type="text/css"
   href="{% static 'css/listMusics.css' %}"
 />
-{% for song in songs %}
-<div class="card w-96 bg-base-100 shadow-xl">
-  <figure>
-    <img class="image_tp" src="{{ song.image.url }}" alt="Shoes" />
-  </figure>
-  <div class="card-body">
-    <h2 class="card-title">{{ song.name }}</h2>
-    <p>{{ song.performer }}</p>
-    <div class="card-actions justify-end">
-      <div class="badge badge-outline">Edit</div>
-      <div class="badge badge-outline">delete</div>
+
+<h1 class="margin">List of Songs</h1>
+<hr />
+<div class="container_tp">
+  {% for song in songs %}
+  <div class="card_tp bg-base-100 shadow-xl">
+    <figure>
+      <img class="image_tp image-full" src="{{ song.image.url }}" alt="1" />
+    </figure>
+    <div class="songitem_tp card-body">
+      <span class="songName card-title"> {{ song.name }}</span>
+      <span class="songPerformer m-5"> {{ song.performer.name }} </span>
+      <div class="card-actions justify-end">
+        <button class="badge badge-outline">Edit</button>
+        <button
+          class="badge badge-outline btn-error"
+          onclick="showModal(this)"
+          data-song-name="{{ song.name }}"
+          data-song-id="{{ song.id }}"
+        >
+          Delete
+        </button>
+      </div>
     </div>
   </div>
+  {% endfor %}
 </div>
-{% endfor %} {% endblock %}
+
+<dialog id="modalDelete" class="modal">
+  <div class="modal-box">
+    <h3 class="font-bold text-lg">Delete Song!</h3>
+    <p class="py-4"></p>
+    <div class="modal-action">
+      <input type="hidden" id="globalSongId" value="" />
+      <a class="btn btn-error" id="deleteLink">Yes</a>
+      <button class="btn">Close</button>
+    </div>
+  </div>
+</dialog>
+
+<script>
+  let globalSongName;
+  let globalSongId;
+  console.log("listMusics");
+  console.log(globalSongName);
+  window.showModal = function (button) {
+    globalSongName = button.getAttribute("data-song-name");
+    globalSongId = button.getAttribute("data-song-id");
+    document.getElementById("globalSongId").value = globalSongId;
+    var modalText = document.querySelector("#modalDelete p");
+    var modalDelete = document.querySelector("#modalDelete");
+    modalText.innerHTML =
+      "Are you sure you want to delete the <b>" + globalSongName + "</b> song?";
+    document.getElementById("deleteLink").href =
+      "deleteSong/" + document.getElementById("globalSongId").value;
+
+    modalDelete.showModal();
+  };
+</script>
+
+{% endblock %}

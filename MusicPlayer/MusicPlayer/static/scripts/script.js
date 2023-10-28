@@ -101,4 +101,3 @@ ProgressBar.addEventListener('input', () => {
     audioElement.currentTime = seekTime;
 });
 
-
