@@ -8,23 +8,23 @@
 <h1 class="margin">List of Songs</h1>
 <hr />
 <div class="container_tp">
-  {% for song in songs %}
+  {% for album in albuns %}
   <div class="card_tp bg-base-100 shadow-xl">
     <figure>
-      <img class="image_tp image-full" src="{{ song.image.url }}" alt="1" />
+      <img class="image_tp image-full" src="{{ album.image.url }}" alt="1" />
     </figure>
     <div class="songitem_tp card-body">
-      <span class="songName card-title"> {{ song.name }}</span>
-      <span class="songPerformer m-5"> {{ song.performer.name }} </span>
+      <span class="songName card-title"> {{ album.name }}</span>
+      <span class="songPerformer m-5"> {{ album.performer.name }} </span>
       <div class="card-actions justify-end">
-        <a class="badge badge-outline" href="{% url 'editMusic' song.id%}"
+        <a class="badge badge-outline" href="{% url 'editAlbum' album.id%}"
           >Edit</a
         >
         <button
           class="badge badge-outline btn-error"
           onclick="showModal(this)"
-          data-song-name="{{ song.name }}"
-          data-song-id="{{ song.id }}"
+          data-song-name="{{ album.name }}"
+          data-song-id="{{ album.id }}"
         >
           Delete
         </button>
@@ -36,10 +36,10 @@
 
 <dialog id="modalDelete" class="modal">
   <div class="modal-box">
-    <h3 class="font-bold text-lg">Delete Song!</h3>
+    <h3 class="font-bold text-lg">Delete Album!</h3>
     <p class="py-4"></p>
     <div class="modal-action">
-      <input type="hidden" id="globalSongId" value="" />
+      <input type="hidden" id="globalId" value="" />
       <a class="btn btn-error" id="deleteLink">Yes</a>
       <button
         class="btn"
@@ -52,18 +52,18 @@
 </dialog>
 
 <script>
-  let globalSongName;
-  let globalSongId;
+  let globalName;
+  let globalId;
   window.showModal = function (button) {
-    globalSongName = button.getAttribute("data-song-name");
-    globalSongId = button.getAttribute("data-song-id");
-    document.getElementById("globalSongId").value = globalSongId;
+    globalName = button.getAttribute("data-song-name");
+    globalId = button.getAttribute("data-song-id");
+    document.getElementById("globalId").value = globalId;
     var modalText = document.querySelector("#modalDelete p");
     var modalDelete = document.querySelector("#modalDelete");
     modalText.innerHTML =
-      "Are you sure you want to delete the <b>" + globalSongName + "</b> song?";
+      "Are you sure you want to delete the <b>" + globalName + "</b> album?";
     document.getElementById("deleteLink").href =
-      "deleteSong/" + document.getElementById("globalSongId").value;
+      "deleteAlbum/" + document.getElementById("globalId").value;
 
     modalDelete.showModal();
   };

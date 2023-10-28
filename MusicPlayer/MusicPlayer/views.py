@@ -219,3 +219,15 @@ def deleteMusic(request, id):
     music = Music.objects.get(id=id)
     music.delete()
     return redirect('listMusics')
+
+def listAlbuns(request):
+    albuns = Album.objects.all()
+    tparams = {
+        'albuns': albuns
+    }
+    return render(request, 'listAlbuns.html', tparams)
+
+def deleteAlbum(request, id):
+    album = Album.objects.get(id=id)
+    album.delete()
+    return redirect('listAlbuns')
