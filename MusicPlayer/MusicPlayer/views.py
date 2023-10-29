@@ -1,29 +1,40 @@
 from datetime import datetime
 
-from django.shortcuts import render, redirect
+import json
+from django.http import HttpResponse
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Listener, MediaContent, Album, Music, Artist, Playlist, Membership, Performer, Band
 from django.contrib.auth import views as auth_views
-from MusicPlayer.forms import LoginForm, SignUpForm, MusicSearchForm, AddArtistForm, AddMusicForm, AddBandForm
+from MusicPlayer.forms import LoginForm, SignUpForm, MusicSearchForm, AddEditArtistForm, AddEditMusicForm, AddEditBandForm, \
+    AddEditAlbumForm
 from django.contrib.auth import login
+from django.db.models import Q
+from itertools import groupby
 from django.http import JsonResponse
 
 
 # Custom User
 def home(request):
-    if 'query' in request.GET:
-        form = MusicSearchForm(request.GET)
+    
+    if request.method == 'POST':
+        form = MusicSearchForm(request.POST)
         if form.is_valid():
             query = form.cleaned_data['query']
-            songs = Music.objects.filter(name__icontains=query)
+            songs = Music.objects.filter(Q(name__icontains=query) | Q(performer__name__icontains=query) |
+                                         Q(genre__icontains=query) | Q(album__name__icontains=query))
+            
+            songs_by_genre = {genre: list(songs) for genre, songs in groupby(sorted(songs, key=lambda song: song.genre.upper()), key=lambda song: song.genre.upper())}
+
     else:
         form = MusicSearchForm()
         songs = Music.objects.all()
-
+        songs_by_genre = {genre: list(songs) for genre, songs in groupby(sorted(songs, key=lambda song: song.genre.upper()), key=lambda song: song.genre.upper())}
     tparams = {
         'title': 'Home Page',
         'year': datetime.now().year,
         'user': request.user,
         'songs': songs,
+        'songs_by_genre': songs_by_genre,
         'form': form
     }
 
@@ -35,8 +46,6 @@ def home(request):
 def sign_up(request):
     # this view is just intended to be posted from the sign_up form
     # however if the user tries to access through the url he can
-    from django.contrib import messages
-    messages.error(request, "toa")
     if request.method == 'POST':
         sign_up_form = SignUpForm(request.POST)
         if sign_up_form.is_valid():
@@ -111,45 +120,57 @@ def adminPanel(request):
     }
     return render(request, 'adminPage.html', tparams)
 
+
 def addArtist(request):
     if request.method == 'POST':
-        form = AddArtistForm(request.POST, request.FILES)
+        form = AddEditArtistForm(request.POST, request.FILES)
         if form.is_valid():
-            name = form.cleaned_data['name']
-            description = form.cleaned_data['description']
-            image = form.cleaned_data['image']
-
-            artist = Artist(name=name, description=description, image=image)
-            artist.save()
+            form.save()
             return redirect('adminPanel')
     else:
-        form = AddArtistForm()
+        form = AddEditArtistForm()
 
-    return render(request, 'addArtist.html', {'form': form})
+    return render(request, 'add_edit_Artist.html', {'form': form})
+
+
+def editArtist(request, artist_id):
+    artist = get_object_or_404(Artist, id=artist_id)
+    if request.method == 'POST':
+        form = AddEditArtistForm(request.POST, request.FILES, instance=artist)
+        if form.is_valid():
+            form.save()
+            return redirect('adminPanel')
+    else:
+        form = AddEditArtistForm(instance=artist)
+    return render(request, 'add_edit_Artist.html', {'form': form})
+
 
 def addMusic(request):
     if request.method == 'POST':
-        form = AddMusicForm(request.POST, request.FILES)
+        form = AddEditMusicForm(request.POST, request.FILES)
         if form.is_valid():
-            name = form.cleaned_data['name']
-            genre = form.cleaned_data['genre']
-            album = form.cleaned_data['album']
-            performer = form.cleaned_data['performer']
-            image = form.cleaned_data['image']
-            audio = form.cleaned_data['audio_file']
-            duration = form.cleaned_data['duration']  # Adicione esta linha
-
-            music = Music(name=name, genre=genre, album=album, performer=performer, image=image, audio_file=audio, duration=duration)
-            music.save()
+            form.save()
             return redirect('adminPanel')
     else:
-        form = AddMusicForm()
+        form = AddEditMusicForm()
+    return render(request, 'add_edit_Music.html', {'form': form})
 
-    return render(request, 'addMusic.html', {'form': form})
+
+def editMusic(request, music_id):
+    music = get_object_or_404(Music, id=music_id)
+    if request.method == 'POST':
+        form = AddEditMusicForm(request.POST, request.FILES, instance=music)
+        if form.is_valid():
+            form.save()
+            return redirect('adminPanel')
+    else:
+        form = AddEditMusicForm(instance=music)
+    return render(request, 'add_edit_Music.html', {'form': form})
+
 
 def addBand(request):
     if request.method == 'POST':
-        form = AddBandForm(request.POST, request.FILES)
+        form = AddEditBandForm(request.POST, request.FILES)
         if form.is_valid():
             name = form.cleaned_data['name']
             description = form.cleaned_data['description']
@@ -166,13 +187,101 @@ def addBand(request):
         form = AddBandForm()
     return render(request, 'addBand.html', {'form': form})
 
-def like_song(request, music_name):
-    if request.method == "POST" and request.is_ajax():
-        try:
-            music = Music.objects.get(name=music_name)
-            music.likes += 1
-            music.save()
-            return JsonResponse({"success": True, " likes":music.likes})
-        except Music.DoesNotExist:
-            return JsonResponse({"success": False, "error": "Music not found"})
-    return JsonResponse({"success": False, "error": "Invalid Request"})
+
+def addAlbum(request):
+    if request.method == 'POST':
+        form = AddEditAlbumForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('adminPanel')
+    else:
+        form = AddEditAlbumForm()
+    return render(request, 'add_edit_Album.html', {'form': form})
+
+
+def editAlbum(request, album_id):
+    album = get_object_or_404(Album, id=album_id)
+    if request.method == 'POST':
+        form = AddEditAlbumForm(request.POST, request.FILES, instance=album)
+        if form.is_valid():
+            form.save()
+            return redirect('adminPanel')
+    else:
+        form = AddEditAlbumForm(instance=album)
+    return render(request, 'add_edit_Album.html', {'form': form})
+
+
+def listMusics(request):
+    songs = Music.objects.all()
+    tparams = {
+        'songs': songs
+    }
+    return render(request, 'listMusics.html', tparams)
+
+
+# AJAX views
+def is_ajax(request):
+    return request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+
+
+def addMusicToQueue(request):
+    music_id = request.POST["music_id"]
+    if not is_ajax(request) or request.method != 'POST' or not music_id:
+        return redirect('')
+    music_ids = request.session.setdefault("music_ids", [])
+    if music_id not in music_ids:
+        music_ids.append(music_id)
+        request.session.save()
+    return HttpResponse(json.dumps({"success": True}), content_type='application/json')
+
+def deleteMusic(request, id):
+    music = Music.objects.get(id=id)
+    music.delete()
+    return redirect('listMusics')
+
+def listAlbuns(request):
+    albuns = Album.objects.all()
+    tparams = {
+        'albuns': albuns
+    }
+    return render(request, 'listAlbuns.html', tparams)
+
+def deleteAlbum(request, id):
+    album = Album.objects.get(id=id)
+    album.delete()
+    return redirect('listAlbuns')
+
+def listArtists(request):
+    artists = Artist.objects.all()
+    tparams = {
+        'artists': artists
+    }
+    return render(request, 'listArtists.html', tparams)
+
+def deleteArtist(request, id):
+    artist = Artist.objects.get(id=id)
+    artist.delete()
+    return redirect('listArtists')
+
+def listBands(request):
+    bands = Band.objects.all()
+    tparams = {
+        'artists': bands
+    }
+    return render(request, 'listBands.html', tparams)
+
+def deleteBand(request, id):
+    band = Band.objects.get(id=id)
+    band.delete()
+    return redirect('listBands')
+
+def editBand(request, band_id):
+    band = get_object_or_404(Band, id=band_id)
+    if request.method == 'POST':
+        form = AddEditBandForm(request.POST, request.FILES, instance=band)
+        if form.is_valid():
+            form.save()
+            return redirect('adminPanel')
+    else:
+        form = AddEditBandForm(instance=band)
+    return render(request, 'add_edit_Artist.html', {'form': form})

@@ -28,6 +28,12 @@ python3 manage.py runserver
 
 ### TODO
   - Se calhar pensar em usar AbstractAdmin (não sei se será necessário)
+  - 404 page
+  - filters
+  - optional parameters
+  - Fazer translations
+  - Fazer cache
+  - Definir uniques depois e colocar catches de IntegirtyError nos forms de Add e Edit
   - Aggregates (xD)
   - Ordering of playlist
     - Ordering not working

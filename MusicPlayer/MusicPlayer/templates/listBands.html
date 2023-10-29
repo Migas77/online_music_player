@@ -1,0 +1,73 @@
+{% extends "layout.html" %} {% block content %} {% load static %}
+<link
+  rel="stylesheet"
+  type="text/css"
+  href="{% static 'css/listMusics.css' %}"
+/>
+
+<h1 class="margin">List of Bands</h1>
+<hr />
+<div class="container_tp">
+  {% for band in artists %}
+  <div class="card_tp bg-base-100 shadow-xl">
+    {% if band.image %}
+    <figure>
+      <img class="image_tp image-full" src="{{ band.image.url }}" alt="1" />
+    </figure>
+    {% endif %}
+    <div class="songitem_tp card-body">
+      <span class="songName card-title"> {{ band.name }}</span>
+      <div class="card-actions justify-end">
+        <a class="badge badge-outline" href="{% url 'editBand' band.id%}"
+          >Edit</a
+        >
+        <button
+          class="badge badge-outline btn-error"
+          onclick="showModal(this)"
+          data-band-name="{{ band.name }}"
+          data-band-id="{{ band.id }}"
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<dialog id="modalDelete" class="modal">
+  <div class="modal-box">
+    <h3 class="font-bold text-lg">Delete Band!</h3>
+    <p class="py-4"></p>
+    <div class="modal-action">
+      <input type="hidden" id="globalId" value="" />
+      <a class="btn btn-error" id="deleteLink">Yes</a>
+      <button
+        class="btn"
+        onclick="document.getElementById('modalDelete').close()"
+      >
+        Close
+      </button>
+    </div>
+  </div>
+</dialog>
+
+<script>
+  let globalName;
+  let globalId;
+  window.showModal = function (button) {
+    globalName = button.getAttribute("data-band-name");
+    globalId = button.getAttribute("data-band-id");
+    document.getElementById("globalId").value = globalId;
+    var modalText = document.querySelector("#modalDelete p");
+    var modalDelete = document.querySelector("#modalDelete");
+    modalText.innerHTML =
+      "Are you sure you want to delete the <b>" + globalName + "</b> band?";
+    document.getElementById("deleteLink").href =
+      "deleteBand/" + document.getElementById("globalId").value;
+
+    modalDelete.showModal();
+  };
+</script>
+
+{% endblock %}

@@ -9,29 +9,25 @@
   <h2>Songs</h2>
   <div class="tasks">
     <a class="btn_tp" href="{% url 'addMusic' %}">Add</a>
-    <a class="btn_tp" href="">Delete</a>
-    <a class="btn_tp" href="">Update</a>
+    <a class="btn_tp" href="{% url 'listMusics' %}">All Songs</a>
   </div>
   <hr />
   <h2>Albuns</h2>
   <div class="tasks">
-    <a class="btn_tp" href="">Add</a>
-    <a class="btn_tp" href="">Delete</a>
-    <a class="btn_tp" href="">Update</a>
+    <a class="btn_tp" href="{% url 'addAlbum' %}">Add</a>
+    <a class="btn_tp" href="{% url 'listAlbuns' %}">All Albuns</a>
   </div>
   <hr />
   <h2>Artists</h2>
   <div class="tasks">
     <a class="btn_tp" href="{% url 'addArtist' %}">Add</a>
-    <a class="btn_tp" href="">Delete</a>
-    <a class="btn_tp" href="">Update</a>
+    <a class="btn_tp" href="{% url 'listArtists' %}">All Artists</a>
   </div>
   <hr />
   <h2>Bands</h2>
   <div class="tasks">
     <a class="btn_tp" href="{% url 'addBand' %}">Add</a>
-    <a class="btn_tp" href="">Delete</a>
-    <a class="btn_tp" href="">Update</a>
+    <a class="btn_tp" href="{% url 'listBands' %}">All Bands</a>
   </div>
   <hr />
 </div>

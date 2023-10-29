@@ -31,7 +31,9 @@ urlpatterns = [
             extra_context={"SignUpForm": SignUpForm()}
         ), name='login_signup'),
     path('sign_up', views.sign_up, name='signup'),
-    path('logout/', auth_views.LogoutView.as_view(next_page='home'), name='logout'),
+    path('logout/', auth_views.LogoutView.as_view(next_page='login_signup'), name='logout'),
+    # ajax endpoints
+    path('ajax/addMusicToQueue', views.addMusicToQueue, name='addMusicToQueue'),
     # others
     path('', views.home, name='home'),
     path('contact/', views.contact, name='contact'),
@@ -39,7 +41,20 @@ urlpatterns = [
     path('artist/<str:artist_name>/', views.artistInformation, name="artist_info"),
     path('adminPanel/', views.adminPanel, name='adminPanel'),
     path('adminPanel/addArtist/', views.addArtist, name='addArtist'),
+    path('adminPanel/editArtist/<int:artist_id>', views.editArtist, name='editArtist'),
     path('adminPanel/addMusic/', views.addMusic, name='addMusic'),
+    path('adminPanel/editMusic/<int:music_id>', views.editMusic, name='editMusic'),
     path('adminPanel/addBand/', views.addBand, name='addBand'),
-    path('like_song/<str:music_name>', views.like_song, name="likeSong")
+    path('adminPanel/addAlbum/', views.addAlbum, name='addAlbum'),
+    path('adminPanel/editAlbum/<int:album_id>', views.editAlbum, name='editAlbum'),
+    path('adminPanel/listMusics/', views.listMusics, name='listMusics'),
+    path('adminPanel/listMusics/deleteSong/<int:id>', views.deleteMusic, name='deleteSong'),
+    path('adminPanel/listAlbuns/', views.listAlbuns, name='listAlbuns'),
+    path('adminPanel/listAlbuns/deleteAlbum/<int:id>', views.deleteAlbum, name='deleteAlbum'),
+    path('adminPanel/listArtists/', views.listArtists, name='listArtists'),
+    path('adminPanel/listArtists/deleteArtist/<int:id>', views.deleteArtist, name='deleteArtist'),
+    path('adminPanel/listBands/', views.listBands, name='listBands'),
+    path('adminPanel/listBands/deleteBand/<int:id>', views.deleteBand, name='deleteBand'),
+    path('adminPanel/editBand/<int:band_id>', views.editBand, name='editBand'),
+    path('like_song/<str:music_name>', views.like_song, name="likeSong"),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

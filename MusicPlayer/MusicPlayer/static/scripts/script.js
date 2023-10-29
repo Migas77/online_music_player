@@ -4,6 +4,7 @@
 let audioElement = new Audio();
 let songIndex = 0;
 let ProgressBar = document.getElementById('ProgressBar');
+ProgressBar.value = 0;
 let gif = document.getElementById('gif');
 let masterPlay = document.getElementById('masterPlay');
 let songItems = Array.from(document.getElementsByClassName('songitem_tp'));
@@ -99,5 +100,4 @@ ProgressBar.addEventListener('input', () => {
     const seekTime = (ProgressBar.value / 100) * audioElement.duration;
     audioElement.currentTime = seekTime;
 });
-
 
