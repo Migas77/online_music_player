@@ -41,4 +41,5 @@ urlpatterns = [
     path('adminPanel/addArtist/', views.addArtist, name='addArtist'),
     path('adminPanel/addMusic/', views.addMusic, name='addMusic'),
     path('adminPanel/addBand/', views.addBand, name='addBand'),
+    path('like_song/<str:music_name>', views.like_song, name="likeSong")
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -5,6 +5,7 @@ from .models import Listener, MediaContent, Album, Music, Artist, Playlist, Memb
 from django.contrib.auth import views as auth_views
 from MusicPlayer.forms import LoginForm, SignUpForm, MusicSearchForm, AddArtistForm, AddMusicForm, AddBandForm
 from django.contrib.auth import login
+from django.http import JsonResponse
 
 
 # Custom User
@@ -73,15 +74,26 @@ def about(request):
 def artistInformation(request, artist_name):
     """Get the details, musics and albums from an artist"""
 
-    artist_details = Performer.objects.get(name=artist_name)
+    try:
+        # First, try to get an Artist with the given name
+        artist_details = Artist.objects.get(name=artist_name)
+        artist_type = "Artist"
+    except Artist.DoesNotExist:
+        # If no Artist is found, try to get a Band with the given name
+        artist_details = Band.objects.get(name=artist_name)
+        artist_type = "Band"
+
     artist_albums = Album.objects.filter(performer=artist_details)
     artist_musics = Music.objects.filter(performer=artist_details)
+
+    print("ARTIST DETAILS:", artist_details)
 
     tparams = {
         'user': request.user,
         'artist_details': artist_details,
         'artist_albums': artist_albums,
-        'artist_musics': artist_musics
+        'artist_musics': artist_musics,
+        'artist_type': artist_type
     }
     return render(request, 'artist.html', tparams)
 
@@ -153,3 +165,14 @@ def addBand(request):
     else:
         form = AddBandForm()
     return render(request, 'addBand.html', {'form': form})
+
+def like_song(request, music_name):
+    if request.method == "POST" and request.is_ajax():
+        try:
+            music = Music.objects.get(name=music_name)
+            music.likes += 1
+            music.save()
+            return JsonResponse({"success": True, " likes":music.likes})
+        except Music.DoesNotExist:
+            return JsonResponse({"success": False, "error": "Music not found"})
+    return JsonResponse({"success": False, "error": "Invalid Request"})

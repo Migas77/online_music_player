@@ -1,6 +1,7 @@
 ﻿.navbar_tp {
   width: 5rem;
   height: 100vh;
+  z-index: 10;
   position: fixed;
   background-color: #23232e;
   transition: width 200ms ease;

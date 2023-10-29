@@ -14,7 +14,7 @@
     <div class="songitem_tp">
       <img src="{{ song.image.url }}" alt="1" />
       <span class="songName"> {{ song.name }}</span>
-      <span class="songPerformer"> {{ song.performer.name }} </span>
+      <span class="songPerformer"> <a href="{% url 'artist_info' song.performer.name %}">{{ song.performer.name }}</a> </span>
       <span class="songlistplay"
         ><i
           id="1"

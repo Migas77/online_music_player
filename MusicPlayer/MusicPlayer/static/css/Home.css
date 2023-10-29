@@ -10,8 +10,7 @@
 
 body {
     background: url("../images/bg.jpg")!important;
-    height: 100vh!important;
-    background-size: cover!important;
+    background-repeat: repeat-y !important;
     color: white!important;
     margin: 0!important;
     padding: 0!important;
@@ -105,11 +104,6 @@ body::-webkit-scrollbar-thumb {
 }
 
 .bottom_tp {
-    height: 12%;
-    width: 90%;
-    position: fixed;
-    bottom: 0;
-    background-color: #23232e;
     border-radius: 0.3rem;
     display: flex;
     justify-content: center;
