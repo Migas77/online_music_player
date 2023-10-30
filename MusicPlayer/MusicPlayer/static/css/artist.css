@@ -1,3 +1,29 @@
+.scrollable-row {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+}
+
+.scrollable-row > .flex {
+    flex: 0.2 0 auto;
+    margin-right: 10px;
+    margin-left: 10px;
+}
+
+.play-button {
+    display: none;
+}
+
+.song-info:hover .play-button {
+    display: inline-block;
+}
+
+.play-button i {
+    color: #c061cb;
+    font-size: 20px;
+    margin-right: 10px;
+}
+
 .album_songs{
     ul {
         list-style: none;

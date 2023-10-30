@@ -16,7 +16,7 @@
             <figure><img src="{{ artist_details.image.url }}" alt="{{ artist_details.name }}" style="width: 1000px;" />
             </figure>
             <div class="card-body">
-                <h1 class="card-title">{{ artist_details.name }}</h1>
+                <h1 class="card-title songPerformer">{{ artist_details.name }}</h1>
                 <div class="card-actions justify-end">
                     <button class="btn" onclick="my_modal_1.showModal()">Show Details</button>
                 </div>
@@ -24,13 +24,13 @@
         </div>
     </div>
     <dialog id="my_modal_1" class="modal">
-        <div class="modal-box" style="width: 600px;">
+        <div class="modal-box" style="width: 700px;">
             <h2 style="font-size: 20px;"> <strong>Description:</strong></h2>
             <p class="py-4">{{ artist_details.description }}</p>
             <br>
             {% if artist_type == "Band" %}
             <h2 style="font-size: 20px;"> <strong>Members:</strong></h2>
-            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 scrollable-row">
                 {% for member in artist_details.members.all %}
                 <div class="flex flex-col items-center">
                     <div class="avatar">
@@ -38,7 +38,7 @@
                             <img src="{{ member.image.url }}" alt="{{ member.name }}" style="width: 150px;" />
                         </div>
                     </div>
-                    <h3>{{ member.name }}</h3>
+                    <span><h3 style="margin-bottom: 10px;">{{ member.name }}</h3></span>
                 </div>
                 {% endfor %}
             </div>
@@ -52,53 +52,104 @@
         </div>
     </dialog>
     <br />
-    <br />
     <h2 style="font-size: 35px;"> <strong>Albums</strong> </h2>
-    <div class="flex flex-row">
+    <div class="divider"></div>
+    <div class="flex justify-center items-center h-screen"
+        style="width: 1000px; text-align: center; display: block; margin-left: 300px; margin-right: 200px;">
         {% for album in artist_albums %}
-        <div class="flex flex-col justify-between ">
-            <div class="card lg:card-side bg-base-100 shadow-xl">
-                <figure><img src="{{album.image.url}}" alt="Album"/></figure>
-                <div class="card-body">
-                  <h2 class="card-title">{{album.name}}</h2>
-                  <ul class="album_songs">
-                    {% for music in artist_musics %}
-                      {% if music.album == album %}
-                        <li>
-                            <strong>{{ music.name }}</strong>
-                            <span class="info" id="likes-count-{{music.name}}"> <strong> <i class="fa-regular fa-heart" style="color: #c061cb;"></i> {{ music.likes }}</strong></span>
-                            <div class="info"> <strong> <button class="like-button" data-music-name="{{ music.name }}"><i class="fa-regular fa-clock" style="color: #c061cb;"></i></button> {{ music.duration }}</strong></div>
-                        </li>
-                      {% endif %}
-                    {% endfor %}
-                  </ul>
-                  <div class="card-actions justify-end">
-                    <button class="btn btn-primary">Listen</button>
-                  </div>
+            <div class="album-card">
+                <div class="card lg:card-side bg-base-100 shadow-xl" style="width: 1200px;">
+                    <figure><img src="{{album.image.url}}" alt="Album" style="width: 500px;" class="image_tp"/></figure>
+                    <div class="card-body">
+                    <h2 class="card-title">{{album.name}}</h2>
+                    <ul class="album_songs">
+                        {% for music in artist_musics %}
+                            {% if music.album == album %}
+                                <li class="songitem_tp">
+                                    <span class="song-info">
+                                        <div class="play-button">
+                                            <i class="fa-solid fa-play songItemPlay" data-song-url="{{music.audio_file.url}}"></i>
+                                        </div>
+                                        <span class="songName"><strong>{{ music.name }}</strong></span>
+                                        <span class="info" id="likes-count-{{music.id}}"> 
+                                            <strong> 
+                                                <button class="like-button" data-music-id="{{music.id}}">
+                                                    <i 
+                                                        id="1"
+                                                        class="heart-icon far fa-heart songItemPlay" 
+                                                        style="color: #c061cb;"
+                                                    >
+                                                    </i> {{ music.likes }}
+                                                </button>    
+                                            </strong>
+                                        </span>
+                                        <div class="info"> <strong><i class="fa-regular fa-clock" style="color: #c061cb;"></i> {{ music.duration }}</strong></div>
+                                    </span>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                    <div class="card-actions justify-end">
+                        <button class="btn btn-primary">Listen</button>
+                    </div>
+                    </div>
                 </div>
-              </div>
+            </div>
         </div>
         {% endfor %}
     </div>
-    <div class="card lg:card-side bg-base-100 shadow-xl">
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <div class="bottom_tp margin">
+        <input type="range" name="range" id="ProgressBar" min="0" max="100" />
+        <div class="songinfo-container_tp">
+          <div class="songinfo_tp">
+            <img
+              src="{% static 'images/playing.gif' %}"
+              width="45px"
+              alt=""
+              id="gif"
+            />
+            <span id="masterSongName"></span>
+          </div>
+          <div class="icon">
+            <i class="fas fa-2x fa-step-backward" id="previous"></i>
+            <i class="far fa-2x fa-play-circle" id="masterPlay"></i>
+            <i class="fas fa-2x fa-step-forward" id="next"></i>
+          </div>
+        </div>
+      </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function() {
         $(".like-button").click(function () {
-            var musicName = $(this).data("music-name");
-            var $icon = $(this).data("")
+            var musicId = $(this).data("music-id");
+            var $icon = $(this).find(".heart-icon");
+            var isLiked = $icon.hasClass("fas"); 
 
             $.ajax({
-                url:"/like-song/" + musicName + "/",
+                url:"/like-song/" + musicId + "/",
                 type: "POST",
                 dataType: "json",
+                data: {is_liked: isLiked},
+                headers: { "X-CSRFToken": getCookie("csrftoken") },
                 success: function (data) {
                     if(data.success) {
-                        $("#likes-count-" + musicName).text(data.likes);
-                    } else {
+                        $("#likes-count-" + musicId).text(data.likes);
+                        $icon.toggleClass("fas");
+                        $icon.addClass("animated-heart")
 
+                        setTimeout(function() {
+                            $icon.removeClass("animated-heart");
+                        }, 1000)
+                    } else {
                         alert("Error: " + data.error);
                     }
                 },
@@ -108,5 +159,19 @@
             });
         });
     });
+    function getCookie(name) {
+        var cookieValue = null;
+        if (document.cookie && document.cookie !== "") {
+            var cookies = document.cookie.split(";");
+            for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === name + "=") {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+            }
+        }
+        return cookieValue;
+    }
 </script>
 {% endblock %}

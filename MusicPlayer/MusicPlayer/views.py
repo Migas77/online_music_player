@@ -82,20 +82,15 @@ def about(request):
 # endpoint /artist/<str:artist_name>
 def artistInformation(request, artist_name):
     """Get the details, musics and albums from an artist"""
-
     try:
-        # First, try to get an Artist with the given name
         artist_details = Artist.objects.get(name=artist_name)
         artist_type = "Artist"
     except Artist.DoesNotExist:
-        # If no Artist is found, try to get a Band with the given name
         artist_details = Band.objects.get(name=artist_name)
         artist_type = "Band"
 
     artist_albums = Album.objects.filter(performer=artist_details)
     artist_musics = Music.objects.filter(performer=artist_details)
-
-    print("ARTIST DETAILS:", artist_details)
 
     tparams = {
         'user': request.user,
@@ -105,6 +100,28 @@ def artistInformation(request, artist_name):
         'artist_type': artist_type
     }
     return render(request, 'artist.html', tparams)
+
+
+def like_song(request, music_id):
+    if request.method == 'POST':
+        try:
+            music = Music.objects.get(id=music_id) 
+            user = request.user
+            is_liked = request.POST.get("is_liked")
+
+            if is_liked == "true":
+                music.likes += 1
+                
+            else:
+                music.likes -= 1
+
+            music.save()
+            return JsonResponse({"success": True, "likes": music.likes})
+        
+        except Music.DoesNotExist:
+            return JsonResponse({"success": False, "error": "Music not found"})
+    
+    return JsonResponse({"success": False, "error": "Invalid Request"})
 
 
 def adminPanel(request):
