@@ -11,7 +11,7 @@ from django.contrib.auth import login
 from django.db.models import Q
 from itertools import groupby
 from django.http import JsonResponse
-
+from django.views.decorators.csrf import csrf_exempt
 
 # Custom User
 def home(request):
@@ -29,12 +29,19 @@ def home(request):
         form = MusicSearchForm()
         songs = Music.objects.all()
         songs_by_genre = {genre: list(songs) for genre, songs in groupby(sorted(songs, key=lambda song: song.genre.upper()), key=lambda song: song.genre.upper())}
+    
+    if request.user.is_authenticated:
+        playlists = Playlist.objects.filter(author=request.user)
+    else:
+        playlists = None
+
     tparams = {
         'title': 'Home Page',
         'year': datetime.now().year,
         'user': request.user,
         'songs': songs,
         'songs_by_genre': songs_by_genre,
+        'playlists': playlists,
         'form': form
     }
 
@@ -201,7 +208,7 @@ def addBand(request):
             band.members.add(*members)
             return redirect('adminPanel')
     else:
-        form = AddBandForm()
+        form = AddEditBandForm()
     return render(request, 'addBand.html', {'form': form})
 
 
@@ -302,3 +309,37 @@ def editBand(request, band_id):
     else:
         form = AddEditBandForm(instance=band)
     return render(request, 'add_edit_Artist.html', {'form': form})
+
+def playlists(request):
+    playlists = Playlist.objects.filter(author=request.user)
+    tparams = {
+        'playlists': playlists
+    }
+    return render(request, 'playlists.html', tparams)
+
+def playlistInfo(request, playlist_id):
+    playlist = Playlist.objects.get(id=playlist_id)
+    musics = Music.objects.filter(membership__playlist=playlist).order_by('membership__order_id')
+    tparams = {
+        'playlist': playlist,
+        'musics': musics
+    }
+    return render(request, 'playlistInfo.html', tparams)
+
+def add_to_playlist(request):
+ if request.method == 'POST':
+    playlist_id = request.POST.get('playlist_id')
+    song_id = request.POST.get('song_id')
+    playlist = Playlist.objects.get(id=playlist_id)
+    song = Music.objects.get(id=song_id)
+    
+    # Get the number of songs in the playlist
+    order_id = playlist.musics.count()
+    
+    playlist.musics.add(song, through_defaults={'order_id': order_id})
+    playlist.save()
+
+    return HttpResponse(json.dumps({"success": True}), content_type='application/json')
+
+ else:
+     return HttpResponse(json.dumps({"success": False}), content_type='application/json')

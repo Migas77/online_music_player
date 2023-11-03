@@ -1,0 +1,32 @@
+{% extends "layout.html" %} {% block content %} {% load static %}
+
+<div>
+  <h1>Playlists</h1>
+  <br />
+</div>
+<div class="overflow-x-auto">
+  <table class="table">
+    <thead class="bg-neutral-focus tableHead">
+      <tr>
+        <th></th>
+        <th>Name</th>
+        <th>User</th>
+        <th>Quantity</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for playlist in playlists %}
+      <tr>
+        <th>{{playlist.id}}</th>
+        <td>
+          <a href="{% url 'playlistInfo' playlist.id %}">{{playlist.name}}</a>
+        </td>
+        <td>{{playlist.author}}</td>
+        <td>{{playlist.musics.count}}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}

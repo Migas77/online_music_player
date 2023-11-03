@@ -43,18 +43,27 @@
       <div class="songitem_tp image-full">
         <img class="image_tp" src="{{ song.image.url }}" alt="1" />
         <span class="songName card-title"> {{ song.name }}</span>
-        <span class="songPerformer m-5"> <a href="{% url 'artist_info' song.performer.name %}">{{ song.performer.name }}</a> </span>
+        <span class="songPerformer m-5">
+          <a href="{% url 'artist_info' song.performer.name %}"
+            >{{ song.performer.name }}</a
+          >
+        </span>
         <div class="card-actions justify-end">
-          <span class="songlistplay"
-            ><i
+          <button class="songlistplay">
+            <i
               id="1"
               class="far songItemPlay fa-play-circle"
               data-song-url="{{ song.audio_file.url }}"
-            ></i
-          ></span>
-          <span class="addToQueue" onclick="addMusicToQueue('{{ song.id }}')"
-            ><i class="fa fa-cloud-download"></i
-          ></span>
+            ></i>
+          </button>
+          {% if user.is_authenticated %}
+          <button class="addToQueue" onclick="addMusicToQueue('{{ song.id }}')">
+            <i class="fa fa-cloud-download"></i>
+          </button>
+          <button class="addToPlaylist" onclick="showModal('{{ song.id }}')">
+            <i class="fa fa-plus-square-o"></i>
+          </button>
+          {% endif %}
         </div>
       </div>
     </div>
@@ -62,6 +71,14 @@
   {% endfor %}
 </div>
 {% endfor %}
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+
 <div class="bottom_tp margin">
   <input type="range" name="range" id="ProgressBar" min="0" max="100" />
   <div class="songinfo-container_tp">
@@ -81,4 +98,72 @@
     </div>
   </div>
 </div>
+{% if user.is_authenticated %}
+<dialog id="addToPlaylist_modal" class="modal">
+  <div class="modal-box w-11/12 max-w-5xl">
+    <h3 class="font-bold text-lg">Playlists</h3>
+    <hr />
+    <table class="table ml-0">
+      <!-- head -->
+      <thead>
+        <tr>
+          <th></th>
+          <th>Name</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for playlist in playlists %}
+        <tr>
+          <th>{{playlist.id}}</th>
+          <th>{{playlist.name}}</th>
+          <th>
+            <button
+              id="addPlaylist"
+              style="position: absolute; bottom: 0; right: 0"
+              onclick="addToPlaylist('{{ playlist.id }}')"
+            >
+              <i class="fa fa-plus-square-o"></i>
+            </button>
+          </th>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <div class="modal-action">
+      <form method="dialog">
+        <button class="btn">New playlist</button>
+        <button class="btn">Close</button>
+      </form>
+    </div>
+  </div>
+</dialog>
+{% endif %}
+<script>
+  var globalSongId;
+  function showModal(song_id) {
+    globalSongId = song_id;
+    addToPlaylist_modal.showModal();
+  }
+  function addToPlaylist(playlist_id) {
+    $.ajax({
+      url: '{% url "addToPlaylist" %}',
+      data: {
+        csrfmiddlewaretoken: "{{ csrf_token }}",
+        playlist_id: playlist_id,
+        song_id: globalSongId,
+      },
+      method: "POST",
+      success: function (response) {
+        if (response.success === true) {
+          let successMessages = $("#successMessages");
+          successMessages.animate({ opacity: 1 });
+          setTimeout(function () {
+            successMessages.animate({ opacity: 0 });
+          }, 2000);
+        }
+      },
+    });
+  }
+</script>
 {% endblock %}
