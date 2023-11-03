@@ -26,12 +26,25 @@
   <h1 class="margin">Welcome to our Music Streaming Web App</h1>
   {% load crispy_forms_tags %}
   <form class="search-container" method="post">
-    {% csrf_token %} {{ form|crispy }}
+    {% csrf_token %} {{ formSearch|crispy }}
     <button class="btn btn-outline" type="submit">Search</button>
   </form>
 </div>
-<div class="alert alert-success" id="successMessages" style="opacity: 0">
-  <span>Your Music Has Been Added to the Queue!</span>
+<div style="position: relative">
+  <div
+    class="alert alert-success"
+    id="successMessages"
+    style="opacity: 0; position: absolute"
+  >
+    <span>Your Music Has Been Added to the Queue!</span>
+  </div>
+  <div
+    class="alert alert-success"
+    id="successAddplaylist"
+    style="opacity: 0; position: absolute"
+  >
+    <span>Your Music Has Been Added to the Playlist!</span>
+  </div>
 </div>
 {% for genre, songs in songs_by_genre.items %}
 <h2 class="margin">{{ genre }}</h2>
@@ -120,7 +133,6 @@
           <th>
             <button
               id="addPlaylist"
-              style="position: absolute; bottom: 0; right: 0"
               onclick="addToPlaylist('{{ playlist.id }}')"
             >
               <i class="fa fa-plus-square-o"></i>
@@ -131,8 +143,40 @@
       </tbody>
     </table>
     <div class="modal-action">
+      <button
+        class="btn btn-active btn-primary"
+        onclick="newPlaylistModal.showModal()"
+      >
+        New playlist
+      </button>
       <form method="dialog">
-        <button class="btn">New playlist</button>
+        <button class="btn">Close</button>
+      </form>
+    </div>
+  </div>
+</dialog>
+<dialog id="newPlaylistModal" class="modal modal-bottom sm:modal-middle">
+  <div class="modal-box">
+    <h3 class="font-bold text-lg">Add New Playlist</h3>
+    <hr />
+    {% load crispy_forms_tags %}
+    <form
+      action=""
+      method="post"
+      class="from-horizontal"
+      style="margin-top: 20px"
+    >
+      {% csrf_token %} {{ formPlaylist|crispy }}
+      <input type="hidden" name="song_id" value="{{ song_id }}" />
+      <input
+        type="submit"
+        value="Submit"
+        class="btn btn-active btn-primary"
+        style="position: absolute; margin-top: 25px; margin-left: 290px"
+      />
+    </form>
+    <div class="modal-action">
+      <form method="dialog">
         <button class="btn">Close</button>
       </form>
     </div>
@@ -143,8 +187,17 @@
   var globalSongId;
   function showModal(song_id) {
     globalSongId = song_id;
+    localStorage.setItem("globalSongId", song_id);
     addToPlaylist_modal.showModal();
   }
+  document.addEventListener("DOMContentLoaded", function () {
+    var songIdInput = document.querySelector('input[name="song_id"]');
+    var songId = localStorage.getItem("globalSongId");
+    if (songId) {
+      songIdInput.value = songId;
+    }
+  });
+
   function addToPlaylist(playlist_id) {
     $.ajax({
       url: '{% url "addToPlaylist" %}',
@@ -156,11 +209,12 @@
       method: "POST",
       success: function (response) {
         if (response.success === true) {
-          let successMessages = $("#successMessages");
+          let successMessages = $("#successAddplaylist");
           successMessages.animate({ opacity: 1 });
           setTimeout(function () {
             successMessages.animate({ opacity: 0 });
           }, 2000);
+          addToPlaylist_modal.close();
         }
       },
     });

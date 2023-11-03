@@ -92,3 +92,11 @@ class AddEditAlbumForm(forms.ModelForm):
     class Meta:
         model = Album
         fields = ['name', 'release_date', 'image', 'performer']
+
+class AddEditPlaylistForm(forms.ModelForm):
+    class Meta:
+        model = Playlist
+        fields = ['name']
+        widgets = {
+            'name': forms.TextInput(attrs={ 'placeholder': 'Playlist name', 'class': ' bg-transparent'}),
+        }
