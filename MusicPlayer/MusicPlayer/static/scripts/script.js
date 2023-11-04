@@ -9,12 +9,20 @@ console.log("masterPlay: " + masterPlay);
 let songItems = Array.from(document.getElementsByClassName('songitem_tp'));
 console.log("songItems: " + songItems);
 let playButtons = Array.from(document.getElementsByClassName('songItemPlay'));
+
+console.log("songItems: " + songItems);
+console.log("playButtons: " + playButtons);
+console.log("masterPlay: " + masterPlay);
+console.log("ProgressBar: " + ProgressBar);
 console.log("playButtons: " + playButtons);
 
 masterPlay.addEventListener('click', togglePlay);
 
 function getSongInfo() {
     let songItems = Array.from(document.getElementsByClassName('songitem_tp'));
+    if (songItems.length === 0) {
+        songItems = Array.from(document.getElementsByClassName('songitemPlaylist'));
+    }
 
     let songs = [];
 
@@ -45,7 +53,9 @@ songs.forEach((music, index) => {
 
 playButtons.forEach((button, index) => {
     button.addEventListener('click', () => {
-        songIndex = index;
+        songIndex = index; // Atualiza o índice da música
+        console.log('Song Index: ' + songIndex);
+        console.log('songs: ',  songs)
         audioElement.src = songs[songIndex].audioUrl;
         audioElement.currentTime = 0;
         togglePlay();
@@ -54,6 +64,7 @@ playButtons.forEach((button, index) => {
 
 function togglePlay() {
     if (audioElement.paused || audioElement.currentTime <= 0) {
+
         audioElement.play();
         masterPlay.classList.remove('fa-play-circle');
         masterPlay.classList.add('fa-pause-circle');

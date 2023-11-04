@@ -26,12 +26,25 @@
   <h1 class="margin">Welcome to our Music Streaming Web App</h1>
   {% load crispy_forms_tags %}
   <form class="search-container" method="post">
-    {% csrf_token %} {{ form|crispy }}
+    {% csrf_token %} {{ formSearch|crispy }}
     <button class="btn btn-outline" type="submit">Search</button>
   </form>
 </div>
-<div class="alert alert-success" id="successMessages" style="opacity: 0">
-  <span>Your Music Has Been Added to the Queue!</span>
+<div style="position: relative">
+  <div
+    class="alert alert-success"
+    id="successMessages"
+    style="opacity: 0; position: absolute"
+  >
+    <span>Your Music Has Been Added to the Queue!</span>
+  </div>
+  <div
+    class="alert alert-success"
+    id="successAddplaylist"
+    style="opacity: 0; position: absolute"
+  >
+    <span>Your Music Has Been Added to the Playlist!</span>
+  </div>
 </div>
 {% for genre, songs in songs_by_genre.items %}
 <h2 class="margin">{{ genre }}</h2>
@@ -43,18 +56,27 @@
       <div class="songitem_tp image-full">
         <img class="image_tp" src="{{ song.image.url }}" alt="1" />
         <span class="songName card-title"> {{ song.name }}</span>
-        <span class="songPerformer m-5"> <a href="{% url 'artist_info' song.performer.name %}">{{ song.performer.name }}</a> </span>
+        <span class="songPerformer m-5">
+          <a href="{% url 'artist_info' song.performer.name %}"
+            >{{ song.performer.name }}</a
+          >
+        </span>
         <div class="card-actions justify-end">
-          <span class="songlistplay"
-            ><i
+          <button class="songlistplay">
+            <i
               id="1"
               class="far songItemPlay fa-play-circle"
               data-song-url="{{ song.audio_file.url }}"
-            ></i
-          ></span>
-          <span class="addToQueue" onclick="addMusicToQueue('{{ song.id }}')"
-            ><i class="fa fa-cloud-download"></i>
-          </span>
+            ></i>
+          </button>
+          {% if user.is_authenticated %}
+          <button class="addToQueue" onclick="addMusicToQueue('{{ song.id }}')">
+            <i class="fa fa-cloud-download"></i>
+          </button>
+          <button class="addToPlaylist" onclick="showModal('{{ song.id }}')">
+            <i class="fa fa-plus-square-o"></i>
+          </button>
+          {% endif %}
         </div>
       </div>
     </div>
@@ -62,6 +84,14 @@
   {% endfor %}
 </div>
 {% endfor %}
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+
 <div class="bottom_tp margin">
   <input type="range" name="range" id="ProgressBar" min="0" max="100" />
   <div class="songinfo-container_tp">
@@ -81,4 +111,113 @@
     </div>
   </div>
 </div>
+{% if user.is_authenticated %}
+<dialog id="addToPlaylist_modal" class="modal">
+  <div class="modal-box w-11/12 max-w-5xl">
+    <h3 class="font-bold text-lg">Playlists</h3>
+    <hr />
+    <table class="table ml-0">
+      <!-- head -->
+      <thead>
+        <tr>
+          <th></th>
+          <th>Name</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for playlist in playlists %}
+        <tr>
+          <th>{{playlist.id}}</th>
+          <th>{{playlist.name}}</th>
+          <th>
+            <button
+              id="addPlaylist"
+              onclick="addToPlaylist('{{ playlist.id }}')"
+            >
+              <i class="fa fa-plus-square-o"></i>
+            </button>
+          </th>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <div class="modal-action">
+      <button
+        class="btn btn-active btn-primary"
+        onclick="newPlaylistModal.showModal()"
+      >
+        New playlist
+      </button>
+      <form method="dialog">
+        <button class="btn">Close</button>
+      </form>
+    </div>
+  </div>
+</dialog>
+<dialog id="newPlaylistModal" class="modal modal-bottom sm:modal-middle">
+  <div class="modal-box">
+    <h3 class="font-bold text-lg">Add New Playlist</h3>
+    <hr />
+    {% load crispy_forms_tags %}
+    <form
+      action=""
+      method="post"
+      class="from-horizontal"
+      style="margin-top: 20px"
+    >
+      {% csrf_token %} {{ formPlaylist|crispy }}
+      <input type="hidden" name="song_id" value="{{ song_id }}" />
+      <input
+        type="submit"
+        value="Submit"
+        class="btn btn-active btn-primary"
+        style="position: absolute; margin-top: 25px; margin-left: 290px"
+      />
+    </form>
+    <div class="modal-action">
+      <form method="dialog">
+        <button class="btn">Close</button>
+      </form>
+    </div>
+  </div>
+</dialog>
+{% endif %}
+<script>
+  var globalSongId;
+  function showModal(song_id) {
+    globalSongId = song_id;
+    localStorage.setItem("globalSongId", song_id);
+    addToPlaylist_modal.showModal();
+  }
+  document.addEventListener("DOMContentLoaded", function () {
+    var songIdInput = document.querySelector('input[name="song_id"]');
+    var songId = localStorage.getItem("globalSongId");
+    if (songId) {
+      songIdInput.value = songId;
+    }
+  });
+
+  function addToPlaylist(playlist_id) {
+    $.ajax({
+      url: '{% url "addToPlaylist" %}',
+      data: {
+        csrfmiddlewaretoken: "{{ csrf_token }}",
+        playlist_id: playlist_id,
+        song_id: globalSongId,
+      },
+      method: "POST",
+      success: function (response) {
+        if (response.success === true) {
+          let successMessages = $("#successAddplaylist");
+          successMessages.animate({ opacity: 1 });
+          setTimeout(function () {
+            successMessages.animate({ opacity: 0 });
+          }, 2000);
+          addToPlaylist_modal.close();
+        }
+      },
+    });
+  }
+</script>
 {% endblock %}

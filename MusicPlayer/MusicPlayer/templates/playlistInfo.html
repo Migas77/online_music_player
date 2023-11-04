@@ -1,0 +1,81 @@
+{% extends "layout.html" %} {% block content %} {% load static %}
+
+<div class="overflow-x-auto">
+  <table class="table">
+    <h1>{{playlist.name}}</h1>
+    <hr />
+    <thead>
+      <tr>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- row 1 -->
+      {% for music in musics %}
+      <tr class="songitemPlaylist" style="font-size: larger">
+        <th style="text-align: center">
+          <button class="songlistplay">
+            <i
+              id="1"
+              class="far songItemPlay fa-play-circle"
+              data-song-url="{{ music.audio_file.url }}"
+            ></i>
+          </button>
+        </th>
+        <td>
+          <div class="flex items-center">
+            <div class="avatar">
+              <div class="mask mask-squircle">
+                <img src="{{ music.image.url }}" style="max-width: 150px" />
+              </div>
+            </div>
+          </div>
+        </td>
+        <td>
+          <div class="songName">{{ music.name }}</div>
+          <br />
+          <span class="badge badge-ghost badge-sm songPerformer"
+            >{{music.performer.name}}</span
+          >
+        </td>
+        <td>{{music.genre}}</td>
+        <th>
+          <button class="btn btn-ghost btn-xs">details</button>
+        </th>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<div class="bottom_tp margin">
+  <input type="range" name="range" id="ProgressBar" min="0" max="100" />
+  <div class="songinfo-container_tp">
+    <div class="songinfo_tp">
+      <img
+        src="{% static 'images/playing.gif' %}"
+        width="45px"
+        alt=""
+        id="gif"
+      />
+      <span id="masterSongName"></span>
+    </div>
+    <div class="icon">
+      <i class="fas fa-2x fa-step-backward" id="previous"></i>
+      <i class="far fa-2x fa-play-circle" id="masterPlay"></i>
+      <i class="fas fa-2x fa-step-forward" id="next"></i>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
