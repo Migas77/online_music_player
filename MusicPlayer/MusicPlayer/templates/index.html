@@ -1,7 +1,7 @@
-﻿{% extends "layout.html" %} {% block content %} {% load static %}
+﻿{% extends "layout.html" %} {% block content %} {% load static %} {% load i18n %}
 <script src="{% static 'scripts/jquery-3.4.1.min.js' %}"></script>
 <div class="header_tp flex flex-row justify-between items-center">
-  <h1 class="margin">Welcome to our Music Streaming Web App</h1>
+  <h1 class="margin">{% translate 'Welcome to our Music Streaming Web App'%}</h1>
   {% load crispy_forms_tags %}
   <form class="search-container" method="post">
     {% csrf_token %} {{ formSearch|crispy }}
@@ -14,14 +14,14 @@
     id="successMessages"
     style="opacity: 0; position: absolute"
   >
-    <span>Your Music Has Been Added to the Queue!</span>
+    <span>{% translate "Your Music Has Been Added to the Queue!" %}</span>
   </div>
   <div
     class="alert alert-success"
     id="successAddplaylist"
     style="opacity: 0; position: absolute"
   >
-    <span>Your Music Has Been Added to the Playlist!</span>
+    <span>{% translate "Your Music Has Been Added to the Playlist!"%}</span>
   </div>
 </div>
 {% for genre, songs in songs_by_genre.items %}

@@ -26,23 +26,23 @@ class ListenerManager(BaseUserManager):
 
 # Custom User
 class Listener(AbstractUser):
-    followers = models.ManyToManyField('self')
+    followers = models.ManyToManyField('self', verbose_name=_('Followers'))
     objects = ListenerManager()
-    email = models.EmailField(_("email address"), blank=True, unique=True)
+    email = models.EmailField(blank=True, unique=True, verbose_name=_("Email"))
 
     class Meta:
-        verbose_name = 'Listener'
+        verbose_name = _('Listener')
     def __str__(self):
         return self.username
 
 
 class MediaContent(models.Model):
-    name = models.CharField(max_length=50)
-    release_date = models.DateTimeField(auto_now_add=True)
+    name = models.CharField(max_length=50, verbose_name=_("Name"))
+    release_date = models.DateTimeField(auto_now_add=True, verbose_name=_("Release Date"))
     # will set to timezone.now when instance is created
-    duration = models.DurationField(null=True)
+    duration = models.DurationField(null=True, verbose_name=_("Duration"))
     # non mandatory field
-    followers = models.ManyToManyField(Listener, blank=True)
+    followers = models.ManyToManyField(Listener, blank=True, verbose_name=_("Followers"))
 
     class Meta:
         unique_together = ['name', 'release_date']
@@ -53,9 +53,9 @@ class MediaContent(models.Model):
 
 
 class Performer(models.Model):
-    name = models.CharField(max_length=50)
-    image = models.ImageField(upload_to='performer')
-    description = models.CharField(max_length=10000, blank=True)
+    name = models.CharField(max_length=50, verbose_name=_("Name"))
+    image = models.ImageField(upload_to='performer', verbose_name=_("Image"))
+    description = models.CharField(max_length=10000, blank=True, verbose_name=_("Description"))
 
     def __str__(self):
         return self.name
@@ -68,26 +68,26 @@ class Artist(Performer):
 
 
 class Band(Performer):
-    members = models.ManyToManyField(Artist, related_name='bands')
+    members = models.ManyToManyField(Artist, related_name='bands', verbose_name=_('Members'))
     def __str__(self):
         return self.name
 
 
 class Album(MediaContent):
-    name = models.CharField(max_length=100)
-    release_date = models.DateField()
-    image = models.ImageField(null=True, upload_to='album')
-    performer = models.ForeignKey(Performer, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100, verbose_name=_("Name"))
+    release_date = models.DateField(verbose_name=_("Date"))
+    image = models.ImageField(null=True, upload_to='album', verbose_name=_('Image'))
+    performer = models.ForeignKey(Performer, on_delete=models.CASCADE, verbose_name=_("Performer"))
     def __str__(self):
         return self.name
 
 
 class Music(MediaContent):
-    genre = models.CharField(max_length=50)
-    performer = models.ForeignKey(Performer, on_delete=models.CASCADE)
-    album = models.ForeignKey(Album, on_delete=models.CASCADE, blank=True)
-    image = models.ImageField(upload_to='music')
-    audio_file = models.FileField()
+    genre = models.CharField(max_length=50, verbose_name=_("Genre"))
+    performer = models.ForeignKey(Performer, on_delete=models.CASCADE, verbose_name=_("Performer"))
+    album = models.ForeignKey(Album, on_delete=models.CASCADE, blank=True, verbose_name=_("Album"))
+    image = models.ImageField(upload_to='music', verbose_name=_('Image'))
+    audio_file = models.FileField(verbose_name=_("Audio File"))
 
     @property
     def total_likes(self):
@@ -106,13 +106,13 @@ class Playlist(models.Model):
 
 
 class Like(models.Model):
-    user = models.ForeignKey(Listener, on_delete=models.CASCADE)
-    music = models.ForeignKey(Music, on_delete=models.CASCADE, related_name="likes")
+    user = models.ForeignKey(Listener, on_delete=models.CASCADE, verbose_name=_('User'))
+    music = models.ForeignKey(Music, on_delete=models.CASCADE, related_name="likes", verbose_name=_('Likes'))
 
 
 class Membership(models.Model):
-    playlist = models.ForeignKey(Playlist, on_delete=models.CASCADE)
-    music = models.ForeignKey(Music, on_delete=models.CASCADE)
+    playlist = models.ForeignKey(Playlist, on_delete=models.CASCADE, verbose_name=_('Playlist'))
+    music = models.ForeignKey(Music, on_delete=models.CASCADE, verbose_name=_('Music'))
     order_id = models.PositiveIntegerField()
 
     class Meta:

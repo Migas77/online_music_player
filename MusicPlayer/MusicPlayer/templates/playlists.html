@@ -1,4 +1,4 @@
-{% extends "layout.html" %} {% block content %} {% load static %}
+{% extends "layout.html" %} {% block content %} {% load static %} {% load i18n %}
 
 <div>
   <h1>Playlists</h1>
@@ -9,10 +9,10 @@
     <thead class="bg-neutral-focus tableHead">
       <tr>
         <th></th>
-        <th>Name</th>
-        <th>User</th>
-        <th>Quantity</th>
-        <th>Delete</th>
+        <th>{% translate 'Name' %}</th>
+        <th>{% translate 'User' %}</th>
+        <th>{% translate 'Quantity' %}</th>
+        <th>{% translate 'Delete' %}</th>
       </tr>
     </thead>
     <tbody>
@@ -41,7 +41,7 @@
 </div>
 <dialog id="modalDelete" class="modal">
   <div class="modal-box">
-    <h3 class="font-bold text-lg">Delete Playlist!</h3>
+    <h3 class="font-bold text-lg">{% translate 'Delete Playlist!' %}</h3>
     <p class="py-4"></p>
     <div class="modal-action">
       <input type="hidden" id="globalId" value="" />
@@ -65,7 +65,7 @@
     var modalText = document.querySelector("#modalDelete p");
     var modalDelete = document.querySelector("#modalDelete");
     modalText.innerHTML =
-      "Are you sure you want to delete the <b>" + globalName + "</b> playlist?";
+      "{% translate 'Are you sure you want to delete the following playlist: ' %} <b>" + globalName + "</b>?";
     document.getElementById("deleteLink").href =
       "deletePlaylist/" + document.getElementById("globalId").value;
 

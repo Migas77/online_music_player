@@ -1,6 +1,6 @@
-{% extends "layout.html" %} {% block content %}
+{% extends "layout.html" %} {% block content %} {% load i18n %}
 
-<h1>Practical Work 1 - Technologies and Web Programming</h1>
+<h1>{% translate 'Practical Work 1 - Technologies and Web Programming' %}</h1>
 <hr />
 <br />
 <textarea
@@ -8,9 +8,9 @@
   style="width: 100%; height: 25vh"
   disabled
 >
-    In this project, we are dedicated to designing a music streaming application, based on the powerful Django framework. This initiative aims to deepen and apply the knowledge acquired in the Technologies and Web Programming course at the University of Aveiro.
+    {% translate 'In this project, we are dedicated to designing a music streaming application, based on the powerful Django framework. This initiative aims to deepen and apply the knowledge acquired in the Technologies and Web Programming course at the University of Aveiro.' %}
 
-    Our goal is to develop an innovative platform that allows users to enjoy their favorite music with an elegant and functional interface. Through this project, we will explore and apply web development principles, as well as advanced concepts of the Django framework, to create a high-quality music streaming experience.
+    {% translate 'Our goal is to develop an innovative platform that allows users to enjoy their favorite music with an elegant and functional interface. Through this project, we will explore and apply web development principles, as well as advanced concepts of the Django framework, to create a high-quality music streaming experience.' %}
 </textarea>
 
 <h2>Authors:</h2>

@@ -202,7 +202,7 @@ def addBand(request):
             return redirect('adminPanel')
     else:
         form = AddEditBandForm()
-    return render(request, 'addBand.html', {'form': form})
+    return render(request, 'add_edit_Band.html', {'form': form})
 
 
 def addAlbum(request):

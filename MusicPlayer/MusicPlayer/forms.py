@@ -2,6 +2,7 @@ from django.contrib.auth.forms import AuthenticationForm, BaseUserCreationForm
 from django import forms
 from django.contrib.auth import get_user_model
 from .models import Artist, Performer, Music, Album, Playlist, Membership, Band
+from django.utils.translation import gettext_lazy as _
 
 User = get_user_model()  # custom user model
 
@@ -18,12 +19,12 @@ class LoginForm(AuthenticationForm):
         self.fields['username'].widget.attrs.update({
             'class': 'input w-full bg-primary-content',
             'id': 'InputUsername1',
-            'placeholder': 'Username',
+            'placeholder': _('Username'),
             'aria-describedby': 'usernameHelp',
         })
         self.fields["password"].widget.attrs.update({
             'class': 'input w-full bg-primary-content',
-            'placeholder': 'Password',
+            'placeholder': _('Password'),
             'id': 'InputPassword1'
         })
 
@@ -38,30 +39,33 @@ class SignUpForm(BaseUserCreationForm):
         self.fields["email"] = forms.EmailField(label='', max_length=40, widget=forms.EmailInput(attrs={
             'class': 'input-bordered input-sm w-full max-w-xs bg-primary-content',
             'id': 'InputEmail1',
-            'placeholder': 'Email',
+            'placeholder': _('Email'),
             'aria-describedby': 'emailHelp',
         }))
         self.fields['username'].widget.attrs.update({
             'class': 'input-bordered input-sm w-full max-w-xs bg-primary-content',
             'id': 'InputUsername1',
-            'placeholder': 'Username',
+            'placeholder': _('Username'),
             'aria-describedby': 'usernameHelp',
         })
         self.fields["password1"].widget.attrs.update({
             'class': 'input-bordered input-sm w-full max-w-xs bg-primary-content',
-            'placeholder': 'Password',
+            'placeholder': _('Password'),
             'id': 'InputPassword1'
         })
         self.fields["password2"].widget.attrs.update({
             'class': 'input-bordered input-sm w-full max-w-xs bg-primary-content',
-            'placeholder': 'Confirm Password',
+            'placeholder': _('Confirm Password'),
             'id': 'InputPassword2'
         })
+    error_messages = {
+        'password_mismatch': _("The two password fields didn't match.")
+    }
 
 
 class MusicSearchForm(forms.Form):
     query = forms.CharField(label="", max_length=50, required=False, widget=forms.TextInput(
-        attrs={'class': ' bg-transparent', 'placeholder': 'Search for a song'}))
+        attrs={'class': ' bg-transparent', 'placeholder': _('Search for a song')}))
 
 
 class AddEditArtistForm(forms.ModelForm):
@@ -98,5 +102,5 @@ class AddEditPlaylistForm(forms.ModelForm):
         model = Playlist
         fields = ['name']
         widgets = {
-            'name': forms.TextInput(attrs={ 'placeholder': 'Playlist name', 'class': ' bg-transparent', 'style': 'margin-top: 25px'}),
+            'name': forms.TextInput(attrs={ 'placeholder': _('Playlist name'), 'class': ' bg-transparent', 'style': 'margin-top: 25px'}),
         }
