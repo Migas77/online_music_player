@@ -28,8 +28,8 @@ def home(request):
                     album__name__icontains=query))
 
             songs_by_genre = {genre: list(songs) for genre, songs in
-                              groupby(sorted(songs, key=lambda song: song.genre.upper()),
-                                      key=lambda song: song.genre.upper())}
+                              groupby(sorted(songs, key=lambda music: music.genre.upper()),
+                                      key=lambda music: music.genre.upper())}
 
         formPlaylist = AddEditPlaylistForm(request.POST)
         if formPlaylist.is_valid():
@@ -57,7 +57,7 @@ def home(request):
         songs = Music.objects.all()
         songs_by_genre = {genre: list(songs) for genre, songs in
                           groupby(sorted(songs, key=lambda music: music.genre.upper()),
-                                  key=lambda music: song.genre.upper())}
+                                  key=lambda music: music.genre.upper())}
 
     if request.user.is_authenticated:
         playl = Playlist.objects.filter(author=request.user)

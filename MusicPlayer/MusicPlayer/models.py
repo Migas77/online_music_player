@@ -54,7 +54,7 @@ class MediaContent(models.Model):
 
 class Performer(models.Model):
     name = models.CharField(max_length=50)
-    image = models.ImageField()
+    image = models.ImageField(upload_to='performer')
     description = models.CharField(max_length=10000, blank=True)
 
     def __str__(self):
