@@ -1,11 +1,14 @@
 from datetime import datetime
 
 import json
+
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Listener, MediaContent, Album, Music, Artist, Playlist, Membership, Performer, Band, Like
 from django.contrib.auth import views as auth_views
-from MusicPlayer.forms import LoginForm, SignUpForm, MusicSearchForm, AddEditArtistForm, AddEditMusicForm, AddEditBandForm, \
+from MusicPlayer.forms import LoginForm, SignUpForm, MusicSearchForm, AddEditArtistForm, AddEditMusicForm, \
+    AddEditBandForm, \
     AddEditAlbumForm, AddEditPlaylistForm
 from django.contrib.auth import login
 from django.db.models import Q, Case, When, Value, BooleanField
@@ -13,17 +16,21 @@ from itertools import groupby
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
+
 # Custom User
 def home(request):
-    
     if request.method == 'POST':
         formSearch = MusicSearchForm(request.POST)
         if formSearch.is_valid():
             query = formSearch.cleaned_data['query']
-            songs = Music.objects.filter(Q(name__icontains=query) | Q(performer__name__icontains=query) | Q(genre__icontains=query) | Q(album__name__icontains=query))
-                
-            songs_by_genre = {genre: list(songs) for genre, songs in groupby(sorted(songs, key=lambda song: song.genre.upper()), key=lambda song: song.genre.upper())}
-        
+            songs = Music.objects.filter(
+                Q(name__icontains=query) | Q(performer__name__icontains=query) | Q(genre__icontains=query) | Q(
+                    album__name__icontains=query))
+
+            songs_by_genre = {genre: list(songs) for genre, songs in
+                              groupby(sorted(songs, key=lambda song: song.genre.upper()),
+                                      key=lambda song: song.genre.upper())}
+
         formPlaylist = AddEditPlaylistForm(request.POST)
         if formPlaylist.is_valid():
             name = formPlaylist.cleaned_data['name']
@@ -38,20 +45,24 @@ def home(request):
                 playlist.musics.add(song, through_defaults={'order_id': 0})
                 playlist.save()
             songs = Music.objects.all()
-            songs_by_genre = {genre: list(songs) for genre, songs in groupby(sorted(songs, key=lambda song: song.genre.upper()), key=lambda song: song.genre.upper())}
-   
+            songs_by_genre = {genre: list(songs) for genre, songs in
+                              groupby(sorted(songs, key=lambda music: music.genre.upper()),
+                                      key=lambda music: music.genre.upper())}
+
             return redirect('playlists')
 
     else:
         formSearch = MusicSearchForm()
         formPlaylist = AddEditPlaylistForm()
         songs = Music.objects.all()
-        songs_by_genre = {genre: list(songs) for genre, songs in groupby(sorted(songs, key=lambda song: song.genre.upper()), key=lambda song: song.genre.upper())}
-    
+        songs_by_genre = {genre: list(songs) for genre, songs in
+                          groupby(sorted(songs, key=lambda music: music.genre.upper()),
+                                  key=lambda music: song.genre.upper())}
+
     if request.user.is_authenticated:
-        playlists = Playlist.objects.filter(author=request.user)
+        playl = Playlist.objects.filter(author=request.user)
     else:
-        playlists = None
+        playl = None
 
     tparams = {
         'title': 'Home Page',
@@ -59,7 +70,7 @@ def home(request):
         'user': request.user,
         'songs': songs,
         'songs_by_genre': songs_by_genre,
-        'playlists': playlists,
+        'playlists': playl,
         'formSearch': formSearch,
         'formPlaylist': formPlaylist
     }
@@ -134,7 +145,7 @@ def artistInformation(request, artist_name):
         'artist_musics': artist_musics,
         'artist_type': artist_type,
     }
-    return render(request, 'artist.html', tparams)    
+    return render(request, 'artist.html', tparams)
 
 
 def adminPanel(request):
@@ -215,7 +226,7 @@ def addBand(request):
             return redirect('adminPanel')
     else:
         form = AddEditBandForm()
-    return render(request, 'addBand.html', {'form': form})
+    return render(request, 'add_edit_Band.html', {'form': form})
 
 
 def addAlbum(request):
@@ -257,7 +268,7 @@ def is_ajax(request):
 def addLike(request):
     music_id = request.POST.get("music_id")
     user_id = request.POST.get("user_id")
-    
+
     try:
         music = Music.objects.get(id=music_id)
         user = Listener.objects.get(id=user_id)
@@ -267,9 +278,10 @@ def addLike(request):
         likes = music.total_likes
         print(likes)
         return JsonResponse({"success": True, "likes": likes})
-    
+
     except Music.DoesNotExist:
         return JsonResponse({"success": False, "error": "Music not found"})
+
 
 def removeLike(request):
     music_id = request.POST.get("music_id")
@@ -282,9 +294,10 @@ def removeLike(request):
 
         likes = music.total_likes
         return JsonResponse({"success": True, "likes": likes})
-    
+
     except Music.DoesNotExist:
         return JsonResponse({"success": False, "error": "Music not found"})
+
 
 def addMusicToQueue(request):
     music_id = request.POST["music_id"]
@@ -296,10 +309,12 @@ def addMusicToQueue(request):
         request.session.save()
     return HttpResponse(json.dumps({"success": True}), content_type='application/json')
 
+
 def deleteMusic(request, id):
     music = Music.objects.get(id=id)
     music.delete()
     return redirect('listMusics')
+
 
 def listAlbuns(request):
     albuns = Album.objects.all()
@@ -308,10 +323,12 @@ def listAlbuns(request):
     }
     return render(request, 'listAlbuns.html', tparams)
 
+
 def deleteAlbum(request, id):
     album = Album.objects.get(id=id)
     album.delete()
     return redirect('listAlbuns')
+
 
 def listArtists(request):
     artists = Artist.objects.all()
@@ -320,10 +337,12 @@ def listArtists(request):
     }
     return render(request, 'listArtists.html', tparams)
 
+
 def deleteArtist(request, id):
     artist = Artist.objects.get(id=id)
     artist.delete()
     return redirect('listArtists')
+
 
 def listBands(request):
     bands = Band.objects.all()
@@ -332,10 +351,12 @@ def listBands(request):
     }
     return render(request, 'listBands.html', tparams)
 
+
 def deleteBand(request, id):
     band = Band.objects.get(id=id)
     band.delete()
     return redirect('listBands')
+
 
 def editBand(request, band_id):
     band = get_object_or_404(Band, id=band_id)
@@ -348,36 +369,40 @@ def editBand(request, band_id):
         form = AddEditBandForm(instance=band)
     return render(request, 'add_edit_Artist.html', {'form': form})
 
+
+@login_required
 def playlists(request):
-    playlists = Playlist.objects.filter(author=request.user)
+    playl = Playlist.objects.filter(author=request.user)
     tparams = {
-        'playlists': playlists
+        'playlists': playl
     }
     return render(request, 'playlists.html', tparams)
 
+
+@login_required
 def playlistInfo(request, playlist_id):
-    playlist = Playlist.objects.get(id=playlist_id)
-    musics = Music.objects.filter(membership__playlist=playlist).order_by('membership__order_id')
+    playl = Playlist.objects.get(id=playlist_id)
+    musics = Music.objects.filter(membership__playlist=playl).order_by('membership__order_id')
     tparams = {
-        'playlist': playlist,
+        'playlist': playl,
         'musics': musics
     }
     return render(request, 'playlistInfo.html', tparams)
 
+
 def add_to_playlist(request):
- if request.method == 'POST':
-    playlist_id = request.POST.get('playlist_id')
-    song_id = request.POST.get('song_id')
-    playlist = Playlist.objects.get(id=playlist_id)
-    song = Music.objects.get(id=song_id)
-    
-    order_id = playlist.musics.count()
-    
-    playlist.musics.add(song, through_defaults={'order_id': order_id})
-    playlist.save()
+    if request.method == 'POST':
+        playlist_id = request.POST.get('playlist_id')
+        song_id = request.POST.get('song_id')
+        playlist = Playlist.objects.get(id=playlist_id)
+        song = Music.objects.get(id=song_id)
 
-    return HttpResponse(json.dumps({"success": True}), content_type='application/json')
+        order_id = playlist.musics.count()
 
- else:
-     return HttpResponse(json.dumps({"success": False}), content_type='application/json')
+        playlist.musics.add(song, through_defaults={'order_id': order_id})
+        playlist.save()
 
+        return HttpResponse(json.dumps({"success": True}), content_type='application/json')
+
+    else:
+        return HttpResponse(json.dumps({"success": False}), content_type='application/json')

@@ -121,5 +121,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Added
 AUTH_USER_MODEL = 'MusicPlayer.Listener'
-
 CRISPY_TEMPLATE_PACK = 'daisyui'
+LOGIN_URL = 'login_signup'

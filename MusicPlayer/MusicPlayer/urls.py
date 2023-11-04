@@ -37,6 +37,7 @@ urlpatterns = [
     path('ajax/addMusicToQueue', views.addMusicToQueue, name='addMusicToQueue'),
     path('ajax/addLike', views.addLike, name="addLike"),
     path('ajax/removeLike', views.removeLike, name="removeLike"),
+    path('ajax/addToPlaylist/', views.add_to_playlist, name='addToPlaylist'),
     
     # others
     path('', views.home, name='home'),
@@ -62,6 +63,6 @@ urlpatterns = [
     path('adminPanel/editBand/<int:band_id>', views.editBand, name='editBand'),
     path('playlists/', views.playlists, name="playlists"),
     path('playlists/<int:playlist_id>/', views.playlistInfo, name="playlistInfo"),
-    path('addToPlaylist/', views.add_to_playlist, name='addToPlaylist'),
+
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
