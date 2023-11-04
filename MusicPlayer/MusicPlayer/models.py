@@ -91,7 +91,7 @@ class Music(MediaContent):
 
     @property
     def total_likes(self):
-        return Like.objects.filter(music=self).count
+        return Like.objects.filter(music=self).count()
 
     def __str__(self):
         return self.name

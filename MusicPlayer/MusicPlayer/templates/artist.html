@@ -76,12 +76,13 @@
                                                     <strong>
                                                         {% if user.is_authenticated %}
                                                             {% if music.user_liked %}
-                                                                <button id="like-button-{{ music.id }}" onclick="removeLike('{{ music.id }}', '{{ user.id }}')">
+                                                                <button class="like-button" onclick="toggleLike(event, '{{ music.id }}', '{{ user.id }}')">
                                                                     <i class="heart-icon fas fa-heart songItemPlay" style="color: #c061cb;"></i>
                                                                 </button>
                                                                 <span id="likes-count-{{ music.id }}">  {{ music.total_likes }}</span>
+                                                           
                                                             {% else %}
-                                                                <button id="like-button-{{ music.id }}" onclick="addLike('{{ music.id }}', '{{ user.id }}')">
+                                                                <button class="like-button" onclick="toggleLike(event, '{{ music.id }}', '{{ user.id }}')">
                                                                     <i class="heart-icon far fa-heart songItemPlay" style="color: #c061cb;"></i>
                                                                 </button>
                                                                 <span id="likes-count-{{ music.id }}">  {{ music.total_likes }}</span>
@@ -139,53 +140,38 @@
 
 <script src="{% static 'scripts/jquery-3.4.1.min.js' %}"></script>
 <script>
-    function addLike(music_id, user_id) {
+    function toggleLike(event, musicId, userId) {
         var $icon = $(event.currentTarget).find(".heart-icon");
-        console.log("Music_id", music_id);
-        console.log("User id", user_id);
-
-        // Toggle the icon class immediately
-        $icon.removeClass("far");
-        $icon.addClass("fas");
+        var $likesCount = $(event.currentTarget).next();
+        var isLiked = $icon.hasClass("fas");
 
         $.ajax({
-            url: '{% url "addLike" %}',
+            url: isLiked ? '{% url "removeLike" %}' : '{% url "addLike" %}',
             data: {
                 csrfmiddlewaretoken: "{{ csrf_token }}",
-                music_id: music_id,
-                user_id: user_id
+                music_id: musicId,
+                user_id: userId,
             },
             method: "POST",
             success: function (response) {
-                if (response.success == true) {
-                    $("#likes-count-" + music_id).text(response.likes);
+                if (response.success === true) {
+                    if (isLiked) {
+                        $icon.removeClass("fas");
+                        $icon.addClass("far");
+                    } else {
+                        $icon.removeClass("far");
+                        $icon.addClass("fas");
+                    }
+                    $likesCount.text(response.likes);
+                    $icon.addClass("animated-heart");
+
+                    setTimeout(function () {
+                        $icon.removeClass("animated-heart");
+                    }, 1000);
                 }
-            }
-        });
-    }
-
-    function removeLike(music_id, user_id) {
-        var $icon = $(event.currentTarget).find(".heart-icon");
-        $icon.removeClass("fas");
-        $icon.addClass("far");
-
-        $.ajax({
-            url: '{% url "removeLike" %}',
-            data: {
-                csrfmiddlewaretoken: "{{ csrf_token }}",
-                music_id: music_id,
-                user_id: user_id
             },
-            method: "POST",
-            success: function (response) {
-                if (response.success == true) {
-                    $("#likes-count-" + music_id).text(response.likes);
-                    // Remove the temporary "fas" class after a delay
-                }
-            }
         });
     }
-
 
     function showAlertAndRedirect() {
         alert("Please log in to like this song");

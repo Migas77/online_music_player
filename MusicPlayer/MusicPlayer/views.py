@@ -118,7 +118,6 @@ def artistInformation(request, artist_name):
     artist_albums = Album.objects.filter(performer=artist_details)
     artist_musics = Music.objects.filter(performer=artist_details)
 
-    print(request.user)
     # This adds an additional field called user_liked (boolean) to each item in the artists_musics to check if the user has liked each song
     if request.user.is_authenticated:
         artist_musics = artist_musics.annotate(
@@ -266,10 +265,11 @@ def addLike(request):
         like, create = Like.objects.get_or_create(user=user, music=music)
 
         likes = music.total_likes
-        return HttpResponse(json.dumps({"success": True, "likes": likes}), content_type='application/json')
+        print(likes)
+        return JsonResponse({"success": True, "likes": likes})
     
     except Music.DoesNotExist:
-        return HttpResponse(json.dumps({"success": False, "error": "Music not found"}))
+        return JsonResponse({"success": False, "error": "Music not found"})
 
 def removeLike(request):
     music_id = request.POST.get("music_id")
@@ -281,10 +281,10 @@ def removeLike(request):
         Like.objects.filter(user=user, music=music_id).delete()
 
         likes = music.total_likes
-        return HttpResponse(json.dumps({"success": True, "likes": likes}), content_type='application/json')
+        return JsonResponse({"success": True, "likes": likes})
     
     except Music.DoesNotExist:
-        return HttpResponse(json.dumps({"success": False, "error": "Music not found"}))
+        return JsonResponse({"success": False, "error": "Music not found"})
 
 def addMusicToQueue(request):
     music_id = request.POST["music_id"]

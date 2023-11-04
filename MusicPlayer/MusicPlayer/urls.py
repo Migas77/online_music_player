@@ -60,7 +60,6 @@ urlpatterns = [
     path('adminPanel/listBands/', views.listBands, name='listBands'),
     path('adminPanel/listBands/deleteBand/<int:id>', views.deleteBand, name='deleteBand'),
     path('adminPanel/editBand/<int:band_id>', views.editBand, name='editBand'),
-    path('like-song/<int:music_id>/', views.like_song, name="like_song"),
     path('playlists/', views.playlists, name="playlists"),
     path('playlists/<int:playlist_id>/', views.playlistInfo, name="playlistInfo"),
     path('addToPlaylist/', views.add_to_playlist, name='addToPlaylist'),
