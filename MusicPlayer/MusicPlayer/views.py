@@ -406,3 +406,13 @@ def add_to_playlist(request):
 
     else:
         return HttpResponse(json.dumps({"success": False}), content_type='application/json')
+
+def add_playlist(request):
+    if request.method == 'POST':
+        playlistName = request.POST.get("playlistName")
+        if playlistName:
+            playl = Playlist(name=playlistName, author=request.user)
+            playl.save()
+
+            return HttpResponse(json.dumps({"success": True}), content_type='application/json')
+    return HttpResponse(json.dumps({"success": False}), content_type='application/json')

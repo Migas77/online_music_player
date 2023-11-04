@@ -1,27 +1,5 @@
 ﻿{% extends "layout.html" %} {% block content %} {% load static %}
 <script src="{% static 'scripts/jquery-3.4.1.min.js' %}"></script>
-<script>
-  // AJAX call to django
-  function addMusicToQueue(music_id) {
-    $.ajax({
-      url: '{% url "addMusicToQueue" %}',
-      data: {
-        csrfmiddlewaretoken: "{{ csrf_token }}",
-        music_id: music_id,
-      },
-      method: "POST",
-      success: function (response) {
-        if (response.success === true) {
-          let successMessages = $("#successMessages");
-          successMessages.animate({ opacity: 1 });
-          setTimeout(function () {
-            successMessages.animate({ opacity: 0 });
-          }, 2000);
-        }
-      },
-    });
-  }
-</script>
 <div class="header_tp flex flex-row justify-between items-center">
   <h1 class="margin">Welcome to our Music Streaming Web App</h1>
   {% load crispy_forms_tags %}
@@ -116,7 +94,7 @@
   <div class="modal-box w-11/12 max-w-5xl">
     <h3 class="font-bold text-lg">Playlists</h3>
     <hr />
-    <table class="table ml-0">
+    <table class="table ml-0" id="playlistMusics">
       <!-- head -->
       <thead>
         <tr>
@@ -130,14 +108,13 @@
         <tr>
           <th>{{playlist.id}}</th>
           <th>{{playlist.name}}</th>
-          <th>
+          <td>
             <button
-              id="addPlaylist"
               onclick="addToPlaylist('{{ playlist.id }}')"
             >
               <i class="fa fa-plus-square-o"></i>
             </button>
-          </th>
+          </td>
         </tr>
         {% endfor %}
       </tbody>
@@ -145,7 +122,7 @@
     <div class="modal-action">
       <button
         class="btn btn-active btn-primary"
-        onclick="newPlaylistModal.showModal()"
+        onclick="addToPlaylist_modal.close(); newPlaylistModal.showModal()"
       >
         New playlist
       </button>
@@ -160,18 +137,14 @@
     <h3 class="font-bold text-lg">Add New Playlist</h3>
     <hr />
     {% load crispy_forms_tags %}
-    <form
-      action=""
-      method="post"
-      class="from-horizontal"
-      style="margin-top: 20px"
-    >
+    <form onsubmit="return false;">
       {% csrf_token %} {{ formPlaylist|crispy }}
       <input type="hidden" name="song_id" value="{{ song_id }}" />
       <input
         type="submit"
         value="Submit"
         class="btn btn-active btn-primary"
+        onclick="addPlaylist()"
         style="position: absolute; margin-top: 25px; margin-left: 290px"
       />
     </form>
@@ -198,6 +171,26 @@
     }
   });
 
+  // AJAX call to django
+  function addMusicToQueue(music_id) {
+    $.ajax({
+      url: '{% url "addMusicToQueue" %}',
+      data: {
+        csrfmiddlewaretoken: "{{ csrf_token }}",
+        music_id: music_id,
+      },
+      method: "POST",
+      success: function (response) {
+        if (response.success === true) {
+          let successMessages = $("#successMessages");
+          successMessages.animate({ opacity: 1 });
+          setTimeout(function () {
+            successMessages.animate({ opacity: 0 });
+          }, 2000);
+        }
+      },
+    });
+  }
   function addToPlaylist(playlist_id) {
     $.ajax({
       url: '{% url "addToPlaylist" %}',
@@ -218,6 +211,39 @@
         }
       },
     });
+  }
+  function addPlaylist() {
+    let playlistName = document.getElementById("id_name").value.trim();
+    if (playlistName.length > 0){
+      $.ajax({
+        url: '{% url "addPlaylist" %}',
+        data: {
+          csrfmiddlewaretoken: "{{ csrf_token }}",
+          playlistName: playlistName,
+        },
+        method: "POST",
+        success: function (response) {
+          if (response.success === true) {
+            newPlaylistModal.close();
+            // erase content of input
+            document.getElementById("id_name").value="";
+            // add new playlist manually
+            let table = document.getElementById("playlistMusics").getElementsByTagName('tbody')[0];
+            let newrow = table.insertRow(table.rows.length);
+            let num = newrow.insertCell(0);
+            let name = newrow.insertCell(1);
+            let add = newrow.insertCell(2);
+            num.outerHTML = `<th>${table.rows.length.toString()}</th>`;
+            name.outerHTML = `<th>${playlistName}</th>`;
+            let addButton = document.createElement('button');
+            addButton.innerHTML = '<i class="fa fa-plus-square-o"></i>';
+            addButton.onclick = function() { addToPlaylist(table.rows.length.toString()) };
+            add.appendChild(addButton);
+            addToPlaylist_modal.showModal();
+          }
+        },
+      });
+    }
   }
 </script>
 {% endblock %}

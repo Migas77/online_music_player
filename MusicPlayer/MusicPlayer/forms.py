@@ -98,5 +98,5 @@ class AddEditPlaylistForm(forms.ModelForm):
         model = Playlist
         fields = ['name']
         widgets = {
-            'name': forms.TextInput(attrs={ 'placeholder': 'Playlist name', 'class': ' bg-transparent'}),
+            'name': forms.TextInput(attrs={ 'placeholder': 'Playlist name', 'class': ' bg-transparent', 'style': 'margin-top: 25px'}),
         }

@@ -37,6 +37,7 @@ urlpatterns = [
     path('ajax/addMusicToQueue', views.addMusicToQueue, name='addMusicToQueue'),
     path('ajax/addLike', views.addLike, name="addLike"),
     path('ajax/removeLike', views.removeLike, name="removeLike"),
+    path('ajax/addPlaylist/', views.add_playlist, name='addPlaylist'),
     path('ajax/addToPlaylist/', views.add_to_playlist, name='addToPlaylist'),
     
     # others

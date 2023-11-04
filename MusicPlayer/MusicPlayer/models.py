@@ -76,7 +76,7 @@ class Band(Performer):
 class Album(MediaContent):
     name = models.CharField(max_length=100)
     release_date = models.DateField()
-    image = models.ImageField(null=True)
+    image = models.ImageField(null=True, upload_to='album')
     performer = models.ForeignKey(Performer, on_delete=models.CASCADE)
     def __str__(self):
         return self.name
@@ -86,7 +86,7 @@ class Music(MediaContent):
     genre = models.CharField(max_length=50)
     performer = models.ForeignKey(Performer, on_delete=models.CASCADE)
     album = models.ForeignKey(Album, on_delete=models.CASCADE, blank=True)
-    image = models.ImageField()
+    image = models.ImageField(upload_to='music')
     audio_file = models.FileField()
 
     @property
