@@ -31,29 +31,8 @@ def home(request):
                               groupby(sorted(songs, key=lambda music: music.genre.upper()),
                                       key=lambda music: music.genre.upper())}
 
-        formPlaylist = AddEditPlaylistForm(request.POST)
-        if formPlaylist.is_valid():
-            name = formPlaylist.cleaned_data['name']
-            playlist = Playlist(name=name, author=request.user)
-            playlist.save()
-
-            song_id = request.POST.get('song_id')
-            print(request.POST)
-            print('song: ', song_id)
-            if song_id:
-                song = Music.objects.get(id=song_id)
-                playlist.musics.add(song, through_defaults={'order_id': 0})
-                playlist.save()
-            songs = Music.objects.all()
-            songs_by_genre = {genre: list(songs) for genre, songs in
-                              groupby(sorted(songs, key=lambda music: music.genre.upper()),
-                                      key=lambda music: music.genre.upper())}
-
-            return redirect('playlists')
-
     else:
         formSearch = MusicSearchForm()
-        formPlaylist = AddEditPlaylistForm()
         songs = Music.objects.all()
         songs_by_genre = {genre: list(songs) for genre, songs in
                           groupby(sorted(songs, key=lambda music: music.genre.upper()),
@@ -72,7 +51,7 @@ def home(request):
         'songs_by_genre': songs_by_genre,
         'playlists': playl,
         'formSearch': formSearch,
-        'formPlaylist': formPlaylist
+        'formPlaylist': AddEditPlaylistForm()
     }
 
     for song in songs:
