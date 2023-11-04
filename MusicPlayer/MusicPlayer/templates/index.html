@@ -94,31 +94,31 @@
   <div class="modal-box w-11/12 max-w-5xl">
     <h3 class="font-bold text-lg">Playlists</h3>
     <hr />
-    <table class="table ml-0" id="playlistMusics">
-      <!-- head -->
-      <thead>
-        <tr>
-          <th></th>
-          <th>Name</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for playlist in playlists %}
-        <tr>
-          <th>{{playlist.id}}</th>
-          <th>{{playlist.name}}</th>
-          <td>
-            <button
-              onclick="addToPlaylist('{{ playlist.id }}')"
-            >
-              <i class="fa fa-plus-square-o"></i>
-            </button>
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+    <div style="max-height: 400px; overflow-y: auto">
+      <table class="table ml-0" id="playlistMusics">
+        <!-- head -->
+        <thead>
+          <tr>
+            <th></th>
+            <th>Name</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for playlist in playlists %}
+          <tr>
+            <th>{{playlist.id}}</th>
+            <th>{{playlist.name}}</th>
+            <td>
+              <button onclick="addToPlaylist('{{ playlist.id }}')">
+                <i class="fa fa-plus-square-o"></i>
+              </button>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
     <div class="modal-action">
       <button
         class="btn btn-active btn-primary"
@@ -160,16 +160,13 @@
   var globalSongId;
   function showModal(song_id) {
     globalSongId = song_id;
-    localStorage.setItem("globalSongId", song_id);
+    var songIdInput = document.querySelector('input[name="song_id"]');
+    console.log("song la", globalSongId);
+    if (globalSongId) {
+      songIdInput.value = globalSongId;
+    }
     addToPlaylist_modal.showModal();
   }
-  document.addEventListener("DOMContentLoaded", function () {
-    var songIdInput = document.querySelector('input[name="song_id"]');
-    var songId = localStorage.getItem("globalSongId");
-    if (songId) {
-      songIdInput.value = songId;
-    }
-  });
 
   // AJAX call to django
   function addMusicToQueue(music_id) {
@@ -214,7 +211,7 @@
   }
   function addPlaylist() {
     let playlistName = document.getElementById("id_name").value.trim();
-    if (playlistName.length > 0){
+    if (playlistName.length > 0) {
       $.ajax({
         url: '{% url "addPlaylist" %}',
         data: {
@@ -224,20 +221,26 @@
         method: "POST",
         success: function (response) {
           if (response.success === true) {
+            let newPlaylist = response.playlist;
             newPlaylistModal.close();
             // erase content of input
-            document.getElementById("id_name").value="";
+            document.getElementById("id_name").value = "";
             // add new playlist manually
-            let table = document.getElementById("playlistMusics").getElementsByTagName('tbody')[0];
+            let table = document
+              .getElementById("playlistMusics")
+              .getElementsByTagName("tbody")[0];
             let newrow = table.insertRow(table.rows.length);
             let num = newrow.insertCell(0);
             let name = newrow.insertCell(1);
             let add = newrow.insertCell(2);
             num.outerHTML = `<th>${table.rows.length.toString()}</th>`;
             name.outerHTML = `<th>${playlistName}</th>`;
-            let addButton = document.createElement('button');
+            let addButton = document.createElement("button");
             addButton.innerHTML = '<i class="fa fa-plus-square-o"></i>';
-            addButton.onclick = function() { addToPlaylist(table.rows.length.toString()) };
+            console.log("carreguei");
+            addButton.onclick = function () {
+              addToPlaylist(newPlaylist.id);
+            };
             add.appendChild(addButton);
             addToPlaylist_modal.showModal();
           }

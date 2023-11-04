@@ -44,7 +44,14 @@
         </td>
         <td>{{music.genre}}</td>
         <th>
-          <button class="btn btn-ghost btn-xs">details</button>
+          <button
+            class="badge badge-outline btn-error"
+            onclick="showModal(this)"
+            data-song-name="{{ music.name }}"
+            data-song-id="{{ music.id }}"
+          >
+            <i class="fa fa-trash-o"></i>
+          </button>
         </th>
       </tr>
       {% endfor %}
@@ -77,5 +84,43 @@
     </div>
   </div>
 </div>
+
+<dialog id="modalDelete" class="modal">
+  <div class="modal-box">
+    <h3 class="font-bold text-lg">Remove song from playlist!</h3>
+    <p class="py-4"></p>
+    <div class="modal-action">
+      <input type="hidden" id="globalId" value="" />
+      <a class="btn btn-error" id="deleteLink">Yes</a>
+      <button
+        class="btn"
+        onclick="document.getElementById('modalDelete').close()"
+      >
+        Close
+      </button>
+    </div>
+  </div>
+</dialog>
+<script>
+  let globalName;
+  let globalId;
+  let playlistId;
+
+  window.showModal = function (button) {
+    globalName = button.getAttribute("data-song-name");
+    globalId = button.getAttribute("data-song-id");
+    document.getElementById("globalId").value = globalId;
+    var modalText = document.querySelector("#modalDelete p");
+    var modalDelete = document.querySelector("#modalDelete");
+    modalText.innerHTML =
+      "Are you sure you want to remove the song <b>" +
+      globalName +
+      "</b> from playlist?";
+    document.getElementById("deleteLink").href =
+      "deleteSongPlaylist/" + document.getElementById("globalId").value;
+
+    modalDelete.showModal();
+  };
+</script>
 
 {% endblock %}
