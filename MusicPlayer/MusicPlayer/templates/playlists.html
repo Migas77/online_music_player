@@ -1,11 +1,10 @@
-{% extends "layout.html" %} {% block content %} {% load static %} {% load i18n %}
-
+{% extends "layout.html" %} {% block content %} {% load static %} {% load i18n%}
 <div>
   <h1>Playlists</h1>
   <br />
 </div>
 <div class="overflow-x-auto">
-  <table class="table">
+  <table class="table table_playlist">
     <thead class="bg-neutral-focus tableHead">
       <tr>
         <th></th>
@@ -65,7 +64,9 @@
     var modalText = document.querySelector("#modalDelete p");
     var modalDelete = document.querySelector("#modalDelete");
     modalText.innerHTML =
-      "{% translate 'Are you sure you want to delete the following playlist: ' %} <b>" + globalName + "</b>?";
+      "{% translate 'Are you sure you want to delete the following playlist: ' %} <b>" +
+      globalName +
+      "</b>?";
     document.getElementById("deleteLink").href =
       "deletePlaylist/" + document.getElementById("globalId").value;
 
