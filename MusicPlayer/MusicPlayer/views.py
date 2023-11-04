@@ -3,14 +3,13 @@ from datetime import datetime
 import json
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Listener, MediaContent, Album, Music, Artist, Playlist, Membership, Performer, Band
+from .models import Listener, MediaContent, Album, Music, Artist, Playlist, Membership, Performer, Band, Like
 from django.contrib.auth import views as auth_views
 from MusicPlayer.forms import LoginForm, SignUpForm, MusicSearchForm, AddEditArtistForm, AddEditMusicForm, AddEditBandForm, \
     AddEditAlbumForm
 from django.contrib.auth import login
-from django.db.models import Q
+from django.db.models import Q, Case, When, Value, BooleanField
 from itertools import groupby
-from django.http import JsonResponse
 
 
 # Custom User
@@ -92,36 +91,24 @@ def artistInformation(request, artist_name):
     artist_albums = Album.objects.filter(performer=artist_details)
     artist_musics = Music.objects.filter(performer=artist_details)
 
+    print(request.user)
+    # This adds an additional field called user_liked (boolean) to each item in the artists_musics to check if the user has liked each song
+    if request.user.is_authenticated:
+        artist_musics = artist_musics.annotate(
+            user_liked=Case(
+                When(likes__user=request.user, then=Value(True)),
+                default=Value(False),
+                output_field=BooleanField()
+            )
+        )
+
     tparams = {
-        'user': request.user,
         'artist_details': artist_details,
         'artist_albums': artist_albums,
         'artist_musics': artist_musics,
-        'artist_type': artist_type
+        'artist_type': artist_type,
     }
-    return render(request, 'artist.html', tparams)
-
-
-def like_song(request, music_id):
-    if request.method == 'POST':
-        try:
-            music = Music.objects.get(id=music_id) 
-            user = request.user
-            is_liked = request.POST.get("is_liked")
-
-            if is_liked == "true":
-                music.likes += 1
-                
-            else:
-                music.likes -= 1
-
-            music.save()
-            return JsonResponse({"success": True, "likes": music.likes})
-        
-        except Music.DoesNotExist:
-            return JsonResponse({"success": False, "error": "Music not found"})
-    
-    return JsonResponse({"success": False, "error": "Invalid Request"})
+    return render(request, 'artist.html', tparams)    
 
 
 def adminPanel(request):
@@ -240,6 +227,37 @@ def listMusics(request):
 def is_ajax(request):
     return request.headers.get('X-Requested-With') == 'XMLHttpRequest'
 
+
+def addLike(request):
+    music_id = request.POST.get("music_id")
+    user_id = request.POST.get("user_id")
+    
+    try:
+        music = Music.objects.get(id=music_id)
+        user = Listener.objects.get(id=user_id)
+
+        like, create = Like.objects.get_or_create(user=user, music=music)
+
+        likes = music.total_likes
+        return HttpResponse(json.dumps({"success": True, "likes": likes}), content_type='application/json')
+    
+    except Music.DoesNotExist:
+        return HttpResponse(json.dumps({"success": False, "error": "Music not found"}))
+
+def removeLike(request):
+    music_id = request.POST.get("music_id")
+    user_id = request.POST.get("user_id")
+
+    try:
+        music = Music.objects.get(id=music_id)
+        user = Listener.objects.get(id=user_id)
+        Like.objects.filter(user=user, music=music_id).delete()
+
+        likes = music.total_likes
+        return HttpResponse(json.dumps({"success": True, "likes": likes}), content_type='application/json')
+    
+    except Music.DoesNotExist:
+        return HttpResponse(json.dumps({"success": False, "error": "Music not found"}))
 
 def addMusicToQueue(request):
     music_id = request.POST["music_id"]

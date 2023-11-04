@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.db.models import Count
 from django.utils.translation import gettext_lazy as _
 
 class ListenerManager(BaseUserManager):
@@ -39,7 +40,6 @@ class MediaContent(models.Model):
     name = models.CharField(max_length=50)
     release_date = models.DateTimeField(auto_now_add=True)
     # will set to timezone.now when instance is created
-    likes = models.IntegerField(default=0)
     duration = models.DurationField(null=True)
     # non mandatory field
     followers = models.ManyToManyField(Listener, blank=True)
@@ -88,6 +88,11 @@ class Music(MediaContent):
     album = models.ForeignKey(Album, on_delete=models.CASCADE, blank=True)
     image = models.ImageField()
     audio_file = models.FileField()
+
+    @property
+    def total_likes(self):
+        return Like.objects.filter(music=self).count
+
     def __str__(self):
         return self.name
 
@@ -98,6 +103,11 @@ class Playlist(models.Model):
     musics = models.ManyToManyField(Music, through='Membership')
     def __str__(self):
         return self.name
+
+
+class Like(models.Model):
+    user = models.ForeignKey(Listener, on_delete=models.CASCADE)
+    music = models.ForeignKey(Music, on_delete=models.CASCADE, related_name="likes")
 
 
 class Membership(models.Model):

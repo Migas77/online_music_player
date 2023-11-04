@@ -32,8 +32,12 @@ urlpatterns = [
         ), name='login_signup'),
     path('sign_up', views.sign_up, name='signup'),
     path('logout/', auth_views.LogoutView.as_view(next_page='login_signup'), name='logout'),
+
     # ajax endpoints
     path('ajax/addMusicToQueue', views.addMusicToQueue, name='addMusicToQueue'),
+    path('ajax/addLike', views.addLike, name="addLike"),
+    path('ajax/removeLike', views.removeLike, name="removeLike"),
+    
     # others
     path('', views.home, name='home'),
     path('contact/', views.contact, name='contact'),
@@ -56,5 +60,4 @@ urlpatterns = [
     path('adminPanel/listBands/', views.listBands, name='listBands'),
     path('adminPanel/listBands/deleteBand/<int:id>', views.deleteBand, name='deleteBand'),
     path('adminPanel/editBand/<int:band_id>', views.editBand, name='editBand'),
-    path('like-song/<int:music_id>/', views.like_song, name="like_song")
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

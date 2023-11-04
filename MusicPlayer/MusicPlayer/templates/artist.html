@@ -1,8 +1,5 @@
-{% extends 'layout.html' %}
+{% extends 'layout.html' %} {% block content %} {% load static %}
 
-{% block content %}
-
-{% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/artist.css' %}" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <div>
@@ -54,44 +51,58 @@
     <br />
     <h2 style="font-size: 35px;"> <strong>Albums</strong> </h2>
     <div class="divider"></div>
-    <div class="flex justify-center items-center h-screen"
-        style="width: 1000px; text-align: center; display: block; margin-left: 300px; margin-right: 200px;">
+    <div class="flex h-screen"
+        style="width: 1000px; display: block; margin-left: 200px; margin-right: 200px;">
         {% for album in artist_albums %}
             <div class="album-card">
                 <div class="card lg:card-side bg-base-100 shadow-xl" style="width: 1200px;">
                     <figure><img src="{{album.image.url}}" alt="Album" style="width: 500px;" class="image_tp"/></figure>
                     <div class="card-body">
-                    <h2 class="card-title">{{album.name}}</h2>
-                    <ul class="album_songs">
-                        {% for music in artist_musics %}
-                            {% if music.album == album %}
-                                <li class="songitem_tp">
-                                    <span class="song-info">
-                                        <div class="play-button">
-                                            <i class="fa-solid fa-play songItemPlay" data-song-url="{{music.audio_file.url}}"></i>
+                        <h2 class="card-title" style="margin-bottom: 0px;">{{ album.name }}</h2>
+                        <div class="album-details">
+                            <p style="font-size: 14px;"> <i class="fa-regular fa-clock" style="color: #c061cb;"></i> {{ album.duration }}​ ​ ​ ​ ​ ​<i class="fa-regular fa-calendar" style="color: #c061cb;"></i> {{ album.release_date }}</p>
+                        </div>
+                        <ul class="album_songs">
+                            {% for music in artist_musics %}
+                                {% if music.album == album %}
+                                    <li>
+                                        <div class="songitem_tp">
+                                            <span class="song-info">
+                                                <div class="play-button">
+                                                    <i class="far songItemPlay fa-play-circle" data-song-url="{{ music.audio_file.url }}"></i>
+                                                </div>
+                                                <span class="songName"><strong>{{ music.name }}</strong></span>
+                                                <span class="info">
+                                                    <strong>
+                                                        {% if user.is_authenticated %}
+                                                            {% if music.user_liked %}
+                                                                <button id="like-button-{{ music.id }}" onclick="removeLike('{{ music.id }}', '{{ user.id }}')">
+                                                                    <i class="heart-icon fas fa-heart songItemPlay" style="color: #c061cb;"></i>
+                                                                </button>
+                                                                <span id="likes-count-{{ music.id }}">  {{ music.total_likes }}</span>
+                                                            {% else %}
+                                                                <button id="like-button-{{ music.id }}" onclick="addLike('{{ music.id }}', '{{ user.id }}')">
+                                                                    <i class="heart-icon far fa-heart songItemPlay" style="color: #c061cb;"></i>
+                                                                </button>
+                                                                <span id="likes-count-{{ music.id }}">  {{ music.total_likes }}</span>
+                                                            {% endif %}
+                                                        {% else %}
+                                                            <button class="like-button" onclick="showAlertAndRedirect()"> 
+                                                                <i class="heart-icon far fa-heart songItemPlay" style="color: #c061cb;"></i> {{ music.total_likes }}
+                                                            </button>
+                                                        {% endif %}
+                                                    </strong>
+                                                </span>
+                                                <div class="info"> <strong><i class="fa-regular fa-clock" style="color: #c061cb;"></i> {{ music.duration }}</strong></div>
+                                            </span>
                                         </div>
-                                        <span class="songName"><strong>{{ music.name }}</strong></span>
-                                        <span class="info" id="likes-count-{{music.id}}"> 
-                                            <strong> 
-                                                <button class="like-button" data-music-id="{{music.id}}">
-                                                    <i 
-                                                        id="1"
-                                                        class="heart-icon far fa-heart songItemPlay" 
-                                                        style="color: #c061cb;"
-                                                    >
-                                                    </i> {{ music.likes }}
-                                                </button>    
-                                            </strong>
-                                        </span>
-                                        <div class="info"> <strong><i class="fa-regular fa-clock" style="color: #c061cb;"></i> {{ music.duration }}</strong></div>
-                                    </span>
-                                </li>
-                            {% endif %}
-                        {% endfor %}
-                    </ul>
-                    <div class="card-actions justify-end">
-                        <button class="btn btn-primary">Listen</button>
-                    </div>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                        <div class="card-actions justify-end">
+                            <button class="btn btn-primary">Listen</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -126,52 +137,59 @@
       </div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="{% static 'scripts/jquery-3.4.1.min.js' %}"></script>
 <script>
-    $(document).ready(function() {
-        $(".like-button").click(function () {
-            var musicId = $(this).data("music-id");
-            var $icon = $(this).find(".heart-icon");
-            var isLiked = $icon.hasClass("fas"); 
+    function addLike(music_id, user_id) {
+        var $icon = $(event.currentTarget).find(".heart-icon");
+        console.log("Music_id", music_id);
+        console.log("User id", user_id);
 
-            $.ajax({
-                url:"/like-song/" + musicId + "/",
-                type: "POST",
-                dataType: "json",
-                data: {is_liked: isLiked},
-                headers: { "X-CSRFToken": getCookie("csrftoken") },
-                success: function (data) {
-                    if(data.success) {
-                        $("#likes-count-" + musicId).text(data.likes);
-                        $icon.toggleClass("fas");
-                        $icon.addClass("animated-heart")
+        // Toggle the icon class immediately
+        $icon.removeClass("far");
+        $icon.addClass("fas");
 
-                        setTimeout(function() {
-                            $icon.removeClass("animated-heart");
-                        }, 1000)
-                    } else {
-                        alert("Error: " + data.error);
-                    }
-                },
-                error: function() {
-                    alert("An error occurred while processing your request")
-                },
-            });
+        $.ajax({
+            url: '{% url "addLike" %}',
+            data: {
+                csrfmiddlewaretoken: "{{ csrf_token }}",
+                music_id: music_id,
+                user_id: user_id
+            },
+            method: "POST",
+            success: function (response) {
+                if (response.success == true) {
+                    $("#likes-count-" + music_id).text(response.likes);
+                }
+            }
         });
-    });
-    function getCookie(name) {
-        var cookieValue = null;
-        if (document.cookie && document.cookie !== "") {
-            var cookies = document.cookie.split(";");
-            for (var i = 0; i < cookies.length; i++) {
-            var cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === name + "=") {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-            }
-        }
-        return cookieValue;
     }
+
+    function removeLike(music_id, user_id) {
+        var $icon = $(event.currentTarget).find(".heart-icon");
+        $icon.removeClass("fas");
+        $icon.addClass("far");
+
+        $.ajax({
+            url: '{% url "removeLike" %}',
+            data: {
+                csrfmiddlewaretoken: "{{ csrf_token }}",
+                music_id: music_id,
+                user_id: user_id
+            },
+            method: "POST",
+            success: function (response) {
+                if (response.success == true) {
+                    $("#likes-count-" + music_id).text(response.likes);
+                    // Remove the temporary "fas" class after a delay
+                }
+            }
+        });
+    }
+
+
+    function showAlertAndRedirect() {
+        alert("Please log in to like this song");
+        window.location.href = '/login_signup/'
+    } 
 </script>
 {% endblock %}
