@@ -106,7 +106,7 @@ class Playlist(models.Model):
     name = models.CharField(max_length=50)
     author = models.ForeignKey(Listener, on_delete=models.CASCADE)
     musics = models.ManyToManyField(Music, through='Membership')
-    order = models.JSONField(default=[])
+    order = models.JSONField(default=list)
 
     def get_musics(self):
         musics = self.musics.all()
@@ -116,6 +116,7 @@ class Playlist(models.Model):
         music_id = self.order.pop(prev_pos)
         self.order.insert(next_pos, music_id)
         self.save()
+
 
     def __str__(self):
         return self.name
@@ -140,10 +141,8 @@ class Membership(models.Model):
         super().save(force_insert, force_update, using, update_fields)
         self.playlist.order.append(self.music.id)
         self.playlist.save()
-        print(self.playlist.order)
 
     def delete(self, using=None, keep_parents=False):
         self.playlist.order.remove(self.music_id)
         self.playlist.save()
-        print(self.playlist.order)
         super().delete(using, keep_parents)
