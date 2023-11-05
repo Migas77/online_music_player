@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db.models import Count
 from django.utils.translation import gettext_lazy as _
 
+
 class ListenerManager(BaseUserManager):
     def create_user(self, email, username, password):
         if not email:
@@ -32,6 +33,7 @@ class Listener(AbstractUser):
 
     class Meta:
         verbose_name = _('Listener')
+
     def __str__(self):
         return self.username
 
@@ -47,7 +49,7 @@ class MediaContent(models.Model):
     class Meta:
         unique_together = ['name', 'release_date']
         abstract = True
-    
+
     def __str__(self):
         return self.name
 
@@ -63,12 +65,14 @@ class Performer(models.Model):
 
 class Artist(Performer):
     def __str__(self):
-        return self.name   
+        return self.name
+
     pass
 
 
 class Band(Performer):
     members = models.ManyToManyField(Artist, related_name='bands', verbose_name=_('Members'))
+
     def __str__(self):
         return self.name
 
@@ -78,6 +82,7 @@ class Album(MediaContent):
     release_date = models.DateField(verbose_name=_("Date"))
     image = models.ImageField(null=True, upload_to='album', verbose_name=_('Image'))
     performer = models.ForeignKey(Performer, on_delete=models.CASCADE, verbose_name=_("Performer"))
+
     def __str__(self):
         return self.name
 
@@ -101,6 +106,17 @@ class Playlist(models.Model):
     name = models.CharField(max_length=50)
     author = models.ForeignKey(Listener, on_delete=models.CASCADE)
     musics = models.ManyToManyField(Music, through='Membership')
+    order = models.JSONField(default=[])
+
+    def get_musics(self):
+        musics = self.musics.all()
+        return [musics.get(id=music_id) for music_id in self.order]
+
+    def change_order(self, prev_pos, next_pos):
+        music_id = self.order.pop(prev_pos)
+        self.order.insert(next_pos, music_id)
+        self.save()
+
     def __str__(self):
         return self.name
 
@@ -113,8 +129,21 @@ class Like(models.Model):
 class Membership(models.Model):
     playlist = models.ForeignKey(Playlist, on_delete=models.CASCADE, verbose_name=_('Playlist'))
     music = models.ForeignKey(Music, on_delete=models.CASCADE, verbose_name=_('Music'))
-    order_id = models.PositiveIntegerField()
+    added_date = models.DateField(auto_now_add=True)
 
     class Meta:
-        unique_together = ["playlist", "music", "order_id"]
-        ordering = ["order_id"]
+        unique_together = ["playlist", "music"]
+
+    def save(
+            self, force_insert=False, force_update=False, using=None, update_fields=None
+    ):
+        super().save(force_insert, force_update, using, update_fields)
+        self.playlist.order.append(self.music.id)
+        self.playlist.save()
+        print(self.playlist.order)
+
+    def delete(self, using=None, keep_parents=False):
+        self.playlist.order.remove(self.music_id)
+        self.playlist.save()
+        print(self.playlist.order)
+        super().delete(using, keep_parents)

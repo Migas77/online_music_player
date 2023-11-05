@@ -13,7 +13,7 @@
         <th></th>
       </tr>
     </thead>
-    <tbody>
+    <tbody id="sortable">
       <!-- row 1 -->
       {% for music in musics %}
       <tr class="songitemPlaylist" style="font-size: larger">
@@ -101,6 +101,9 @@
     </div>
   </div>
 </dialog>
+<!-- Jquery -->
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
 <script>
   let globalName;
   let globalId;
@@ -121,6 +124,37 @@
 
     modalDelete.showModal();
   };
+  // SORTABLE
+  $( function() {
+      let s,from,to;
+      let isDraggeable = true;
+      s = $( "#sortable" );
+      s.sortable({revert: true});
+      s.on("sortstart",function(event,ui){
+          from = ui.item.index();
+      });
+      $('#sortable').on('sortdeactivate',function(event,ui) {
+          to = ui.item.index();
+          if (isDraggeable){
+              isDraggeable = false
+              // disable draggeable until getting response from server
+              $.ajax({
+                url: '{% url "sortPlaylist" %}',
+                data: {
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                    prev_position: from,
+                    next_position: to,
+                    playlist_id: {{ playlist.id }}
+                },
+              method: "POST",
+              success: function (response) {
+                console.log(response.success)
+              },
+            });
+          }
+      });
+
+  } );
 </script>
 
 {% endblock %}

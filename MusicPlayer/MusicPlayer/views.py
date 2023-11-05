@@ -346,25 +346,31 @@ def playlists(request):
 @login_required
 def playlistInfo(request, playlist_id):
     playlist = Playlist.objects.get(id=playlist_id)
-    musics = Music.objects.filter(membership__playlist=playlist).order_by('membership__order_id')
     tparams = {
         'playlist': playlist,
-        'musics': musics
+        'musics': playlist.get_musics()
     }
     return render(request, 'playlistInfo.html', tparams)
 
 def add_to_playlist(request):
     if request.method == 'POST':
-        print(request.POST)
         playlist_id = request.POST.get('playlist_id')
         song_id = request.POST.get('song_id')
-        playlist = Playlist.objects.get(id=playlist_id)
-        song = Music.objects.get(id=song_id)
+        membership = Membership(playlist_id=playlist_id, music_id=song_id)
+        membership.save()
 
-        order_id = playlist.musics.count()
+        return HttpResponse(json.dumps({"success": True}), content_type='application/json')
 
-        playlist.musics.add(song, through_defaults={'order_id': order_id})
-        playlist.save()
+    else:
+        return HttpResponse(json.dumps({"success": False}), content_type='application/json')
+
+def sortPlaylist(request):
+    if request.method == 'POST':
+        playlist_id = request.POST.get('playlist_id')
+        prev_position = int(request.POST.get('prev_position'))
+        next_position = int(request.POST.get('next_position'))
+        pl = Playlist.objects.get(id=playlist_id)
+        pl.change_order(prev_position, next_position)
 
         return HttpResponse(json.dumps({"success": True}), content_type='application/json')
 
@@ -394,9 +400,8 @@ def deletePlaylist(request, id):
     return redirect('playlists')
 
 def deleteSongPlaylist(request, songId, playlistId):
-    playlist = Playlist.objects.get(id=playlistId)
-    song = Music.objects.get(id=songId)
-    playlist.musics.remove(song)
+    membership = Membership.objects.get(playlist_id=playlistId, music_id=songId)
+    membership.delete()
     return redirect('playlistInfo', playlist_id=playlistId)
 
 
