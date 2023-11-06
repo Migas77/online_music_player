@@ -404,4 +404,15 @@ def deleteSongPlaylist(request, songId, playlistId):
     membership.delete()
     return redirect('playlistInfo', playlist_id=playlistId)
 
+def songQueue(request):
+    music_ids = request.session.get("music_ids", [])
+    musics = Music.objects.filter(id__in=music_ids)
+    return render(request, 'songQueue.html', {'musics': musics})
+
+def removeMusicFromQueue(request, id):
+    music_ids = request.session.get("music_ids", [])
+    music_ids.remove(str(id))
+    request.session.save()
+    return redirect('songQueue')
+
 

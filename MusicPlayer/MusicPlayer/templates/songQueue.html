@@ -2,7 +2,7 @@
 
 <div class="overflow-x-auto">
   <table class="table">
-    <h1>{{playlist.name}}</h1>
+    <h1>Song Queue</h1>
     <hr />
     <thead>
       <tr>
@@ -87,7 +87,7 @@
 
 <dialog id="modalDelete" class="modal">
   <div class="modal-box">
-    <h3 class="font-bold text-lg">Remove song from playlist!</h3>
+    <h3 class="font-bold text-lg">Remove song from queue!</h3>
     <p class="py-4"></p>
     <div class="modal-action">
       <input type="hidden" id="globalId" value="" />
@@ -101,13 +101,9 @@
     </div>
   </div>
 </dialog>
-<!-- Jquery -->
-<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
-<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
 <script>
   let globalName;
   let globalId;
-  let playlistId;
 
   window.showModal = function (button) {
     globalName = button.getAttribute("data-song-name");
@@ -116,45 +112,13 @@
     var modalText = document.querySelector("#modalDelete p");
     var modalDelete = document.querySelector("#modalDelete");
     modalText.innerHTML =
-      "{% translate 'Are you sure you want to remove from the playlist the following song: ' %}<b>" +
+      "{% translate 'Are you sure you want to remove from the queue the following song: ' %}<b>" +
       globalName +
       "</b>?";
     document.getElementById("deleteLink").href =
-      "deleteSongPlaylist/" + document.getElementById("globalId").value;
+      "removeSongQueue/" + document.getElementById("globalId").value;
 
     modalDelete.showModal();
   };
-  // SORTABLE
-  $( function() {
-      let s,from,to;
-      let isDraggeable = true;
-      s = $( "#sortable" );
-      s.sortable({revert: true});
-      s.on("sortstart",function(event,ui){
-          from = ui.item.index();
-      });
-      $('#sortable').on('sortdeactivate',function(event,ui) {
-          to = ui.item.index();
-          if (isDraggeable){
-              isDraggeable = false
-              // disable draggeable until getting response from server
-              $.ajax({
-                url: '{% url "sortPlaylist" %}',
-                data: {
-                    csrfmiddlewaretoken: "{{ csrf_token }}",
-                    prev_position: from,
-                    next_position: to,
-                    playlist_id: {{ playlist.id }}
-                },
-              method: "POST",
-              success: function (response) {
-                console.log(response.success)
-              },
-            });
-          }
-      });
-
-  } );
 </script>
-
 {% endblock %}

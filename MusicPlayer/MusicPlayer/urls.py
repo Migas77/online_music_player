@@ -67,5 +67,7 @@ urlpatterns = [
     path('playlists/<int:playlist_id>/', views.playlistInfo, name="playlistInfo"),
     path('playlists/deletePlaylist/<int:id>', views.deletePlaylist, name='deletePlaylist'),
     path('playlists/<int:playlistId>/deleteSongPlaylist/<int:songId>', views.deleteSongPlaylist, name='deleteSongPlaylist'),
+    path('songQueue/', views.songQueue, name='songQueue'),
+    path('songQueue/removeSongQueue/<int:id>', views.removeMusicFromQueue, name='removeSongQueue'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

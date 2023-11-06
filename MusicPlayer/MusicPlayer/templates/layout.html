@@ -6,8 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Music Streaming</title>
 
-    {% load static %}
-    {% load i18n %}
+    {% load static %} {% load i18n %}
     <link
       href="https://cdn.jsdelivr.net/npm/daisyui@3.9.3/dist/full.css"
       rel="stylesheet"
@@ -55,7 +54,7 @@
           </a>
         </li>
         <li class="nav-item_tp">
-          <a class="nav-link_tp" href="#">
+          <a class="nav-link_tp" href="{% url 'songQueue' %}">
             <img src="{% static 'images/playlist.jpg' %}" alt="Song Queue" />
             <span class="link-text_tp">{% translate 'Song Queue' %}</span>
           </a>
@@ -67,7 +66,9 @@
               src="{% static 'images/admin.png' %}"
               alt="Administrator Panel"
             />
-            <span class="link-text_tp">{% translate 'Administrator Panel'%}</span>
+            <span class="link-text_tp"
+              >{% translate 'Administrator Panel'%}</span
+            >
           </a>
         </li>
         {% endif %} {% if user.is_authenticated %}
