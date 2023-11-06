@@ -1,7 +1,10 @@
+from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
-from django.db.models import Count
 from django.utils.translation import gettext_lazy as _
+from django.core.exceptions import ValidationError
+import magic
+from audio_validator.validator import AudioValidator
 
 
 class ListenerManager(BaseUserManager):
@@ -87,12 +90,32 @@ class Album(MediaContent):
         return self.name
 
 
+class Genre(models.Model):
+    title = models.CharField(max_length=15, verbose_name=_("Genre"))
+
+
+def validate_file_mimetype(file):
+    accepted = ["audio/mpeg", "audio/x-wav"]
+    file_mime_type = magic.from_buffer(file.read(), mime=True)
+    if file_mime_type not in accepted:
+        raise ValidationError(f'{file_mime_type} - Unsupported file type')
+
+
 class Music(MediaContent):
-    genre = models.CharField(max_length=50, verbose_name=_("Genre"))
+    genre = models.OneToOneField(Genre, on_delete=models.CASCADE)
     performer = models.ForeignKey(Performer, on_delete=models.CASCADE, verbose_name=_("Performer"))
     album = models.ForeignKey(Album, on_delete=models.CASCADE, blank=True, verbose_name=_("Album"))
-    image = models.ImageField(upload_to='music', verbose_name=_('Image'))
-    audio_file = models.FileField(verbose_name=_("Audio File"))
+    image = models.ImageField(upload_to='music/images', verbose_name=_('Image'))
+    audio_file = models.FileField(
+        verbose_name=_("Audio File"), upload_to='music/audios',
+        validators=[FileExtensionValidator(allowed_extensions=['mp3', 'wav']), validate_file_mimetype]
+    )
+
+    def delete(self, using=None, keep_parents=False):
+        for playl in self.playlist_set.all():
+            playl.order.remove(self.id)
+            playl.save()
+        super().delete(using, keep_parents)
 
     @property
     def total_likes(self):
@@ -116,7 +139,6 @@ class Playlist(models.Model):
         music_id = self.order.pop(prev_pos)
         self.order.insert(next_pos, music_id)
         self.save()
-
 
     def __str__(self):
         return self.name

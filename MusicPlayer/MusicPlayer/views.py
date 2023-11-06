@@ -23,19 +23,19 @@ def home(request):
         if formSearch.is_valid():
             query = formSearch.cleaned_data['query']
             songs = Music.objects.filter(
-                Q(name__icontains=query) | Q(performer__name__icontains=query) | Q(genre__icontains=query) | Q(
+                Q(name__icontains=query) | Q(performer__name__icontains=query) | Q(genre__title__icontains=query) | Q(
                     album__name__icontains=query))
 
             songs_by_genre = {genre: list(songs) for genre, songs in
-                              groupby(sorted(songs, key=lambda music: music.genre.upper()),
-                                      key=lambda music: music.genre.upper())}
+                              groupby(sorted(songs, key=lambda music: music.genre.title.upper()),
+                                      key=lambda music: music.genre.title.upper())}
 
     else:
         formSearch = MusicSearchForm()
         songs = Music.objects.all()
         songs_by_genre = {genre: list(songs) for genre, songs in
-                          groupby(sorted(songs, key=lambda music: music.genre.upper()),
-                                  key=lambda music: music.genre.upper())}
+                          groupby(sorted(songs, key=lambda music: music.genre.title.upper()),
+                                  key=lambda music: music.genre.title.upper())}
 
     if request.user.is_authenticated:
         playl = Playlist.objects.filter(author=request.user)
