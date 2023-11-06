@@ -1,7 +1,7 @@
 from django.contrib.auth.forms import AuthenticationForm, BaseUserCreationForm
 from django import forms
 from django.contrib.auth import get_user_model
-from .models import Artist, Performer, Music, Album, Playlist, Membership, Band
+from .models import Artist, Music, Album, Playlist, Band, Genre
 from django.utils.translation import gettext_lazy as _
 
 User = get_user_model()  # custom user model
@@ -104,3 +104,9 @@ class AddEditPlaylistForm(forms.ModelForm):
         widgets = {
             'name': forms.TextInput(attrs={ 'placeholder': _('Playlist name'), 'class': ' bg-transparent', 'style': 'margin-top: 25px'}),
         }
+
+class AddEditGenreForm(forms.ModelForm):
+    class Meta:
+        model = Genre
+        fields = ['title', 'image']
+

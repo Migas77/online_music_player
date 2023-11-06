@@ -12,6 +12,12 @@
     <a class="btn_tp" href="{% url 'listMusics' %}">{% translate 'All Songs' %}</a>
   </div>
   <hr />
+  <h2>{% translate 'Genre' %}</h2>
+  <div class="tasks">
+    <a class="btn_tp" href="{% url 'addGenre' %}">{% translate 'Add' %}</a>
+    <a class="btn_tp" href="{% url 'listGenres' %}">{% translate 'All Genres' %}</a>
+  </div>
+  <hr />
   <h2>{% translate 'Albuns'%}</h2>
   <div class="tasks">
     <a class="btn_tp" href="{% url 'addAlbum' %}">{% translate 'Add' %}</a>
