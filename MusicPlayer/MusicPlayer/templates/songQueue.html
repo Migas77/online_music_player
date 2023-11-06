@@ -2,7 +2,19 @@
 
 <div class="overflow-x-auto">
   <table class="table">
-    <h1>Song Queue</h1>
+    <div class="header_tp flex flex-row justify-between items-center">
+      <h1 class="margin">{% translate 'Song Queue'%}</h1>
+      <button
+        class="badge badge-outline btn-error"
+        onclick="showModal(this)"
+        data-song-name="all songs"
+        data-song-id="0"
+        style="padding: 1%; margin-right: 4%"
+      >
+        <i class="fa fa-trash-o" style="margin-right: 5px"> </i>
+        {% translate 'Remove all songs!'%}
+      </button>
+    </div>
     <hr />
     <thead>
       <tr>
