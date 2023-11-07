@@ -113,7 +113,7 @@ class Music(MediaContent):
     likes = models.ManyToManyField(Listener)
     genre = models.ForeignKey(Genre, on_delete=models.PROTECT)
     performer = models.ForeignKey(Performer, on_delete=models.CASCADE, verbose_name=_("Performer"))
-    album = models.ForeignKey(Album, on_delete=models.CASCADE, blank=True, verbose_name=_("Album"), related_name='songs')
+    album = models.ForeignKey(Album, on_delete=models.CASCADE, verbose_name=_("Album"), related_name='songs')
     image = models.ImageField(upload_to='music/images', verbose_name=_('Image'))
     audio_file = models.FileField(
         verbose_name=_("Audio File"), upload_to='music/audios',
