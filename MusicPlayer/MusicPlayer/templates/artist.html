@@ -16,7 +16,7 @@
                 <h1 class="songPerformer card-title">{{ artist_details.name }}</h1>
                 <div class="card-actions justify-end">
                     <button class="btn btn-outline btn-primary" onclick="my_modal_1.showModal()">Show Details</button>
-                    <button class="btn btn-outline btn-secondary" onclick="togglePlay('{{album.id}}')">Listen</button>
+                    <button class="btn btn-outline btn-secondary" onclick="togglePlay('{{artist_details.id}}')">Listen</button>
                 </div>
             </div>
         </div>
@@ -66,10 +66,10 @@
                         <ul class="album_songs">
                             {% for music in artist_musics %}
                                 {% if music.album == album %}
-                                    <li class="songitem-{{ album.id }}">
+                                    <li class="songitem-{{ album.id }} songitem-{{ artist_details.id }}">
                                         <div class="songitem_tp">
                                             <span class="song-info">
-                                                <div class="play-button" onclick="togglePlayAlbum('{{ album.id }}')">
+                                                <div class="play-button" onclick="playSpecificSong('{{ music.audio_file.url }}', '{{ music.name }}')" data-album-id="{{ album.id }}" data-song-url="{{ music.audio_file.url }}">
                                                     <i class="songItemPlay far fa-play-circle" data-song-url="{{ music.audio_file.url }}"></i>
                                                 </div>
                                                 <span class="songName name"><strong>{{ music.name }}</strong></span>
@@ -179,5 +179,6 @@
         alert("Please log in to like this song");
         window.location.href = '/login_signup/'
     } 
+
 </script>
 {% endblock %}
