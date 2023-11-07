@@ -1,4 +1,4 @@
-{% extends "layout.html" %} {% block content %} {% load static %}
+{% extends "layout.html" %} {% block content %} {% load static %} {% load i18n%}
 
 <div class="overflow-x-auto">
   <table class="table">
@@ -13,7 +13,7 @@
         <th></th>
       </tr>
     </thead>
-    <tbody>
+    <tbody id="sortable">
       <!-- row 1 -->
       {% for music in musics %}
       <tr class="songitemPlaylist" style="font-size: larger">
@@ -44,7 +44,14 @@
         </td>
         <td>{{music.genre}}</td>
         <th>
-          <button class="btn btn-ghost btn-xs">details</button>
+          <button
+            class="badge badge-outline btn-error"
+            onclick="showModal(this)"
+            data-song-name="{{ music.name }}"
+            data-song-id="{{ music.id }}"
+          >
+            <i class="fa fa-trash-o"></i>
+          </button>
         </th>
       </tr>
       {% endfor %}
@@ -77,5 +84,77 @@
     </div>
   </div>
 </div>
+
+<dialog id="modalDelete" class="modal">
+  <div class="modal-box">
+    <h3 class="font-bold text-lg">Remove song from playlist!</h3>
+    <p class="py-4"></p>
+    <div class="modal-action">
+      <input type="hidden" id="globalId" value="" />
+      <a class="btn btn-error" id="deleteLink">Yes</a>
+      <button
+        class="btn"
+        onclick="document.getElementById('modalDelete').close()"
+      >
+        Close
+      </button>
+    </div>
+  </div>
+</dialog>
+<!-- Jquery -->
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+<script>
+  let globalName;
+  let globalId;
+  let playlistId;
+
+  window.showModal = function (button) {
+    globalName = button.getAttribute("data-song-name");
+    globalId = button.getAttribute("data-song-id");
+    document.getElementById("globalId").value = globalId;
+    var modalText = document.querySelector("#modalDelete p");
+    var modalDelete = document.querySelector("#modalDelete");
+    modalText.innerHTML =
+      "{% translate 'Are you sure you want to remove from the playlist the following song: ' %}<b>" +
+      globalName +
+      "</b>?";
+    document.getElementById("deleteLink").href =
+      "deleteSongPlaylist/" + document.getElementById("globalId").value;
+
+    modalDelete.showModal();
+  };
+  // SORTABLE
+  $( function() {
+      let s,from,to;
+      let isDraggeable = true;
+      s = $( "#sortable" );
+      s.sortable({revert: true});
+      s.on("sortstart",function(event,ui){
+          from = ui.item.index();
+      });
+      $('#sortable').on('sortdeactivate',function(event,ui) {
+          to = ui.item.index();
+          if (isDraggeable){
+              isDraggeable = false
+              // disable draggeable until getting response from server
+              $.ajax({
+                url: '{% url "sortPlaylist" %}',
+                data: {
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                    prev_position: from,
+                    next_position: to,
+                    playlist_id: {{ playlist.id }}
+                },
+              method: "POST",
+              success: function (response) {
+                console.log(response.success)
+              },
+            });
+          }
+      });
+
+  } );
+</script>
 
 {% endblock %}

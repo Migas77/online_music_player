@@ -7,6 +7,7 @@
     <title>Spotify - Music On The Go</title>
 
     {% load static %}
+    {% load i18n %}
     <link
       href="https://cdn.jsdelivr.net/npm/daisyui@3.9.3/dist/full.css"
       rel="stylesheet"
@@ -18,7 +19,7 @@
     {% if SignUpForm.errors %}
         <dialog id="my_modal_1" class="modal">
           <div class="modal-box">
-            <h1 style="font-weight: bolder;font-size: larger; padding-bottom: 10px">Sign Up errors: </h1>
+            <h1 style="font-weight: bolder;font-size: larger; padding-bottom: 10px">{% translate 'Sign Up errors: ' %}</h1>
                 {% for k,v in SignUpForm.errors.items %}
                     {{ v }}
                 {% endfor %}
@@ -33,7 +34,7 @@
     {% elif form.errors %}
         <dialog id="my_modal_1" class="modal">
           <div class="modal-box">
-            <h1 style="font-weight: bolder;font-size: larger; padding-bottom: 10px">Login errors: </h1>
+            <h1 style="font-weight: bolder;font-size: larger; padding-bottom: 10px">{% translate 'Login errors: ' %}</h1>
                 {% for k,v in form.errors.items %}
                     {{ v }}
                 {% endfor %}
@@ -58,22 +59,22 @@
         <div class="singup_tp">
             <form action="{% url 'signup' %}" method="post">
                 {% csrf_token %}
-                <label for="chk" aria-hidden="true" style="margin: 10px;">Sign up</label>
+                <label for="chk" aria-hidden="true" style="margin: 10px;">{% translate 'Sign up' %}</label>
                 {{ SignUpForm.email }}
                 {{ SignUpForm.username }}
                 {{ SignUpForm.password1 }}
                 {{ SignUpForm.password2 }}
-                <button class="button_tp" type="submit">Sign up</button>
+                <button class="button_tp" type="submit">{% translate 'Sign up' %}</button>
             </form>
         </div>
 
       <div class="login_tp">
         <form action="{% url 'login_signup' %}" method="post">
           {% csrf_token %}
-          <label for="chk" aria-hidden="true">Log in</label>
+          <label for="chk" aria-hidden="true">{% translate 'Log in'%}</label>
           <div>{{ form.username }}</div>
           <div>{{ form.password }}</div>
-          <button class="button_tp" type="submit">Log in</button>
+          <button class="button_tp" type="submit">{% translate 'Log in'%}</button>
         </form>
       </div>
     </div>

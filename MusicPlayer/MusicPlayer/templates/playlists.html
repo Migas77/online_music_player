@@ -1,17 +1,17 @@
-{% extends "layout.html" %} {% block content %} {% load static %}
-
+{% extends "layout.html" %} {% block content %} {% load static %} {% load i18n%}
 <div>
   <h1>Playlists</h1>
   <br />
 </div>
 <div class="overflow-x-auto">
-  <table class="table">
+  <table class="table table_playlist">
     <thead class="bg-neutral-focus tableHead">
       <tr>
         <th></th>
-        <th>Name</th>
-        <th>User</th>
-        <th>Quantity</th>
+        <th>{% translate 'Name' %}</th>
+        <th>{% translate 'User' %}</th>
+        <th>{% translate 'Quantity' %}</th>
+        <th>{% translate 'Delete' %}</th>
       </tr>
     </thead>
     <tbody>
@@ -23,10 +23,54 @@
         </td>
         <td>{{playlist.author}}</td>
         <td>{{playlist.musics.count}}</td>
+        <td>
+          <button
+            class="badge badge-outline btn-error"
+            onclick="showModal(this)"
+            data-playlist-name="{{ playlist.name }}"
+            data-playlist-id="{{ playlist.id }}"
+          >
+            <i class="fa fa-trash-o"></i>
+          </button>
+        </td>
       </tr>
       {% endfor %}
     </tbody>
   </table>
 </div>
+<dialog id="modalDelete" class="modal">
+  <div class="modal-box">
+    <h3 class="font-bold text-lg">{% translate 'Delete Playlist!' %}</h3>
+    <p class="py-4"></p>
+    <div class="modal-action">
+      <input type="hidden" id="globalId" value="" />
+      <a class="btn btn-error" id="deleteLink">Yes</a>
+      <button
+        class="btn"
+        onclick="document.getElementById('modalDelete').close()"
+      >
+        Close
+      </button>
+    </div>
+  </div>
+</dialog>
+<script>
+  let globalName;
+  let globalId;
+  window.showModal = function (button) {
+    globalName = button.getAttribute("data-playlist-name");
+    globalId = button.getAttribute("data-playlist-id");
+    document.getElementById("globalId").value = globalId;
+    var modalText = document.querySelector("#modalDelete p");
+    var modalDelete = document.querySelector("#modalDelete");
+    modalText.innerHTML =
+      "{% translate 'Are you sure you want to delete the following playlist: ' %} <b>" +
+      globalName +
+      "</b>?";
+    document.getElementById("deleteLink").href =
+      "deletePlaylist/" + document.getElementById("globalId").value;
 
+    modalDelete.showModal();
+  };
+</script>
 {% endblock %}

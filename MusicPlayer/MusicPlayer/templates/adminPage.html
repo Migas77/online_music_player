@@ -1,33 +1,39 @@
-{% extends "layout.html" %} {% block content %} {% load static %}
+{% extends "layout.html" %} {% block content %} {% load static %} {% load i18n %}
 <link
   rel="stylesheet"
   type="text/css"
   href="{% static 'css/adminPage.css' %}"
 />
 <div>
-  <h1>Admin Panel</h1>
-  <h2>Songs</h2>
+  <h1>{% translate 'Admin Panel' %}</h1>
+  <h2>{% translate 'Songs' %}</h2>
   <div class="tasks">
-    <a class="btn_tp" href="{% url 'addMusic' %}">Add</a>
-    <a class="btn_tp" href="{% url 'listMusics' %}">All Songs</a>
+    <a class="btn_tp" href="{% url 'addMusic' %}">{% translate 'Add' %}</a>
+    <a class="btn_tp" href="{% url 'listMusics' %}">{% translate 'All Songs' %}</a>
   </div>
   <hr />
-  <h2>Albuns</h2>
+  <h2>{% translate 'Genre' %}</h2>
   <div class="tasks">
-    <a class="btn_tp" href="{% url 'addAlbum' %}">Add</a>
-    <a class="btn_tp" href="{% url 'listAlbuns' %}">All Albuns</a>
+    <a class="btn_tp" href="{% url 'addGenre' %}">{% translate 'Add' %}</a>
+    <a class="btn_tp" href="{% url 'listGenres' %}">{% translate 'All Genres' %}</a>
   </div>
   <hr />
-  <h2>Artists</h2>
+  <h2>{% translate 'Albuns'%}</h2>
   <div class="tasks">
-    <a class="btn_tp" href="{% url 'addArtist' %}">Add</a>
-    <a class="btn_tp" href="{% url 'listArtists' %}">All Artists</a>
+    <a class="btn_tp" href="{% url 'addAlbum' %}">{% translate 'Add' %}</a>
+    <a class="btn_tp" href="{% url 'listAlbuns' %}">{% translate 'All Albuns' %}</a>
   </div>
   <hr />
-  <h2>Bands</h2>
+  <h2>{% translate 'Artists' %}</h2>
   <div class="tasks">
-    <a class="btn_tp" href="{% url 'addBand' %}">Add</a>
-    <a class="btn_tp" href="{% url 'listBands' %}">All Bands</a>
+    <a class="btn_tp" href="{% url 'addArtist' %}">{% translate 'Add' %}</a>
+    <a class="btn_tp" href="{% url 'listArtists' %}">{% translate 'All Artists' %}</a>
+  </div>
+  <hr />
+  <h2>{% translate 'Bands' %}</h2>
+  <div class="tasks">
+    <a class="btn_tp" href="{% url 'addBand' %}">{% translate 'Add' %}</a>
+    <a class="btn_tp" href="{% url 'listBands' %}">{% translate 'All Bands' %}</a>
   </div>
   <hr />
 </div>

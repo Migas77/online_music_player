@@ -1,7 +1,13 @@
+from datetime import timedelta
+from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
-from django.db.models import Count
 from django.utils.translation import gettext_lazy as _
+from django.core.exceptions import ValidationError
+from django.db.models import Sum
+import magic
+from tinytag import TinyTag
+
 
 class ListenerManager(BaseUserManager):
     def create_user(self, email, username, password):
@@ -26,36 +32,37 @@ class ListenerManager(BaseUserManager):
 
 # Custom User
 class Listener(AbstractUser):
-    followers = models.ManyToManyField('self')
+    followers = models.ManyToManyField('self', verbose_name=_('Followers'))
     objects = ListenerManager()
-    email = models.EmailField(_("email address"), blank=True, unique=True)
+    email = models.EmailField(blank=True, unique=True, verbose_name=_("Email"))
 
     class Meta:
-        verbose_name = 'Listener'
+        verbose_name = _('Listener')
+
     def __str__(self):
         return self.username
 
 
 class MediaContent(models.Model):
-    name = models.CharField(max_length=50)
-    release_date = models.DateTimeField(auto_now_add=True)
+    name = models.CharField(max_length=50, verbose_name=_("Name"))
+    release_date = models.DateTimeField(auto_now_add=True, verbose_name=_("Release Date"))
     # will set to timezone.now when instance is created
-    duration = models.DurationField(null=True)
+    duration = models.DurationField(null=True, verbose_name=_("Duration"))
     # non mandatory field
-    followers = models.ManyToManyField(Listener, blank=True)
+    followers = models.ManyToManyField(Listener, blank=True, verbose_name=_("Followers"))
 
     class Meta:
         unique_together = ['name', 'release_date']
         abstract = True
-    
+
     def __str__(self):
         return self.name
 
 
 class Performer(models.Model):
-    name = models.CharField(max_length=50)
-    image = models.ImageField(upload_to='performer')
-    description = models.CharField(max_length=10000, blank=True)
+    name = models.CharField(max_length=50, verbose_name=_("Name"))
+    image = models.ImageField(upload_to='performer', verbose_name=_("Image"))
+    description = models.CharField(max_length=10000, blank=True, verbose_name=_("Description"))
 
     def __str__(self):
         return self.name
@@ -63,31 +70,74 @@ class Performer(models.Model):
 
 class Artist(Performer):
     def __str__(self):
-        return self.name   
+        return self.name
+
     pass
 
 
 class Band(Performer):
-    members = models.ManyToManyField(Artist, related_name='bands')
+    members = models.ManyToManyField(Artist, related_name='bands', verbose_name=_('Members'))
+
     def __str__(self):
         return self.name
 
 
 class Album(MediaContent):
-    name = models.CharField(max_length=100)
-    release_date = models.DateField()
-    image = models.ImageField(null=True, upload_to='album')
-    performer = models.ForeignKey(Performer, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100, verbose_name=_("Name"))
+    release_date = models.DateField(verbose_name=_("Date"))
+    image = models.ImageField(null=True, upload_to='album', verbose_name=_('Image'))
+    performer = models.ForeignKey(Performer, on_delete=models.CASCADE, verbose_name=_("Performer"))
+
+    def calculate_duration(self):
+        duration_sum = self.songs.aggregate(total_duration=Sum('duration'))['total_duration']
+        return duration_sum
+
     def __str__(self):
         return self.name
 
 
+class Genre(models.Model):
+    title = models.CharField(max_length=15, verbose_name=_("Genre"), unique=True)
+    image = models.ImageField(upload_to='genres')
+    def __str__(self):
+        return self.title
+
+
+
+def validate_file_mimetype(file):
+    accepted = ["audio/mpeg", "audio/x-wav"]
+    file_mime_type = magic.from_buffer(file.read(), mime=True)
+    if file_mime_type not in accepted:
+        raise ValidationError(f'{file_mime_type} - Unsupported file type')
+
+
 class Music(MediaContent):
-    genre = models.CharField(max_length=50)
-    performer = models.ForeignKey(Performer, on_delete=models.CASCADE)
-    album = models.ForeignKey(Album, on_delete=models.CASCADE, blank=True)
-    image = models.ImageField(upload_to='music')
-    audio_file = models.FileField()
+    genre = models.ForeignKey(Genre, on_delete=models.PROTECT)
+    performer = models.ForeignKey(Performer, on_delete=models.CASCADE, verbose_name=_("Performer"))
+    album = models.ForeignKey(Album, on_delete=models.CASCADE, blank=True, verbose_name=_("Album"), related_name='songs')
+    image = models.ImageField(upload_to='music/images', verbose_name=_('Image'))
+    audio_file = models.FileField(
+        verbose_name=_("Audio File"), upload_to='music/audios',
+        validators=[FileExtensionValidator(allowed_extensions=['mp3', 'wav']), validate_file_mimetype]
+    )
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        audio_file_path = self.audio_file.path
+
+        audio = TinyTag.get(audio_file_path)
+        duration =  round(audio.duration / 60)
+
+        duration_timedelta = timedelta(minutes=duration)
+
+        self.duration = duration_timedelta
+        super().save(*args, **kwargs)
+
+    def delete(self, using=None, keep_parents=False):
+        for playl in self.playlist_set.all():
+            playl.order.remove(self.id)
+            playl.save()
+        super().delete(using, keep_parents)
 
     @property
     def total_likes(self):
@@ -101,20 +151,42 @@ class Playlist(models.Model):
     name = models.CharField(max_length=50)
     author = models.ForeignKey(Listener, on_delete=models.CASCADE)
     musics = models.ManyToManyField(Music, through='Membership')
+    order = models.JSONField(default=list)
+
+    def get_musics(self):
+        musics = self.musics.all()
+        return [musics.get(id=music_id) for music_id in self.order]
+
+    def change_order(self, prev_pos, next_pos):
+        music_id = self.order.pop(prev_pos)
+        self.order.insert(next_pos, music_id)
+        self.save()
+
     def __str__(self):
         return self.name
 
 
 class Like(models.Model):
-    user = models.ForeignKey(Listener, on_delete=models.CASCADE)
-    music = models.ForeignKey(Music, on_delete=models.CASCADE, related_name="likes")
+    user = models.ForeignKey(Listener, on_delete=models.CASCADE, verbose_name=_('User'))
+    music = models.ForeignKey(Music, on_delete=models.CASCADE, related_name="likes", verbose_name=_('Likes'))
 
 
 class Membership(models.Model):
-    playlist = models.ForeignKey(Playlist, on_delete=models.CASCADE)
-    music = models.ForeignKey(Music, on_delete=models.CASCADE)
-    order_id = models.PositiveIntegerField()
+    playlist = models.ForeignKey(Playlist, on_delete=models.CASCADE, verbose_name=_('Playlist'))
+    music = models.ForeignKey(Music, on_delete=models.CASCADE, verbose_name=_('Music'))
+    added_date = models.DateField(auto_now_add=True)
 
     class Meta:
-        unique_together = ["playlist", "music", "order_id"]
-        ordering = ["order_id"]
+        unique_together = ["playlist", "music"]
+
+    def save(
+            self, force_insert=False, force_update=False, using=None, update_fields=None
+    ):
+        super().save(force_insert, force_update, using, update_fields)
+        self.playlist.order.append(self.music.id)
+        self.playlist.save()
+
+    def delete(self, using=None, keep_parents=False):
+        self.playlist.order.remove(self.music_id)
+        self.playlist.save()
+        super().delete(using, keep_parents)

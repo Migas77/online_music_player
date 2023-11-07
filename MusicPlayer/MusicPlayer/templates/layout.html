@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Music Streaming</title>
 
-    {% load static %}
+    {% load static %} {% load i18n %}
     <link
       href="https://cdn.jsdelivr.net/npm/daisyui@3.9.3/dist/full.css"
       rel="stylesheet"
@@ -44,7 +44,7 @@
         <li class="nav-item_tp">
           <a class="nav-link_tp" href="{% url 'about' %}">
             <img src="{% static 'images/aboutus.jpeg' %}" alt="About us" />
-            <span class="link-text_tp">About us</span>
+            <span class="link-text_tp">{% translate 'About us' %}</span>
           </a>
         </li>
         <li class="nav-item_tp">
@@ -54,9 +54,9 @@
           </a>
         </li>
         <li class="nav-item_tp">
-          <a class="nav-link_tp" href="#">
-            <img src="{% static 'images/playlist.jpg' %}" alt="Request Songs" />
-            <span class="link-text_tp">Request Songs</span>
+          <a class="nav-link_tp" href="{% url 'songQueue' %}">
+            <img src="{% static 'images/playlist.jpg' %}" alt="Song Queue" />
+            <span class="link-text_tp">{% translate 'Song Queue' %}</span>
           </a>
         </li>
         {% if user.is_authenticated and user.is_superuser %}
@@ -66,21 +66,23 @@
               src="{% static 'images/admin.png' %}"
               alt="Administrator Panel"
             />
-            <span class="link-text_tp">Administrator Panel</span>
+            <span class="link-text_tp"
+              >{% translate 'Administrator Panel'%}</span
+            >
           </a>
         </li>
         {% endif %} {% if user.is_authenticated %}
         <li class="nav-item_tp">
           <a class="nav-link_tp" href="{% url 'logout' %}">
             <img src="{% static 'images/user.jpeg' %}" alt="Log Out" />
-            <span class="link-text_tp">Log Out</span>
+            <span class="link-text_tp">{% translate 'Log Out' %}</span>
           </a>
         </li>
         {% else %}
         <li class="nav-item_tp">
           <a class="nav-link_tp" href="{% url 'login_signup' %}">
             <img src="{% static 'images/user.jpeg' %}" alt="Rating & Review" />
-            <span class="link-text_tp">Log In</span>
+            <span class="link-text_tp">{% translate 'Log In' %}</span>
           </a>
         </li>
         {% endif %}

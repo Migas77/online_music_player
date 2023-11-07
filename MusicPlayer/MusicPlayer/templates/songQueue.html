@@ -1,0 +1,136 @@
+{% extends "layout.html" %} {% block content %} {% load static %} {% load i18n%}
+
+<div class="overflow-x-auto">
+  <table class="table">
+    <div class="header_tp flex flex-row justify-between items-center">
+      <h1 class="margin">{% translate 'Song Queue'%}</h1>
+      <button
+        class="badge badge-outline btn-error"
+        onclick="showModal(this)"
+        data-song-name="all songs"
+        data-song-id="0"
+        style="padding: 1%; margin-right: 4%"
+      >
+        <i class="fa fa-trash-o" style="margin-right: 5px"> </i>
+        {% translate 'Remove all songs!'%}
+      </button>
+    </div>
+    <hr />
+    <thead>
+      <tr>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody id="sortable">
+      <!-- row 1 -->
+      {% for music in musics %}
+      <tr class="songitemPlaylist" style="font-size: larger">
+        <th style="text-align: center">
+          <button class="songlistplay">
+            <i
+              id="1"
+              class="far songItemPlay fa-play-circle"
+              data-song-url="{{ music.audio_file.url }}"
+            ></i>
+          </button>
+        </th>
+        <td>
+          <div class="flex items-center">
+            <div class="avatar">
+              <div class="mask mask-squircle">
+                <img src="{{ music.image.url }}" style="max-width: 150px" />
+              </div>
+            </div>
+          </div>
+        </td>
+        <td>
+          <div class="songName">{{ music.name }}</div>
+          <br />
+          <span class="badge badge-ghost badge-sm songPerformer"
+            >{{music.performer.name}}</span
+          >
+        </td>
+        <td>{{music.genre}}</td>
+        <th>
+          <button
+            class="badge badge-outline btn-error"
+            onclick="showModal(this)"
+            data-song-name="{{ music.name }}"
+            data-song-id="{{ music.id }}"
+          >
+            <i class="fa fa-trash-o"></i>
+          </button>
+        </th>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<div class="bottom_tp margin">
+  <input type="range" name="range" id="ProgressBar" min="0" max="100" />
+  <div class="songinfo-container_tp">
+    <div class="songinfo_tp">
+      <img
+        src="{% static 'images/playing.gif' %}"
+        width="45px"
+        alt=""
+        id="gif"
+      />
+      <span id="masterSongName"></span>
+    </div>
+    <div class="icon">
+      <i class="fas fa-2x fa-step-backward" id="previous"></i>
+      <i class="far fa-2x fa-play-circle" id="masterPlay"></i>
+      <i class="fas fa-2x fa-step-forward" id="next"></i>
+    </div>
+  </div>
+</div>
+
+<dialog id="modalDelete" class="modal">
+  <div class="modal-box">
+    <h3 class="font-bold text-lg">Remove song from queue!</h3>
+    <p class="py-4"></p>
+    <div class="modal-action">
+      <input type="hidden" id="globalId" value="" />
+      <a class="btn btn-error" id="deleteLink">Yes</a>
+      <button
+        class="btn"
+        onclick="document.getElementById('modalDelete').close()"
+      >
+        Close
+      </button>
+    </div>
+  </div>
+</dialog>
+<script>
+  let globalName;
+  let globalId;
+
+  window.showModal = function (button) {
+    globalName = button.getAttribute("data-song-name");
+    globalId = button.getAttribute("data-song-id");
+    document.getElementById("globalId").value = globalId;
+    var modalText = document.querySelector("#modalDelete p");
+    var modalDelete = document.querySelector("#modalDelete");
+    modalText.innerHTML =
+      "{% translate 'Are you sure you want to remove from the queue the following song: ' %}<b>" +
+      globalName +
+      "</b>?";
+    document.getElementById("deleteLink").href =
+      "removeSongQueue/" + document.getElementById("globalId").value;
+
+    modalDelete.showModal();
+  };
+</script>
+{% endblock %}

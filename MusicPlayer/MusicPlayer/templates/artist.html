@@ -53,15 +53,15 @@
     <h2 style="font-size: 35px;"> <strong>Albums</strong> </h2>
     <div class="divider"></div>
     <div class="flex h-screen"
-        style="width: 1000px; display: block; margin-left: 200px; margin-right: 200px;">
+        style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; width: 1000px; margin-left: 200px; margin-right: 200px;">
         {% for album in artist_albums %}
-            <div class="album-card album-{{ album.id }}">
+            <div class="album-card album-{{ album.id }}" style="margin-left: 20%; margin-top: 2%;">
                 <div class="card lg:card-side bg-base-100 shadow-xl" style="width: 1200px;">
                     <figure><img src="{{album.image.url}}" alt="Album" style="width: 500px;" class="image_tp"/></figure>
                     <div class="card-body">
                         <h2 class="card-title" style="margin-bottom: 0px;">{{ album.name }}</h2>
                         <div class="album-details">
-                            <p style="font-size: 14px;"> <i class="fa-regular fa-clock" style="color: #c061cb;"></i> {{ album.duration }}​ ​ ​ ​ ​ ​<i class="fa-regular fa-calendar" style="color: #c061cb;"></i> {{ album.release_date }}</p>
+                            <p style="font-size: 14px;"> <i class="fa-regular fa-clock" style="color: #c061cb;"></i> {{ album.duration }} <i class="fa-regular fa-calendar" style="color: #c061cb;"></i> {{ album.release_date }}</p>
                         </div>
                         <ul class="album_songs">
                             {% for music in artist_musics %}

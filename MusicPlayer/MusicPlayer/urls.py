@@ -39,6 +39,7 @@ urlpatterns = [
     path('ajax/removeLike', views.removeLike, name="removeLike"),
     path('ajax/addPlaylist/', views.add_playlist, name='addPlaylist'),
     path('ajax/addToPlaylist/', views.add_to_playlist, name='addToPlaylist'),
+    path('ajax/sortPlaylist/', views.sortPlaylist, name='sortPlaylist'),
     
     # others
     path('', views.home, name='home'),
@@ -62,8 +63,15 @@ urlpatterns = [
     path('adminPanel/listBands/', views.listBands, name='listBands'),
     path('adminPanel/listBands/deleteBand/<int:id>', views.deleteBand, name='deleteBand'),
     path('adminPanel/editBand/<int:band_id>', views.editBand, name='editBand'),
+    path('adminPanel/addGenre/', views.addGenre, name='addGenre'),
+    path('adminPanel/editGenre/<int:genre_id>', views.editGenre, name='editGenre'),
+    path('adminPanel/listGenres/deleteGenre/<int:id>', views.deleteGenre, name='deleteGenre'),
+    path('adminPanel/listGenres/', views.listGenres, name='listGenres'),
     path('playlists/', views.playlists, name="playlists"),
     path('playlists/<int:playlist_id>/', views.playlistInfo, name="playlistInfo"),
-
+    path('playlists/deletePlaylist/<int:id>', views.deletePlaylist, name='deletePlaylist'),
+    path('playlists/<int:playlistId>/deleteSongPlaylist/<int:songId>', views.deleteSongPlaylist, name='deleteSongPlaylist'),
+    path('songQueue/', views.songQueue, name='songQueue'),
+    path('songQueue/removeSongQueue/<int:id>', views.removeMusicFromQueue, name='removeSongQueue'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

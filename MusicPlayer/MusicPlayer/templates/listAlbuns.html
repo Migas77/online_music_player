@@ -1,11 +1,11 @@
-{% extends "layout.html" %} {% block content %} {% load static %}
+{% extends "layout.html" %} {% block content %} {% load static %}  {% load i18n %}
 <link
   rel="stylesheet"
   type="text/css"
   href="{% static 'css/listMusics.css' %}"
 />
 
-<h1 class="margin">List of Albuns</h1>
+<h1 class="margin">{% translate 'List of Albuns' %}</h1>
 <hr />
 <div class="container_tp">
   {% for album in albuns %}
@@ -17,8 +17,8 @@
       <span class="songName card-title"> {{ album.name }}</span>
       <span class="songPerformer m-5"> {{ album.performer.name }} </span>
       <div class="card-actions justify-end">
-        <a class="badge badge-outline" href="{% url 'editAlbum' album.id%}"
-          >Edit</a
+        <a class="badge badge-outline" href="{% url 'editAlbum' album.id %}"
+          >{% translate 'Edit' %}</a
         >
         <button
           class="badge badge-outline btn-error"
@@ -26,7 +26,7 @@
           data-album-name="{{ album.name }}"
           data-album-id="{{ album.id }}"
         >
-          Delete
+          {% translate 'Delete' %}
         </button>
       </div>
     </div>
@@ -36,11 +36,11 @@
 
 <dialog id="modalDelete" class="modal">
   <div class="modal-box">
-    <h3 class="font-bold text-lg">Delete Album!</h3>
+    <h3 class="font-bold text-lg">{% translate 'Delete Album!' %}</h3>
     <p class="py-4"></p>
     <div class="modal-action">
       <input type="hidden" id="globalId" value="" />
-      <a class="btn btn-error" id="deleteLink">Yes</a>
+      <a class="btn btn-error" id="deleteLink">{% translate 'Yes' %}</a>
       <button
         class="btn"
         onclick="document.getElementById('modalDelete').close()"
@@ -61,7 +61,7 @@
     var modalText = document.querySelector("#modalDelete p");
     var modalDelete = document.querySelector("#modalDelete");
     modalText.innerHTML =
-      "Are you sure you want to delete the <b>" + globalName + "</b> album?";
+        "{% translate 'Are you sure you want to delete the following album: '%}<b>" + globalName + "</b>?";
     document.getElementById("deleteLink").href =
       "deleteAlbum/" + document.getElementById("globalId").value;
 
