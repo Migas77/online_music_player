@@ -13,9 +13,10 @@
             <figure><img src="{{ artist_details.image.url }}" alt="{{ artist_details.name }}" style="width: 1000px;" />
             </figure>
             <div class="card-body">
-                <h1 class="card-title songPerformer">{{ artist_details.name }}</h1>
+                <h1 class="songPerformer card-title">{{ artist_details.name }}</h1>
                 <div class="card-actions justify-end">
-                    <button class="btn" onclick="my_modal_1.showModal()">Show Details</button>
+                    <button class="btn btn-outline btn-primary" onclick="my_modal_1.showModal()">Show Details</button>
+                    <button class="btn btn-outline btn-secondary" onclick="togglePlay('{{album.id}}')">Listen</button>
                 </div>
             </div>
         </div>
@@ -43,7 +44,7 @@
             <div class="modal-action">
                 <form method="dialog">
                     <!-- if there is a button in form, it will close the modal -->
-                    <button class="btn">Close</button>
+                    <button class="btn btn-outline btn-error">Close</button>
                 </form>
             </div>
         </div>
@@ -54,7 +55,7 @@
     <div class="flex h-screen"
         style="width: 1000px; display: block; margin-left: 200px; margin-right: 200px;">
         {% for album in artist_albums %}
-            <div class="album-card">
+            <div class="album-card album-{{ album.id }}">
                 <div class="card lg:card-side bg-base-100 shadow-xl" style="width: 1200px;">
                     <figure><img src="{{album.image.url}}" alt="Album" style="width: 500px;" class="image_tp"/></figure>
                     <div class="card-body">
@@ -65,13 +66,13 @@
                         <ul class="album_songs">
                             {% for music in artist_musics %}
                                 {% if music.album == album %}
-                                    <li>
+                                    <li class="songitem-{{ album.id }}">
                                         <div class="songitem_tp">
                                             <span class="song-info">
-                                                <div class="play-button">
-                                                    <i class="far songItemPlay fa-play-circle" data-song-url="{{ music.audio_file.url }}"></i>
+                                                <div class="play-button" onclick="togglePlayAlbum('{{ album.id }}')">
+                                                    <i class="songItemPlay far fa-play-circle" data-song-url="{{ music.audio_file.url }}"></i>
                                                 </div>
-                                                <span class="songName"><strong>{{ music.name }}</strong></span>
+                                                <span class="songName name"><strong>{{ music.name }}</strong></span>
                                                 <span class="info">
                                                     <strong>
                                                         {% if user.is_authenticated %}
@@ -94,7 +95,7 @@
                                                         {% endif %}
                                                     </strong>
                                                 </span>
-                                                <div class="info"> <strong><i class="fa-regular fa-clock" style="color: #c061cb;"></i> {{ music.duration }}</strong></div>
+                                                <div class="info"> <strong><i class="fa-regular fa-clock" style="color: #c061cb;"></i> {{ music.duration }}</strong> <span class="songPerformer m-5"> {{ song }}</span> </div>
                                             </span>
                                         </div>
                                     </li>
@@ -102,7 +103,7 @@
                             {% endfor %}
                         </ul>
                         <div class="card-actions justify-end">
-                            <button class="btn btn-primary">Listen</button>
+                            <button class="btn btn-outline btn-secondary" onclick="togglePlayAlbum('{{album.id}}')">Listen</button>
                         </div>
                     </div>
                 </div>
@@ -120,24 +121,26 @@
     <div class="bottom_tp margin">
         <input type="range" name="range" id="ProgressBar" min="0" max="100" />
         <div class="songinfo-container_tp">
-          <div class="songinfo_tp">
-            <img
-              src="{% static 'images/playing.gif' %}"
-              width="45px"
-              alt=""
-              id="gif"
-            />
-            <span id="masterSongName"></span>
-          </div>
-          <div class="icon">
-            <i class="fas fa-2x fa-step-backward" id="previous"></i>
-            <i class="far fa-2x fa-play-circle" id="masterPlay"></i>
-            <i class="fas fa-2x fa-step-forward" id="next"></i>
-          </div>
+            <div class="songinfo_tp">
+                <img
+                src="{% static 'images/playing.gif' %}"
+                width="45px"
+                alt=""
+                id="gif"
+                />
+                <span id="masterSongName"></span>
+            </div>
+            <div class="icon">
+                <button>
+                    <i class="fas fa-2x fa-step-backward" id="previous"></i>
+                    <i class="far fa-2x fa-play-circle" id="masterPlay"></i>
+                    <i class="fas fa-2x fa-step-forward" id="next"></i>
+                </button>
+            </div>
         </div>
       </div>
 </div>
-
+<script src="{% static 'scripts/playmusic_albums.js' %}"></script>
 <script src="{% static 'scripts/jquery-3.4.1.min.js' %}"></script>
 <script>
     function toggleLike(event, musicId, userId) {

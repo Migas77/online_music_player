@@ -35,9 +35,7 @@
         <img class="image_tp" src="{{ song.image.url }}" alt="1" />
         <span class="songName card-title"> {{ song.name }}</span>
         <span class="songPerformer m-5">
-          <a href="{% url 'artist_info' song.performer.name %}"
-            >{{ song.performer.name }}</a
-          >
+          <a href="{% url 'artist_info' song.performer.name %}">{{ song.performer.name }}</a>
         </span>
         <div class="card-actions justify-end">
           <button class="songlistplay">
@@ -83,9 +81,11 @@
       <span id="masterSongName"></span>
     </div>
     <div class="icon">
-      <i class="fas fa-2x fa-step-backward" id="previous"></i>
-      <i class="far fa-2x fa-play-circle" id="masterPlay"></i>
-      <i class="fas fa-2x fa-step-forward" id="next"></i>
+      <button>
+        <i class="fas fa-2x fa-step-backward" id="previous"></i>
+        <i class="far fa-2x fa-play-circle" id="masterPlay"></i>
+        <i class="fas fa-2x fa-step-forward" id="next"></i>
+      </button>
     </div>
   </div>
 </div>
@@ -156,6 +156,7 @@
   </div>
 </dialog>
 {% endif %}
+<script src="{% static 'scripts/script.js' %}"></script>
 <script>
   var globalSongId;
   function showModal(song_id) {
