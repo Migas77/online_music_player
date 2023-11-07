@@ -4,6 +4,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
+from django.db.models import Sum
 import magic
 from tinytag import TinyTag
 
@@ -87,6 +88,10 @@ class Album(MediaContent):
     image = models.ImageField(null=True, upload_to='album', verbose_name=_('Image'))
     performer = models.ForeignKey(Performer, on_delete=models.CASCADE, verbose_name=_("Performer"))
 
+    def calculate_duration(self):
+        duration_sum = self.songs.aggregate(total_duration=Sum('duration'))['total_duration']
+        return duration_sum
+
     def __str__(self):
         return self.name
 
@@ -109,7 +114,7 @@ def validate_file_mimetype(file):
 class Music(MediaContent):
     genre = models.ForeignKey(Genre, on_delete=models.PROTECT)
     performer = models.ForeignKey(Performer, on_delete=models.CASCADE, verbose_name=_("Performer"))
-    album = models.ForeignKey(Album, on_delete=models.CASCADE, blank=True, verbose_name=_("Album"))
+    album = models.ForeignKey(Album, on_delete=models.CASCADE, blank=True, verbose_name=_("Album"), related_name='songs')
     image = models.ImageField(upload_to='music/images', verbose_name=_('Image'))
     audio_file = models.FileField(
         verbose_name=_("Audio File"), upload_to='music/audios',

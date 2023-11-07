@@ -164,7 +164,10 @@ def addMusic(request):
     if request.method == 'POST':
         form = AddEditMusicForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            music = form.save()
+            album = music.album
+            album.duration = album.calculate_duration()
+            album.save()
             return redirect('adminPanel')
     else:
         form = AddEditMusicForm()
@@ -207,7 +210,9 @@ def addAlbum(request):
     if request.method == 'POST':
         form = AddEditAlbumForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            album = form.save()
+            album.duration = album.calculate_duration()
+            album.save()
             return redirect('adminPanel')
     else:
         form = AddEditAlbumForm()
