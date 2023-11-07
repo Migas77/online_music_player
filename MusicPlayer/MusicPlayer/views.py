@@ -428,7 +428,7 @@ def songQueue(request):
 def removeMusicFromQueue(request, id):
     music_ids = request.session.get("music_ids", [])
     if id == 0:
-        music_ids.removeAll()
+        music_ids.clear()
         return redirect('songQueue')
     music_ids.remove(str(id))
     request.session.save()
