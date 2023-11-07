@@ -77,7 +77,7 @@ class AddEditArtistForm(forms.ModelForm):
 class AddEditMusicForm(forms.ModelForm):
     class Meta:
         model = Music
-        fields = ['name', 'genre', 'duration', 'album', 'performer', 'image', 'audio_file']
+        fields = ['name', 'genre', 'album', 'performer', 'image', 'audio_file']
         widgets = {
             'album': forms.Select(attrs={'class': 'addMusicClass file-input file-input-bordered w-full max-w-xs'}),
             'performer': forms.Select(attrs={'class': 'addMusicClass'}),

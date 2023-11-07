@@ -1,9 +1,12 @@
+from datetime import timedelta
 from django.core.validators import FileExtensionValidator
 from django.db import models
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
 import magic
+from tinytag import TinyTag
+
 
 class ListenerManager(BaseUserManager):
     def create_user(self, email, username, password):
@@ -89,7 +92,7 @@ class Album(MediaContent):
 
 
 class Genre(models.Model):
-    title = models.CharField(max_length=15, verbose_name=_("Genre"))
+    title = models.CharField(max_length=15, verbose_name=_("Genre"), unique=True)
     image = models.ImageField(upload_to='genres')
     def __str__(self):
         return self.title
@@ -112,6 +115,18 @@ class Music(MediaContent):
         verbose_name=_("Audio File"), upload_to='music/audios',
         validators=[FileExtensionValidator(allowed_extensions=['mp3', 'wav']), validate_file_mimetype]
     )
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+        audio_file_path = self.audio_file.path
+
+        audio = TinyTag.get(audio_file_path)
+        duration =  round(audio.duration / 60)
+
+        duration_timedelta = timedelta(minutes=duration)
+
+        self.duration = duration_timedelta
+        super().save(*args, **kwargs)
 
     def delete(self, using=None, keep_parents=False):
         for playl in self.playlist_set.all():
