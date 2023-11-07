@@ -4,8 +4,6 @@ from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
 import magic
-from audio_validator.validator import AudioValidator
-
 
 class ListenerManager(BaseUserManager):
     def create_user(self, email, username, password):
@@ -91,8 +89,11 @@ class Album(MediaContent):
 
 
 class Genre(models.Model):
-    title = models.CharField(max_length=15, verbose_name=_("Genre"), unique=True)
+    title = models.CharField(max_length=15, verbose_name=_("Genre"))
     image = models.ImageField(upload_to='genres')
+    def __str__(self):
+        return self.title
+
 
 
 def validate_file_mimetype(file):
@@ -103,7 +104,7 @@ def validate_file_mimetype(file):
 
 
 class Music(MediaContent):
-    genre = models.OneToOneField(Genre, on_delete=models.PROTECT)
+    genre = models.ForeignKey(Genre, on_delete=models.PROTECT)
     performer = models.ForeignKey(Performer, on_delete=models.CASCADE, verbose_name=_("Performer"))
     album = models.ForeignKey(Album, on_delete=models.CASCADE, blank=True, verbose_name=_("Album"))
     image = models.ImageField(upload_to='music/images', verbose_name=_('Image'))
