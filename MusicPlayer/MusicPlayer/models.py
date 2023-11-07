@@ -48,8 +48,6 @@ class MediaContent(models.Model):
     release_date = models.DateTimeField(auto_now_add=True, verbose_name=_("Release Date"))
     # will set to timezone.now when instance is created
     duration = models.DurationField(null=True, verbose_name=_("Duration"))
-    # non mandatory field
-    followers = models.ManyToManyField(Listener, blank=True, verbose_name=_("Followers"))
 
     class Meta:
         unique_together = ['name', 'release_date']
@@ -112,6 +110,7 @@ def validate_file_mimetype(file):
 
 
 class Music(MediaContent):
+    likes = models.ManyToManyField(Listener)
     genre = models.ForeignKey(Genre, on_delete=models.PROTECT)
     performer = models.ForeignKey(Performer, on_delete=models.CASCADE, verbose_name=_("Performer"))
     album = models.ForeignKey(Album, on_delete=models.CASCADE, blank=True, verbose_name=_("Album"), related_name='songs')
@@ -141,7 +140,7 @@ class Music(MediaContent):
 
     @property
     def total_likes(self):
-        return Like.objects.filter(music=self).count()
+        return self.likes.count()
 
     def __str__(self):
         return self.name
@@ -164,11 +163,6 @@ class Playlist(models.Model):
 
     def __str__(self):
         return self.name
-
-
-class Like(models.Model):
-    user = models.ForeignKey(Listener, on_delete=models.CASCADE, verbose_name=_('User'))
-    music = models.ForeignKey(Music, on_delete=models.CASCADE, related_name="likes", verbose_name=_('Likes'))
 
 
 class Membership(models.Model):

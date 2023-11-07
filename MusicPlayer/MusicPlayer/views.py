@@ -5,7 +5,7 @@ import json
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Listener, Album, Music, Artist, Playlist, Membership, Performer, Band, Like, Genre
+from .models import Album, Music, Artist, Playlist, Membership, Performer, Band, Genre
 from django.contrib.auth import views as auth_views
 from MusicPlayer.forms import LoginForm, SignUpForm, MusicSearchForm, AddEditArtistForm, AddEditMusicForm, \
     AddEditBandForm, \
@@ -14,7 +14,6 @@ from django.contrib.auth import login
 from django.db.models import Q, Case, When, Value, BooleanField, ProtectedError
 from itertools import groupby
 from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
 
 
 # Custom User
@@ -107,7 +106,7 @@ def artistInformation(request, artist_name):
     if request.user.is_authenticated:
         artist_musics = artist_musics.annotate(
             user_liked=Case(
-                When(likes__user=request.user, then=Value(True)),
+                When(likes__id=request.user.id, then=Value(True)),
                 default=Value(False),
                 output_field=BooleanField()
             )
@@ -246,17 +245,12 @@ def is_ajax(request):
 
 def addLike(request):
     music_id = request.POST.get("music_id")
-    user_id = request.POST.get("user_id")
 
     try:
         music = Music.objects.get(id=music_id)
-        user = Listener.objects.get(id=user_id)
-
-        like, create = Like.objects.get_or_create(user=user, music=music)
-
-        likes = music.total_likes
-        print(likes)
-        return JsonResponse({"success": True, "likes": likes})
+        print(type(request.user))
+        music.likes.add(request.user.id)
+        return JsonResponse({"success": True, "likes": music.total_likes})
 
     except Music.DoesNotExist:
         return JsonResponse({"success": False, "error": "Music not found"})
@@ -264,15 +258,12 @@ def addLike(request):
 
 def removeLike(request):
     music_id = request.POST.get("music_id")
-    user_id = request.POST.get("user_id")
 
     try:
         music = Music.objects.get(id=music_id)
-        user = Listener.objects.get(id=user_id)
-        Like.objects.filter(user=user, music=music_id).delete()
-
-        likes = music.total_likes
-        return JsonResponse({"success": True, "likes": likes})
+        print(type(request.user))
+        music.likes.remove(request.user.id)
+        return JsonResponse({"success": True, "likes": music.total_likes})
 
     except Music.DoesNotExist:
         return JsonResponse({"success": False, "error": "Music not found"})
