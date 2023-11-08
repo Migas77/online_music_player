@@ -1,4 +1,4 @@
-{% extends 'layout.html' %} {% block content %} {% load static %}
+{% extends 'layout.html' %} {% block content %} {% load static %} {% load i18n %}
 
 <link rel="stylesheet" type="text/css" href="{% static 'css/artist.css' %}" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -32,7 +32,7 @@
                 {% for member in artist_details.members.all %}
                 <div class="flex flex-col items-center">
                     <div class="avatar">
-                        <div class="w-24 rounded w-24 rounded overflow-hidden">
+                        <div class="mask mask-squircle">
                             <img src="{{ member.image.url }}" alt="{{ member.name }}" style="width: 150px;" />
                         </div>
                     </div>
@@ -50,6 +50,22 @@
         </div>
     </dialog>
     <br />
+    <div style="position: relative">
+        <div
+          class="alert alert-success"
+          id="successMessages"
+          style="opacity: 0; position: absolute"
+        >
+          <span>{% translate "Your Music Has Been Added to the Queue!" %}</span>
+        </div>
+        <div
+          class="alert alert-success"
+          id="successAddplaylist"
+          style="opacity: 0; position: absolute"
+        >
+          <span>{% translate "Your Music Has Been Added to the Playlist!"%}</span>
+        </div>
+    </div>
     <h2 style="font-size: 35px;"> <strong>Albums</strong> </h2>
     <div class="divider"></div>
     <div class="flex h-screen"
@@ -61,16 +77,18 @@
                     <div class="card-body">
                         <h2 class="card-title" style="margin-bottom: 0px;">{{ album.name }}</h2>
                         <div class="album-details">
-                            <p style="font-size: 14px;"> <i class="fa-regular fa-clock" style="color: #c061cb;"></i> {{ album.duration }} <i class="fa-regular fa-calendar" style="color: #c061cb;"></i> {{ album.release_date }}</p>
+                            <p style="font-size: 14px;"> <i class="fa-regular fa-clock" style="color: #c061cb;"></i> {{ album.duration }}  ​​​​ ​ ​ ​ <i class="fa-regular fa-calendar" style="color: #c061cb;"></i> {{ album.release_date }}</p>
                         </div>
                         <ul class="album_songs">
                             {% for music in artist_musics %}
                                 {% if music.album == album %}
-                                    <li class="songitem-{{ album.id }} songitem-{{ artist_details.id }}">
+                                    <li class="songitem-{{ album.id }} songitem-{{ artist_details.id }} song-info">
                                         <div class="songitem_tp">
-                                            <span class="song-info">
+                                            <span>
                                                 <div class="play-button" onclick="playSpecificSong('{{ music.audio_file.url }}', '{{ music.name }}')" data-album-id="{{ album.id }}" data-song-url="{{ music.audio_file.url }}">
-                                                    <i class="songItemPlay far fa-play-circle" data-song-url="{{ music.audio_file.url }}"></i>
+                                                    <button>
+                                                        <i class="songItemPlay far fa-play-circle" data-song-url="{{ music.audio_file.url }}"></i>
+                                                    </button>
                                                 </div>
                                                 <span class="songName name"><strong>{{ music.name }}</strong></span>
                                                 <span class="info">
@@ -88,6 +106,12 @@
                                                                 </button>
                                                                 <span id="likes-count-{{ music.id }}">  {{ music.total_likes }}</span>
                                                             {% endif %}
+                                                            <button class="addToQueue" onclick="addMusicToQueue('{{ music.id }}')">
+                                                                <i class="fa fa-cloud-download" style="color: white"></i>
+                                                            </button>
+                                                            <button class="addToPlaylist" onclick="showModal('{{ music.id }}')">
+                                                            <i class="fa fa-plus-square-o" style="color: white"></i>      
+                                                            </button>
                                                         {% else %}
                                                             <button class="like-button" onclick="showAlertAndRedirect()"> 
                                                                 <i class="heart-icon far fa-heart songItemPlay" style="color: #c061cb;"></i> {{ music.total_likes }}
@@ -111,6 +135,71 @@
         </div>
         {% endfor %}
     </div>
+    <dialog id="addToPlaylist_modal" class="modal">
+        <div class="modal-box w-11/12 max-w-5xl">
+          <h3 class="font-bold text-lg">Playlists</h3>
+          <hr />
+          <div style="max-height: 400px; overflow-y: auto">
+            <table class="table ml-0" id="playlistMusics">
+              <!-- head -->
+              <thead>
+                <tr>
+                  <th></th>
+                  <th>Name</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for playlist in playlists %}
+                <tr>
+                  <th>{{playlist.id}}</th>
+                  <th>{{playlist.name}}</th>
+                  <td>
+                    <button onclick="addToPlaylist('{{ playlist.id }}')">
+                      <i class="fa fa-plus-square-o"></i>
+                    </button>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          <div class="modal-action">
+            <button
+              class="btn btn-active btn-primary"
+              onclick="addToPlaylist_modal.close(); newPlaylistModal.showModal()"
+            >
+              New playlist
+            </button>
+            <form method="dialog">
+              <button class="btn">Close</button>
+            </form>
+          </div>
+        </div>
+    </dialog>
+    <dialog id="newPlaylistModal" class="modal modal-bottom sm:modal-middle">
+        <div class="modal-box">
+            <h3 class="font-bold text-lg">Add New Playlist</h3>
+            <hr />
+            {% load crispy_forms_tags %}
+                <form onsubmit="return false;">
+                    {% csrf_token %} {{ formPlaylist|crispy }}
+                    <input type="hidden" name="song_id" value="{{ song_id }}" />
+                    <input
+                        type="submit"
+                        value="Submit"
+                        class="btn btn-active btn-primary"
+                        onclick="addPlaylist()"
+                        style="position: absolute; margin-top: 25px; margin-left: 290px"
+                    />
+                </form>
+            <div class="modal-action">
+                <form method="dialog">
+                    <button class="btn">Close</button>
+                </form>
+            </div>
+        </div>
+    </dialog>
     <br />
     <br />
     <br />
@@ -143,6 +232,98 @@
 <script src="{% static 'scripts/playmusic_albums.js' %}"></script>
 <script src="{% static 'scripts/jquery-3.4.1.min.js' %}"></script>
 <script>
+    function showModal(song_id) {
+        globalSongId = song_id;
+        var songIdInput = document.querySelector('input[name="song_id"]');
+        console.log("song la", globalSongId);
+        if (globalSongId) {
+            songIdInput.value = globalSongId;
+        }
+        addToPlaylist_modal.showModal();
+    }
+
+    // AJAX call to django
+    function addMusicToQueue(music_id) {
+        $.ajax({
+            url: '{% url "addMusicToQueue" %}',
+            data: {
+                csrfmiddlewaretoken: "{{ csrf_token }}",
+                music_id: music_id,
+            },
+            method: "POST",
+            success: function (response) {
+                if (response.success === true) {
+                    let successMessages = $("#successMessages");
+                    successMessages.animate({ opacity: 1 });
+                    setTimeout(function () {
+                        successMessages.animate({ opacity: 0 });
+                    }, 2000);
+                }
+            },
+        });
+    }
+
+    function addToPlaylist(playlist_id) {
+        $.ajax({
+            url: '{% url "addToPlaylist" %}',
+            data: {
+                csrfmiddlewaretoken: "{{ csrf_token }}",
+                playlist_id: playlist_id,
+                song_id: globalSongId,
+            },
+            method: "POST",
+            success: function (response) {
+                if (response.success === true) {
+                    let successMessages = $("#successAddplaylist");
+                    successMessages.animate({ opacity: 1 });
+                    setTimeout(function () {
+                        successMessages.animate({ opacity: 0 });
+                    }, 2000);
+                    addToPlaylist_modal.close();
+                }
+            },
+        });
+    }
+
+    function addPlaylist() {
+        let playlistName = document.getElementById("id_name").value.trim();
+        if (playlistName.length > 0) {
+            $.ajax({
+                url: '{% url "addPlaylist" %}',
+                data: {
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                    playlistName: playlistName,
+                },
+                method: "POST",
+                success: function (response) {
+                    if (response.success === true) {
+                        let newPlaylist = response.playlist;
+                        newPlaylistModal.close();
+                        // erase content of input
+                        document.getElementById("id_name").value = "";
+                        // add new playlist manually
+                        let table = document
+                            .getElementById("playlistMusics")
+                            .getElementsByTagName("tbody")[0];
+                        let newrow = table.insertRow(table.rows.length);
+                        let num = newrow.insertCell(0);
+                        let name = newrow.insertCell(1);
+                        let add = newrow.insertCell(2);
+                        num.outerHTML = `<th>${table.rows.length.toString()}</th>`;
+                        name.outerHTML = `<th>${playlistName}</th>`;
+                        let addButton = document.createElement("button");
+                        addButton.innerHTML = '<i class="fa fa-plus-square-o"></i>';
+                        console.log("carreguei");
+                        addButton.onclick = function () {
+                            addToPlaylist(newPlaylist.id);
+                        };
+                        add.appendChild(addButton);
+                        addToPlaylist_modal.showModal();
+                    }
+                },
+            });
+        }
+    }
     function toggleLike(event, musicId, userId) {
         var $icon = $(event.currentTarget).find(".heart-icon");
         var $likesCount = $(event.currentTarget).next();

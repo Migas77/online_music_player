@@ -14,8 +14,14 @@
     display: none;
 }
 
+.song-info:hover {
+    background-color: #4C4E52; /* Change this color to your desired hover background color */
+    transition: background-color 0.3s; /* Adjust the transition duration as needed */
+}
+
 .song-info:hover .play-button {
     display: inline-block;
+    transition: display 1s; /* Adjust the transition duration as needed */
 }
 
 .play-button i {
@@ -33,7 +39,6 @@
     li {
         display: flex;
         justify-content: space-between;
-        align-items: center;
         margin: 10px 0;
         padding: 10px;
         background-color: #000;

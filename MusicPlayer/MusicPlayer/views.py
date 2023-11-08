@@ -89,9 +89,7 @@ def about(request):
     return render(request, 'about.html', tparams)
 
 
-# endpoint /artist/<str:artist_name>
 def artistInformation(request, artist_name):
-    """Get the details, musics and albums from an artist"""
     try:
         artist_details = Artist.objects.get(name=artist_name)
         artist_type = "Artist"
@@ -111,12 +109,17 @@ def artistInformation(request, artist_name):
                 output_field=BooleanField()
             )
         )
+        playl = Playlist.objects.filter(author=request.user)
+    else:
+        playl = None
 
     tparams = {
         'artist_details': artist_details,
         'artist_albums': artist_albums,
         'artist_musics': artist_musics,
         'artist_type': artist_type,
+        'playlists': playl,
+        'formPlaylist': AddEditPlaylistForm()
     }
     return render(request, 'artist.html', tparams)
 
@@ -242,7 +245,7 @@ def listMusics(request):
 def is_ajax(request):
     return request.headers.get('X-Requested-With') == 'XMLHttpRequest'
 
-
+@login_required
 def addLike(request):
     music_id = request.POST.get("music_id")
 
@@ -255,7 +258,7 @@ def addLike(request):
     except Music.DoesNotExist:
         return JsonResponse({"success": False, "error": "Music not found"})
 
-
+@login_required
 def removeLike(request):
     music_id = request.POST.get("music_id")
 

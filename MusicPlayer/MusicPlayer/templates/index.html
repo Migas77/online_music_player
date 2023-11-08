@@ -46,12 +46,23 @@
             ></i>
           </button>
           {% if user.is_authenticated %}
-          <button class="addToQueue" onclick="addMusicToQueue('{{ song.id }}')">
-            <i class="fa fa-cloud-download"></i>
-          </button>
-          <button class="addToPlaylist" onclick="showModal('{{ song.id }}')">
-            <i class="fa fa-plus-square-o"></i>
-          </button>
+            <button class="addToQueue" onclick="addMusicToQueue('{{ song.id }}')">
+              <i class="fa fa-cloud-download"></i>
+            </button>
+            <button class="addToPlaylist" onclick="showModal('{{ song.id }}')">
+              <i class="fa fa-plus-square-o"></i>      
+            </button>
+            {% if user in song.likes.all %}
+              <button class="like-button" onclick="toggleLike(event, '{{ song.id }}', '{{ user.id }}')">
+                <i class="heart-icon fas fa-heart songItemPlay" style="color: #c061cb;"></i>
+              </button>
+              <span id="likes-count-{{ song.id }}">  {{ song.total_likes }} </span>
+            {% else %}
+              <button class="like-button" onclick="toggleLike(event, '{{ song.id }}', '{{ user.id }}')">
+                <i class="heart-icon far fa-heart songItemPlay" style="color: #c061cb;"></i>
+              </button>
+              <span id="likes-count-{{ song.id }}">  {{ song.total_likes }}</span>
+            {% endif %}
           {% endif %}
         </div>
       </div>
@@ -248,6 +259,37 @@
         },
       });
     }
+  }
+  function toggleLike(event, musicId, userId) {
+    var $icon = $(event.currentTarget).find(".heart-icon");
+    var $likesCount = $(event.currentTarget).next();
+    var isLiked = $icon.hasClass("fas");
+
+    $.ajax({
+        url: isLiked ? '{% url "removeLike" %}' : '{% url "addLike" %}',
+        data: {
+            csrfmiddlewaretoken: "{{ csrf_token }}",
+            music_id: musicId,
+        },
+        method: "POST",
+        success: function (response) {
+            if (response.success === true) {
+                if (isLiked) {
+                    $icon.removeClass("fas");
+                    $icon.addClass("far");
+                } else {
+                    $icon.removeClass("far");
+                    $icon.addClass("fas");
+                }
+                $likesCount.text(response.likes);
+                $icon.addClass("animated-heart");
+
+                setTimeout(function () {
+                    $icon.removeClass("animated-heart");
+                }, 1000);
+            }
+        },
+    });
   }
 </script>
 {% endblock %}
