@@ -165,7 +165,7 @@ def getAlbumsByPerfomer(request):
     performer_name = request.GET.get('performer_name')
     print("PERFORMER NAME: ", performer_name)
     if performer_name is not None:
-        albums = Album.objects.filter(performer__name=performer_name).values('name')
+        albums = Album.objects.filter(performer__name=performer_name).values('name', 'id')
         return JsonResponse(list(albums), safe=False)
     else:
         return JsonResponse({"error": "No performer is provided"}, status=400)

@@ -32,7 +32,7 @@ $(document).ready(function() {
     var select = $('#div_id_album').find('select');
     select.empty();
     select.append('<option value="" selected="selected">---------</option>');
-    
+
     var performerName = $(this).find(':selected').text();
     if (performerName) {
       $.ajax({
@@ -42,8 +42,7 @@ $(document).ready(function() {
         },
         success: function(data) {
           $.each(data, function(index, item) {
-            var value = index + 1;
-            select.append('<option value="' + value + '">' + item.name + '</option>');
+            select.append('<option value="' + item.id + '">' + item.name + '</option>');
           });
         }
       });
