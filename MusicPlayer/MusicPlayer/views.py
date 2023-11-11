@@ -1,4 +1,7 @@
 from datetime import datetime
+from io import StringIO
+
+from django.core.handlers.wsgi import WSGIRequest
 
 import json
 
@@ -57,7 +60,6 @@ def home(request):
 
 def sign_up(request):
     # this view is just intended to be posted from the sign_up form
-    # however if the user tries to access through the url he can
     if request.method == 'POST':
         sign_up_form = SignUpForm(request.POST)
         if sign_up_form.is_valid():
@@ -65,12 +67,22 @@ def sign_up(request):
             return redirect('home')
     else:
         sign_up_form = SignUpForm()
+
+    # Create Fake Request Without the POST data
+    # Necessary because if we passed the request to LoginView.as_view()
+    # the view would process data common to both forms like username for example
+    fake_request = WSGIRequest({
+        'REQUEST_METHOD': 'GET',
+        'wsgi.input': StringIO(),
+    })
+    fake_request.META = request.META
+
     return auth_views.LoginView.as_view(
         template_name='login.html',
         authentication_form=LoginForm,
         next_page='home',
         extra_context={"SignUpForm": sign_up_form},
-    )(request)
+    )(fake_request)
 
 
 def contact(request):
