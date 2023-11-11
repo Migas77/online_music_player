@@ -17,26 +17,42 @@ from django.contrib.auth import login
 from django.db.models import Q, Case, When, Value, BooleanField, ProtectedError
 from itertools import groupby
 from django.http import JsonResponse
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 
 # Custom User
 def home(request):
     if request.method == 'POST':
+        page = request.POST.get("page")
         formSearch = MusicSearchForm(request.POST)
         if formSearch.is_valid():
             query = formSearch.cleaned_data['query']
             songs = Music.objects.filter(
                 Q(name__icontains=query) | Q(performer__name__icontains=query) | Q(genre__title__icontains=query) | Q(
                     album__name__icontains=query))
+            # successfull search -> clean form
+            formSearch = MusicSearchForm()
+            songs_by_genre = {genre: list(songs) for genre, songs in
+                              groupby(sorted(songs, key=lambda music: music.genre.title.upper()),
+                                      key=lambda music: music.genre.title.upper())}.items()
 
     else:
         formSearch = MusicSearchForm()
         songs = Music.objects.all()
-
-    songs_by_genre = {genre: list(songs) for genre, songs in
+        page = request.GET.get("page")
+        songs_by_genre = {genre: list(songs) for genre, songs in
                       groupby(sorted(songs, key=lambda music: music.genre.title.upper()),
                               key=lambda music: music.genre.title.upper())}
+        # Only want pages if I didn't search anything
+        pgtr = Paginator(tuple(songs_by_genre.items()), 5)
+        try:
+            songs_by_genre = pgtr.page(page)
+        except (PageNotAnInteger, EmptyPage):
+            # It will enter here when
+            # the page is not specified
+            # specified badly
+            # page is empty
+            songs_by_genre = pgtr.page(1)
 
     if request.user.is_authenticated:
         playl = Playlist.objects.filter(author=request.user)
@@ -47,7 +63,6 @@ def home(request):
         'title': 'Home Page',
         'year': datetime.now().year,
         'user': request.user,
-        'songs': songs,
         'songs_by_genre': songs_by_genre,
         'playlists': playl,
         'formSearch': formSearch,

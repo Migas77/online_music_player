@@ -24,7 +24,8 @@
     <span>{% translate "Your Music Has Been Added to the Playlist!"%}</span>
   </div>
 </div>
-{% for genre, songs in songs_by_genre.items %}
+<!-- SONGS GROUPED BY GENRES -->
+{% for genre, songs in songs_by_genre %}
 <h2 class="margin">{{ genre }}</h2>
 <hr />
 <div class="container_tp margin">
@@ -71,6 +72,20 @@
   {% endfor %}
 </div>
 {% endfor %}
+{% if songs_by_genre.paginator %}
+    <div class="" style="margin-top: 25px">
+        <div class="join">
+            {% for p in songs_by_genre.paginator.page_range %}
+                {% if p == songs_by_genre.number %}
+                    <button class="join-item btn btn-active" onclick="location.href='/?page={{ p }}'">{{ p }}</button>
+                {% else %}
+                    <button class="join-item btn" onclick="location.href='/?page={{ p }}'">{{ p }}</button>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}
+
 <br />
 <br />
 <br />
