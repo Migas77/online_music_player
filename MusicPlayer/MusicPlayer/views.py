@@ -17,6 +17,7 @@ from django.contrib.auth import login
 from django.db.models import Q, Case, When, Value, BooleanField, ProtectedError
 from itertools import groupby
 from django.http import JsonResponse
+from django.core.paginator import Paginator
 
 
 # Custom User
@@ -85,15 +86,6 @@ def sign_up(request):
     )(fake_request)
 
 
-def contact(request):
-    tparams = {
-        'title': 'Contact',
-        'message': 'Your contact page.',
-        'year': datetime.now().year,
-    }
-    return render(request, 'contact.html', tparams)
-
-
 def about(request):
     tparams = {
         'year': datetime.now().year,
@@ -101,6 +93,7 @@ def about(request):
     return render(request, 'about.html', tparams)
 
 
+@login_required
 def artistInformation(request, artist_name):
     try:
         artist_details = Artist.objects.get(name=artist_name)
@@ -136,6 +129,7 @@ def artistInformation(request, artist_name):
     return render(request, 'artist.html', tparams)
 
 
+@login_required
 def adminPanel(request):
     songs = Music.objects.all()
     albums = Album.objects.all()
@@ -149,7 +143,7 @@ def adminPanel(request):
     }
     return render(request, 'adminPage.html', tparams)
 
-
+@login_required
 def addArtist(request):
     if request.method == 'POST':
         form = AddEditArtistForm(request.POST, request.FILES)
@@ -162,6 +156,7 @@ def addArtist(request):
     return render(request, 'add_edit_Artist.html', {'form': form})
 
 
+@login_required
 def editArtist(request, artist_id):
     artist = get_object_or_404(Artist, id=artist_id)
     if request.method == 'POST':
@@ -173,6 +168,8 @@ def editArtist(request, artist_id):
         form = AddEditArtistForm(instance=artist)
     return render(request, 'add_edit_Artist.html', {'form': form})
 
+
+@login_required
 def getAlbumsByPerfomer(request):
     performer_name = request.GET.get('performer_name')
     print("PERFORMER NAME: ", performer_name)
@@ -182,6 +179,7 @@ def getAlbumsByPerfomer(request):
     else:
         return JsonResponse({"error": "No performer is provided"}, status=400)
 
+@login_required
 def addMusic(request):
     if request.method == 'POST':
         form = AddEditMusicForm(request.POST, request.FILES)
@@ -195,7 +193,7 @@ def addMusic(request):
         form = AddEditMusicForm()
     return render(request, 'add_edit_Music.html', {'form': form})
 
-
+@login_required
 def editMusic(request, music_id):
     music = get_object_or_404(Music, id=music_id)
     if request.method == 'POST':
@@ -208,6 +206,7 @@ def editMusic(request, music_id):
     return render(request, 'add_edit_Music.html', {'form': form})
 
 
+@login_required
 def addBand(request):
     if request.method == 'POST':
         form = AddEditBandForm(request.POST, request.FILES)
@@ -228,6 +227,7 @@ def addBand(request):
     return render(request, 'add_edit_Band.html', {'form': form})
 
 
+@login_required
 def addAlbum(request):
     if request.method == 'POST':
         form = AddEditAlbumForm(request.POST, request.FILES)
@@ -241,6 +241,7 @@ def addAlbum(request):
     return render(request, 'add_edit_Album.html', {'form': form})
 
 
+@login_required
 def editAlbum(request, album_id):
     album = get_object_or_404(Album, id=album_id)
     if request.method == 'POST':
@@ -252,7 +253,7 @@ def editAlbum(request, album_id):
         form = AddEditAlbumForm(instance=album)
     return render(request, 'add_edit_Album.html', {'form': form})
 
-
+@login_required
 def listMusics(request):
     songs = Music.objects.all()
     tparams = {
@@ -303,12 +304,14 @@ def addMusicToQueue(request):
     return HttpResponse(json.dumps({"success": True}), content_type='application/json')
 
 
+@login_required
 def deleteMusic(request, id):
     music = Music.objects.get(id=id)
     music.delete()
     return redirect('listMusics')
 
 
+@login_required
 def listAlbuns(request):
     albuns = Album.objects.all()
     tparams = {
@@ -317,12 +320,14 @@ def listAlbuns(request):
     return render(request, 'listAlbuns.html', tparams)
 
 
+@login_required
 def deleteAlbum(request, id):
     album = Album.objects.get(id=id)
     album.delete()
     return redirect('listAlbuns')
 
 
+@login_required
 def listArtists(request):
     artists = Artist.objects.all()
     tparams = {
@@ -331,12 +336,14 @@ def listArtists(request):
     return render(request, 'listArtists.html', tparams)
 
 
+@login_required
 def deleteArtist(request, id):
     artist = Artist.objects.get(id=id)
     artist.delete()
     return redirect('listArtists')
 
 
+@login_required
 def listBands(request):
     bands = Band.objects.all()
     tparams = {
@@ -345,12 +352,14 @@ def listBands(request):
     return render(request, 'listBands.html', tparams)
 
 
+@login_required
 def deleteBand(request, id):
     band = Band.objects.get(id=id)
     band.delete()
     return redirect('listBands')
 
 
+@login_required
 def editBand(request, band_id):
     band = get_object_or_404(Band, id=band_id)
     if request.method == 'POST':
@@ -382,6 +391,7 @@ def playlistInfo(request, playlist_id):
     return render(request, 'playlistInfo.html', tparams)
 
 
+@login_required
 def add_to_playlist(request):
     if request.method == 'POST':
         playlist_id = request.POST.get('playlist_id')
@@ -395,6 +405,7 @@ def add_to_playlist(request):
         return HttpResponse(json.dumps({"success": False}), content_type='application/json')
 
 
+@login_required
 def sortPlaylist(request):
     if request.method == 'POST':
         playlist_id = request.POST.get('playlist_id')
@@ -409,6 +420,7 @@ def sortPlaylist(request):
         return HttpResponse(json.dumps({"success": False}), content_type='application/json')
 
 
+@login_required
 def add_playlist(request):
     if request.method == 'POST':
         playlistName = request.POST.get("playlistName")
@@ -426,12 +438,14 @@ def add_playlist(request):
     return HttpResponse(json.dumps({"success": False}), content_type='application/json')
 
 
+@login_required
 def deletePlaylist(request, id):
     playlist = Playlist.objects.get(id=id)
     playlist.delete()
     return redirect('playlists')
 
 
+@login_required
 def deleteSongPlaylist(request, songId, playlistId):
     membership = Membership.objects.get(playlist_id=playlistId, music_id=songId)
     membership.delete()
@@ -456,6 +470,7 @@ def removeMusicFromQueue(request, id):
     return redirect('songQueue')
 
 
+@login_required
 def addGenre(request):
     if request.method == 'POST':
         form = AddEditGenreForm(request.POST, request.FILES)
@@ -467,6 +482,7 @@ def addGenre(request):
     return render(request, 'add_edit_Genre.html', {'form': form})
 
 
+@login_required
 def editGenre(request, genre_id):
     genre = get_object_or_404(Genre, id=genre_id)
     if request.method == 'POST':
@@ -479,6 +495,7 @@ def editGenre(request, genre_id):
     return render(request, 'add_edit_Genre.html', {'form': form})
 
 
+@login_required
 def deleteGenre(request, id):
     try:
         genre = Genre.objects.get(id=id)
@@ -492,6 +509,7 @@ def deleteGenre(request, id):
     return redirect('listAlbuns')
 
 
+@login_required
 def listGenres(request):
     genres = Genre.objects.all()
     tparams = {
