@@ -161,6 +161,14 @@ def editArtist(request, artist_id):
         form = AddEditArtistForm(instance=artist)
     return render(request, 'add_edit_Artist.html', {'form': form})
 
+def getAlbumsByPerfomer(request):
+    performer_name = request.GET.get('performer_name')
+    print("PERFORMER NAME: ", performer_name)
+    if performer_name is not None:
+        albums = Album.objects.filter(performer__name=performer_name).values('name')
+        return JsonResponse(list(albums), safe=False)
+    else:
+        return JsonResponse({"error": "No performer is provided"}, status=400)
 
 def addMusic(request):
     if request.method == 'POST':

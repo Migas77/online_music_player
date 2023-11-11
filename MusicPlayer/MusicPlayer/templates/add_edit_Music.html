@@ -20,4 +20,35 @@
     </form>
   </section>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+  var select = $('#div_id_album').find('select');
+  select.empty();
+  select.append('<option value="" selected="selected">---------</option>');
+
+  $('#div_id_performer').change(function() {
+    var select = $('#div_id_album').find('select');
+    select.empty();
+    select.append('<option value="" selected="selected">---------</option>');
+    
+    var performerName = $(this).find(':selected').text();
+    if (performerName) {
+      $.ajax({
+        url: "{% url 'getAlbumsByPerfomer' %}",
+        data: {
+            'performer_name': performerName
+        },
+        success: function(data) {
+          $.each(data, function(index, item) {
+            var value = index + 1;
+            select.append('<option value="' + value + '">' + item.name + '</option>');
+          });
+        }
+      });
+    }
+  });
+});
+</script>
 {% endblock %}
