@@ -34,7 +34,7 @@ class ListenerManager(BaseUserManager):
 class Listener(AbstractUser):
     followers = models.ManyToManyField('self', verbose_name=_('Followers'))
     objects = ListenerManager()
-    email = models.EmailField(blank=True, unique=True, verbose_name=_("Email"))
+    email = models.EmailField(unique=True, verbose_name=_("Email"))
 
     class Meta:
         verbose_name = _('Listener')
@@ -60,7 +60,7 @@ class MediaContent(models.Model):
 class Performer(models.Model):
     name = models.CharField(max_length=50, verbose_name=_("Name"))
     image = models.ImageField(upload_to='performer', verbose_name=_("Image"))
-    description = models.CharField(max_length=10000, blank=True, verbose_name=_("Description"))
+    description = models.CharField(max_length=10000, verbose_name=_("Description"))
 
     def __str__(self):
         return self.name
@@ -83,7 +83,7 @@ class Band(Performer):
 class Album(MediaContent):
     name = models.CharField(max_length=100, verbose_name=_("Name"))
     release_date = models.DateField(verbose_name=_("Date"))
-    image = models.ImageField(null=True, upload_to='album', verbose_name=_('Image'))
+    image = models.ImageField(upload_to='album', verbose_name=_('Image'))
     performer = models.ForeignKey(Performer, on_delete=models.CASCADE, verbose_name=_("Performer"))
 
     def calculate_duration(self):
