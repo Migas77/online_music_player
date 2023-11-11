@@ -16,7 +16,9 @@
                 <h1 class="songPerformer card-title">{{ artist_details.name }}</h1>
                 <div class="card-actions justify-end">
                     <button class="btn btn-outline btn-primary" onclick="my_modal_1.showModal()">Show Details</button>
-                    <button class="btn btn-outline btn-secondary" onclick="togglePlay('{{artist_details.id}}')">Listen</button>
+                    {% if artist_albums %}
+                        <button class="btn btn-outline btn-secondary" onclick="togglePlay('{{artist_details.id}}')">Listen</button>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -27,19 +29,19 @@
             <p class="py-4">{{ artist_details.description }}</p>
             <br>
             {% if artist_type == "Band" %}
-            <h2 style="font-size: 20px;"> <strong>Members:</strong></h2>
-            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 scrollable-row">
-                {% for member in artist_details.members.all %}
-                <div class="flex flex-col items-center">
-                    <div class="avatar">
-                        <div class="mask mask-squircle">
-                            <img src="{{ member.image.url }}" alt="{{ member.name }}" style="width: 150px;" />
+                <h2 style="font-size: 20px;"> <strong>Members:</strong></h2>
+                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 scrollable-row">
+                    {% for member in artist_details.members.all %}
+                        <div class="flex flex-col items-center">
+                            <div class="avatar">
+                                <div class="mask mask-squircle">
+                                    <img src="{{ member.image.url }}" alt="{{ member.name }}" style="width: 150px;" />
+                                </div>
+                            </div>
+                            <span><h3 style="margin-bottom: 10px;"> <a href="{% url 'artist_info' member.name %}"> {{ member.name }} </a></h3></span>
                         </div>
-                    </div>
-                    <span><h3 style="margin-bottom: 10px;">{{ member.name }}</h3></span>
+                    {% endfor %}
                 </div>
-                {% endfor %}
-            </div>
             {% endif %}
             <div class="modal-action">
                 <form method="dialog">
@@ -67,74 +69,78 @@
         </div>
     </div>
     <h2 style="font-size: 35px;"> <strong>Albums</strong> </h2>
-    <div class="divider"></div>
-    <div class="flex h-screen"
-        style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; width: 1000px; margin-left: 200px; margin-right: 200px;">
-        {% for album in artist_albums %}
-            <div class="album-card album-{{ album.id }}" style="margin-left: 20%; margin-top: 2%;">
-                <div class="card lg:card-side bg-base-100 shadow-xl" style="width: 1200px;">
-                    <figure><img src="{{album.image.url}}" alt="Album" style="width: 500px;" class="image_tp"/></figure>
-                    <div class="card-body">
-                        <h2 class="card-title" style="margin-bottom: 0px;">{{ album.name }}</h2>
-                        <div class="album-details">
-                            <p style="font-size: 14px;"> <i class="fa-regular fa-clock" style="color: #c061cb;"></i> {{ album.duration }}  ​​​​ ​ ​ ​ <i class="fa-regular fa-calendar" style="color: #c061cb;"></i> {{ album.release_date }}</p>
-                        </div>
-                        <ul class="album_songs">
-                            {% for music in artist_musics %}
-                                {% if music.album == album %}
-                                    <li class="songitem-{{ album.id }} songitem-{{ artist_details.id }} song-info">
-                                        <div class="songitem_tp">
-                                            <span>
-                                                <div class="play-button" onclick="playSpecificSong('{{ music.audio_file.url }}', '{{ music.name }}')" data-album-id="{{ album.id }}" data-song-url="{{ music.audio_file.url }}">
-                                                    <button>
-                                                        <i class="songItemPlay far fa-play-circle" data-song-url="{{ music.audio_file.url }}"></i>
-                                                    </button>
-                                                </div>
-                                                <span class="songName name"><strong>{{ music.name }}</strong></span>
-                                                <span class="info">
-                                                    <strong>
-                                                        {% if user.is_authenticated %}
-                                                            {% if music.user_liked %}
-                                                                <button class="like-button" onclick="toggleLike(event, '{{ music.id }}', '{{ user.id }}')">
-                                                                    <i class="heart-icon fas fa-heart songItemPlay" style="color: #c061cb;"></i>
+    {% if artist_albums %}
+        <div class="divider"></div>
+        <div class="flex h-screen"
+            style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; width: 1000px; margin-left: 200px; margin-right: 200px;">
+            {% for album in artist_albums %}
+                <div class="album-card album-{{ album.id }}" style="margin-left: 20%; margin-top: 2%;">
+                    <div class="card lg:card-side bg-base-100 shadow-xl" style="width: 1200px;">
+                        <figure><img src="{{album.image.url}}" alt="Album" style="width: 500px;" class="image_tp"/></figure>
+                        <div class="card-body">
+                            <h2 class="card-title" style="margin-bottom: 0px;">{{ album.name }}</h2>
+                            <div class="album-details">
+                                <p style="font-size: 14px;"> <i class="fa-regular fa-clock" style="color: #c061cb;"></i> {{ album.duration }}  ​​​​ ​ ​ ​ <i class="fa-regular fa-calendar" style="color: #c061cb;"></i> {{ album.release_date }}</p>
+                            </div>
+                            <ul class="album_songs">
+                                {% for music in artist_musics %}
+                                    {% if music.album == album %}
+                                        <li class="songitem-{{ album.id }} songitem-{{ artist_details.id }} song-info">
+                                            <div class="songitem_tp">
+                                                <span>
+                                                    <div class="play-button" onclick="playSpecificSong('{{ music.audio_file.url }}', '{{ music.name }}')" data-album-id="{{ album.id }}" data-song-url="{{ music.audio_file.url }}">
+                                                        <button>
+                                                            <i class="songItemPlay far fa-play-circle" data-song-url="{{ music.audio_file.url }}"></i>
+                                                        </button>
+                                                    </div>
+                                                    <span class="songName name"><strong>{{ music.name }}</strong></span>
+                                                    <span class="info">
+                                                        <strong>
+                                                            {% if user.is_authenticated %}
+                                                                {% if music.user_liked %}
+                                                                    <button class="like-button" onclick="toggleLike(event, '{{ music.id }}', '{{ user.id }}')">
+                                                                        <i class="heart-icon fas fa-heart songItemPlay" style="color: #c061cb;"></i>
+                                                                    </button>
+                                                                    <span id="likes-count-{{ music.id }}">  {{ music.total_likes }}</span>
+                                                            
+                                                                {% else %}
+                                                                    <button class="like-button" onclick="toggleLike(event, '{{ music.id }}', '{{ user.id }}')">
+                                                                        <i class="heart-icon far fa-heart songItemPlay" style="color: #c061cb;"></i>
+                                                                    </button>
+                                                                    <span id="likes-count-{{ music.id }}">  {{ music.total_likes }}</span>
+                                                                {% endif %}
+                                                                <button class="addToQueue" onclick="addMusicToQueue('{{ music.id }}')">
+                                                                    <i class="fa fa-cloud-download" style="color: white"></i>
                                                                 </button>
-                                                                <span id="likes-count-{{ music.id }}">  {{ music.total_likes }}</span>
-                                                           
+                                                                <button class="addToPlaylist" onclick="showModal('{{ music.id }}')">
+                                                                <i class="fa fa-plus-square-o" style="color: white"></i>      
+                                                                </button>
                                                             {% else %}
-                                                                <button class="like-button" onclick="toggleLike(event, '{{ music.id }}', '{{ user.id }}')">
-                                                                    <i class="heart-icon far fa-heart songItemPlay" style="color: #c061cb;"></i>
+                                                                <button class="like-button" onclick="showAlertAndRedirect()"> 
+                                                                    <i class="heart-icon far fa-heart songItemPlay" style="color: #c061cb;"></i> {{ music.total_likes }}
                                                                 </button>
-                                                                <span id="likes-count-{{ music.id }}">  {{ music.total_likes }}</span>
                                                             {% endif %}
-                                                            <button class="addToQueue" onclick="addMusicToQueue('{{ music.id }}')">
-                                                                <i class="fa fa-cloud-download" style="color: white"></i>
-                                                            </button>
-                                                            <button class="addToPlaylist" onclick="showModal('{{ music.id }}')">
-                                                            <i class="fa fa-plus-square-o" style="color: white"></i>      
-                                                            </button>
-                                                        {% else %}
-                                                            <button class="like-button" onclick="showAlertAndRedirect()"> 
-                                                                <i class="heart-icon far fa-heart songItemPlay" style="color: #c061cb;"></i> {{ music.total_likes }}
-                                                            </button>
-                                                        {% endif %}
-                                                    </strong>
+                                                        </strong>
+                                                    </span>
+                                                    <div class="info"> <strong><i class="fa-regular fa-clock" style="color: #c061cb;"></i> {{ music.duration }}</strong> <span class="songPerformer m-5"> {{ song }}</span> </div>
                                                 </span>
-                                                <div class="info"> <strong><i class="fa-regular fa-clock" style="color: #c061cb;"></i> {{ music.duration }}</strong> <span class="songPerformer m-5"> {{ song }}</span> </div>
-                                            </span>
-                                        </div>
-                                    </li>
-                                {% endif %}
-                            {% endfor %}
-                        </ul>
-                        <div class="card-actions justify-end">
-                            <button class="btn btn-outline btn-secondary" onclick="togglePlayAlbum('{{album.id}}')">Listen</button>
+                                            </div>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                            <div class="card-actions justify-end">
+                                <button class="btn btn-outline btn-secondary" onclick="togglePlayAlbum('{{album.id}}')">Listen</button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+            {% endfor %}
         </div>
-        {% endfor %}
-    </div>
+    {% else %}
+        <h1>No albums have been found for the artist {{ artist_details.name }}</h1>
+    {% endif %}
     <dialog id="addToPlaylist_modal" class="modal">
         <div class="modal-box w-11/12 max-w-5xl">
           <h3 class="font-bold text-lg">Playlists</h3>
