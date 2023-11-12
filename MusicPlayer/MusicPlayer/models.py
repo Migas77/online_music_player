@@ -97,9 +97,9 @@ class Album(MediaContent):
 class Genre(models.Model):
     title = models.CharField(max_length=15, verbose_name=_("Genre"), unique=True)
     image = models.ImageField(upload_to='genres')
+
     def __str__(self):
         return self.title
-
 
 
 def validate_file_mimetype(file):
@@ -119,13 +119,14 @@ class Music(MediaContent):
         verbose_name=_("Audio File"), upload_to='music/audios',
         validators=[FileExtensionValidator(allowed_extensions=['mp3', 'wav']), validate_file_mimetype]
     )
+
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 
         audio_file_path = self.audio_file.path
 
         audio = TinyTag.get(audio_file_path)
-        duration =  round(audio.duration / 60)
+        duration = round(audio.duration / 60)
 
         duration_timedelta = timedelta(minutes=duration)
 

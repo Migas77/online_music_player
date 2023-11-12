@@ -42,6 +42,7 @@ songs.forEach((music, index) => {
 });
 
 playButtons.forEach((button, index) => {
+    console.log(index)
     button.addEventListener('click', () => {
         songIndex = index; // Atualiza o índice da música
         console.log('Song Index: ' + songIndex);

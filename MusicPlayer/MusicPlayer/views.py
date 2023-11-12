@@ -18,7 +18,7 @@ from django.db.models import Q, Case, When, Value, BooleanField, ProtectedError
 from itertools import groupby
 from django.http import JsonResponse
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-
+from django.db import IntegrityError
 
 # Custom User
 def home(request):
@@ -411,8 +411,12 @@ def add_to_playlist(request):
     if request.method == 'POST':
         playlist_id = request.POST.get('playlist_id')
         song_id = request.POST.get('song_id')
-        membership = Membership(playlist_id=playlist_id, music_id=song_id)
-        membership.save()
+        try:
+            membership = Membership(playlist_id=playlist_id, music_id=song_id)
+            membership.save()
+        except IntegrityError:
+            # this error occurs when Membership with that song and playlist already exists
+            return HttpResponse(json.dumps({"success": False}), content_type='application/json')
 
         return HttpResponse(json.dumps({"success": True}), content_type='application/json')
 
@@ -468,6 +472,8 @@ def deleteSongPlaylist(request, songId, playlistId):
 
 @login_required
 def songQueue(request):
+    # se eliminar música musics_ids não estará atualizado
+    # mas não há stress porque da maneira que está não dá erro
     music_ids = request.session.get("music_ids", [])
     musics = Music.objects.filter(id__in=music_ids)
     return render(request, 'songQueue.html', {'musics': musics})

@@ -38,13 +38,13 @@
         <td>
           {% if user in music.likes.all %}
               <button class="like-button" onclick="toggleLike(event, '{{ music.id }}', '{{ user.id }}')">
-                <i class="heart-icon fas fa-heart songItemPlay" style="color: #c061cb;"></i>
+                <i class="heart-icon fas fa-heart" style="color: #c061cb;"></i>
               </button>
               <span id="likes-count-{{ music.id }}">  {{ music.total_likes }} </span>
             
             {% else %}
               <button class="like-button" onclick="toggleLike(event, '{{ music.id }}', '{{ user.id }}')">
-                <i class="heart-icon far fa-heart songItemPlay" style="color: #c061cb;"></i>
+                <i class="heart-icon far fa-heart" style="color: #c061cb;"></i>
               </button>
               <span id="likes-count-{{ music.id }}">  {{ music.total_likes }}</span>
             {% endif %}
@@ -115,6 +115,7 @@
     </div>
   </div>
 </dialog>
+<script src="{% static 'scripts/script.js' %}"></script>
 <!-- Jquery -->
 <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>

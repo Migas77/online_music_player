@@ -55,12 +55,12 @@
             </button>
             {% if user in song.likes.all %}
               <button class="like-button" onclick="toggleLike(event, '{{ song.id }}', '{{ user.id }}')">
-                <i class="heart-icon fas fa-heart songItemPlay" style="color: #c061cb;"></i>
+                <i class="heart-icon fas fa-heart" style="color: #c061cb;"></i>
               </button>
               <span id="likes-count-{{ song.id }}">  {{ song.total_likes }} </span>
             {% else %}
               <button class="like-button" onclick="toggleLike(event, '{{ song.id }}', '{{ user.id }}')">
-                <i class="heart-icon far fa-heart songItemPlay" style="color: #c061cb;"></i>
+                <i class="heart-icon far fa-heart" style="color: #c061cb;"></i>
               </button>
               <span id="likes-count-{{ song.id }}">  {{ song.total_likes }}</span>
             {% endif %}
