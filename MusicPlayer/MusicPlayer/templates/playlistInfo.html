@@ -184,23 +184,26 @@
       });
       $('#sortable').on('sortdeactivate',function(event,ui) {
           to = ui.item.index();
-          if (isDraggeable){
-              isDraggeable = false
-              // disable draggeable until getting response from server
-              $.ajax({
-                url: '{% url "sortPlaylist" %}',
-                data: {
-                    csrfmiddlewaretoken: "{{ csrf_token }}",
-                    prev_position: from,
-                    next_position: to,
-                    playlist_id: {{ memberships.0.playlist.id }}
-                },
-              method: "POST",
-              success: function (response) {
-                console.log(response.success)
-              },
-            });
+          // disable draggeable until getting response from server
+          $.ajax({
+            url: '{% url "sortPlaylist" %}',
+            data: {
+                csrfmiddlewaretoken: "{{ csrf_token }}",
+                prev_position: from,
+                next_position: to,
+                playlist_id: {{ memberships.0.playlist.id }}
+            },
+          method: "POST",
+          success: function (response) {
+                console.log(response.success);
+                if (response.sucess === false){
+                    s.sortable('cancel');
+                }
+          },
+          error: function (){
+                s.sortable('cancel');
           }
+        });
       });
       
   } );
