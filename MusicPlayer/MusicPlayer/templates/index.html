@@ -72,20 +72,21 @@
   {% endfor %}
 </div>
 {% endfor %}
-{% if songs_by_genre.paginator %}
-    <div class="" style="margin-top: 25px">
-        <div class="join">
-            {% for p in songs_by_genre.paginator.page_range %}
-                {% if p == songs_by_genre.number %}
-                    <button class="join-item btn btn-active" onclick="location.href='/?page={{ p }}'">{{ p }}</button>
-                {% else %}
-                    <button class="join-item btn" onclick="location.href='/?page={{ p }}'">{{ p }}</button>
-                {% endif %}
-            {% endfor %}
-        </div>
-    </div>
-{% endif %}
-
+<div class="center-container">
+  {% if songs_by_genre.paginator %}
+      <div class="" style="margin-top: 25px">
+          <div class="join">
+              {% for p in songs_by_genre.paginator.page_range %}
+                  {% if p == songs_by_genre.number %}
+                      <button class="join-item btn btn-active" onclick="location.href='/?page={{ p }}'">{{ p }}</button>
+                  {% else %}
+                      <button class="join-item btn" onclick="location.href='/?page={{ p }}'">{{ p }}</button>
+                  {% endif %}
+              {% endfor %}
+          </div>
+      </div>
+  {% endif %}
+</div>
 <br />
 <br />
 <br />

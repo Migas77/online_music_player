@@ -199,6 +199,12 @@ body::-webkit-scrollbar-thumb {
   width: 80%;
 }
 
+.center-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .bottom_tp .icon img {
   width: 2rem;
   margin-top: 0.5rem;
