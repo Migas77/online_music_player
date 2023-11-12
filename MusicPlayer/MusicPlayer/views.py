@@ -400,9 +400,11 @@ def playlists(request):
 def playlistInfo(request, playlist_id):
     playlist = Playlist.objects.get(id=playlist_id)
     tparams = {
-        'playlist': playlist,
-        'musics': playlist.get_musics()
+        'memberships': playlist.get_memberships()
     }
+    #print([m.music for m in playlist.membership_set.all()])
+    #print(playlist.get_musics())
+    #print(playlist.membership_set.first().added_date)
     return render(request, 'playlistInfo.html', tparams)
 
 

@@ -153,9 +153,9 @@ class Playlist(models.Model):
     musics = models.ManyToManyField(Music, through='Membership')
     order = models.JSONField(default=list)
 
-    def get_musics(self):
-        musics = self.musics.all()
-        return [musics.get(id=music_id) for music_id in self.order]
+    def get_memberships(self):
+        # I am acessing the through field because I want the relationship attribute added_date
+        return [self.musics.through.objects.get(music__id=music_id) for music_id in self.order]
 
     def change_order(self, prev_pos, next_pos):
         music_id = self.order.pop(prev_pos)

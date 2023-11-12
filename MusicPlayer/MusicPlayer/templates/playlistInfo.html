@@ -15,7 +15,8 @@
     </thead>
     <tbody id="sortable">
       <!-- row 1 -->
-      {% for music in musics %}
+      {% for m in memberships %}
+      {% with music=m.music %}
       <tr class="songitemPlaylist" style="font-size: larger">
         <th style="text-align: center">
           <button class="songlistplay">
@@ -56,7 +57,8 @@
             <a href="{% url 'artist_info' music.performer.name %}">{{ music.performer.name }}</a>
           </span>
         </td>
-        <td>{{music.genre}}</td>
+        <td>{{ m.added_date }}</td>
+        <td>{{ music.genre }}</td>
         <th>
           <button
             class="badge badge-outline btn-error"
@@ -68,6 +70,7 @@
           </button>
         </th>
       </tr>
+      {% endwith %}
       {% endfor %}
     </tbody>
   </table>
@@ -190,7 +193,7 @@
                     csrfmiddlewaretoken: "{{ csrf_token }}",
                     prev_position: from,
                     next_position: to,
-                    playlist_id: {{ playlist.id }}
+                    playlist_id: {{ memberships.0.playlist.id }}
                 },
               method: "POST",
               success: function (response) {
