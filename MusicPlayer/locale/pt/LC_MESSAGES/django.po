@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-11-04 15:35+0000\n"
+"POT-Creation-Date: 2023-11-13 20:03+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -26,7 +26,7 @@ msgstr "Nome de Utilizador"
 msgid "Password"
 msgstr "Palavra-passe"
 
-#: MusicPlayer/forms.py:42 MusicPlayer/models.py:31
+#: MusicPlayer/forms.py:42 MusicPlayer/models.py:37
 msgid "Email"
 msgstr "Endereço de Email"
 
@@ -46,80 +46,71 @@ msgstr "Procure por uma música"
 msgid "Playlist name"
 msgstr "Nome da Playlist"
 
-#: MusicPlayer/models.py:29 MusicPlayer/models.py:45
+#: MusicPlayer/models.py:35
 msgid "Followers"
 msgstr "Seguidores"
 
-#: MusicPlayer/models.py:34
+#: MusicPlayer/models.py:40
 msgid "Listener"
 msgstr "Ouvinte"
 
-#: MusicPlayer/models.py:40 MusicPlayer/models.py:56 MusicPlayer/models.py:77
-#: MusicPlayer/templates/playlists.html:12
+#: MusicPlayer/models.py:47 MusicPlayer/models.py:61 MusicPlayer/models.py:84
+#: MusicPlayer/templates/playlists.html:11
 msgid "Name"
 msgstr "Nome"
 
-#: MusicPlayer/models.py:41
+#: MusicPlayer/models.py:48
 msgid "Release Date"
 msgstr "Data de Lançamento"
 
-#: MusicPlayer/models.py:43
+#: MusicPlayer/models.py:50
 #: venv/lib/python3.10/site-packages/django/db/models/fields/__init__.py:1795
 msgid "Duration"
 msgstr "Duração"
 
-#: MusicPlayer/models.py:57 MusicPlayer/models.py:79 MusicPlayer/models.py:89
+#: MusicPlayer/models.py:62 MusicPlayer/models.py:86 MusicPlayer/models.py:117
 #: venv/lib/python3.10/site-packages/django/db/models/fields/files.py:393
 msgid "Image"
 msgstr "Imagem"
 
-#: MusicPlayer/models.py:58
+#: MusicPlayer/models.py:63
 msgid "Description"
 msgstr "Descrição"
 
-#: MusicPlayer/models.py:71
+#: MusicPlayer/models.py:77
 msgid "Members"
 msgstr "Membros"
 
-#: MusicPlayer/models.py:78
+#: MusicPlayer/models.py:85
 msgid "Date"
 msgstr "Data"
 
-#: MusicPlayer/models.py:80 MusicPlayer/models.py:87
+#: MusicPlayer/models.py:87 MusicPlayer/models.py:115
 msgid "Performer"
 msgstr "Artista"
 
-#: MusicPlayer/models.py:86
+#: MusicPlayer/models.py:98 MusicPlayer/models.py:114
+#: MusicPlayer/templates/adminPage.html:15
 msgid "Genre"
 msgstr "Género"
 
-#: MusicPlayer/models.py:88
+#: MusicPlayer/models.py:116
 #, fuzzy
 #| msgid "All Albuns"
 msgid "Album"
 msgstr "Lista de Albuns"
 
-#: MusicPlayer/models.py:90
+#: MusicPlayer/models.py:119
 msgid "Audio File"
 msgstr "Ficheiro de Áudio"
 
-#: MusicPlayer/models.py:109 MusicPlayer/templates/playlists.html:13
-#, fuzzy
-#| msgid "Username"
-msgid "User"
-msgstr "Nome de Utilizador"
-
-#: MusicPlayer/models.py:110
-msgid "Likes"
-msgstr "Likes"
-
-#: MusicPlayer/models.py:114
+#: MusicPlayer/models.py:171
 #, fuzzy
 #| msgid "Playlist name"
 msgid "Playlist"
 msgstr "Nome da Playlist"
 
-#: MusicPlayer/models.py:115
+#: MusicPlayer/models.py:172
 msgid "Music"
 msgstr "Música"
 
@@ -161,9 +152,43 @@ msgstr ""
 "desenvolvimento web, bem como conceitos avançados da Framework Django para "
 "criar uma experiência de utilizador de grande qualidade."
 
+#: MusicPlayer/templates/add_edit_Album.html:18
+msgid "Add Album"
+msgstr "Adicionar Album"
+
+msgid "Edit Album"
+msgstr "Editar Album"
+
+#: MusicPlayer/templates/add_edit_Artist.html:18
+msgid "Add artist"
+msgstr "Adicionar Artista"
+
+#: MusicPlayer/templates/add_edit_Artist.html:18
+msgid "Edit Artist"
+msgstr "Editar Artista"
+
+#: MusicPlayer/templates/add_edit_Band.html:18
+msgid "Add Band"
+msgstr "Adicionar Banda"
+
+msgid "Edit Band"
+msgstr "Editar Banda"
+
+#: MusicPlayer/templates/add_edit_Genre.html:18
+msgid "Add Genre"
+msgstr "Adicionar Género"
+
+msgid "Edit Genre"
+msgstr "Editar Género"
+
+#: MusicPlayer/templates/add_edit_Music.html:13
+msgid "Add Music"
+msgstr "Adicionar Música"
+
+msgid "Edit Music"
+msgstr "Editar Música"
+
 #: MusicPlayer/templates/adminPage.html:8
-#, fuzzy
-#| msgid "Administrator Panel"
 msgid "Admin Panel"
 msgstr "Painel do Administrador"
 
@@ -175,6 +200,7 @@ msgstr "Músicas"
 #: MusicPlayer/templates/adminPage.html:17
 #: MusicPlayer/templates/adminPage.html:23
 #: MusicPlayer/templates/adminPage.html:29
+#: MusicPlayer/templates/adminPage.html:35
 msgid "Add"
 msgstr "Adicionar"
 
@@ -182,53 +208,54 @@ msgstr "Adicionar"
 msgid "All Songs"
 msgstr "Lista de Músicas"
 
-#: MusicPlayer/templates/adminPage.html:15
-#, fuzzy
-#| msgid "All Albuns"
-msgid "Albuns"
-msgstr "Lista de Albuns"
-
 #: MusicPlayer/templates/adminPage.html:18
+msgid "All Genres"
+msgstr "Lista de Géneros"
+
+#: MusicPlayer/templates/adminPage.html:21
+msgid "Albuns"
+msgstr "Albuns"
+
+#: MusicPlayer/templates/adminPage.html:24
 msgid "All Albuns"
 msgstr "Lista de Albuns"
 
-#: MusicPlayer/templates/adminPage.html:21
-#, fuzzy
-#| msgid "All Artists"
+#: MusicPlayer/templates/adminPage.html:27
 msgid "Artists"
-msgstr "Lista de Artistas"
+msgstr "Artistas"
 
-#: MusicPlayer/templates/adminPage.html:24
+#: MusicPlayer/templates/adminPage.html:30
 msgid "All Artists"
 msgstr "Lista de Artistas"
 
-#: MusicPlayer/templates/adminPage.html:27
-#, fuzzy
-#| msgid "All Bands"
+#: MusicPlayer/templates/adminPage.html:33
 msgid "Bands"
-msgstr "Lista de Bandas"
+msgstr "Bandas"
 
-#: MusicPlayer/templates/adminPage.html:30
+#: MusicPlayer/templates/adminPage.html:36
 msgid "All Bands"
 msgstr "Lista de Bandas"
+
+#: MusicPlayer/templates/artist.html:61 MusicPlayer/templates/index.html:17
+msgid "Your Music Has Been Added to the Queue!"
+msgstr "A Música Foi Adicionada à Lista"
+
+#: MusicPlayer/templates/artist.html:68 MusicPlayer/templates/index.html:24
+msgid "Your Music Has Been Added to the Playlist!"
+msgstr "A Música foi adicionada à Playlist"
 
 #: MusicPlayer/templates/index.html:4
 msgid "Welcome to our Music Streaming Web App"
 msgstr "Bem Vindo à nossa Music Streaming Web App"
 
-#: MusicPlayer/templates/index.html:17
-msgid "Your Music Has Been Added to the Queue!"
-msgstr "A Música Foi Adicionada à Lista"
+msgid "No results found..."
+msgstr "Nenhum resultado encontrado..."
 
-#: MusicPlayer/templates/index.html:24
-msgid "Your Music Has Been Added to the Playlist!"
-msgstr "A Música foi adicionada à Playlist"
-
-#: MusicPlayer/templates/layout.html:48
+#: MusicPlayer/templates/layout.html:47
 msgid "About us"
 msgstr "Sobre Nós"
 
-#: MusicPlayer/templates/layout.html:60
+#: MusicPlayer/templates/layout.html:59 MusicPlayer/templates/songQueue.html:6
 msgid "Song Queue"
 msgstr "Fila de Músicas"
 
@@ -236,23 +263,22 @@ msgstr "Fila de Músicas"
 msgid "Administrator Panel"
 msgstr "Painel do Administrador"
 
-#: MusicPlayer/templates/layout.html:77
+#: MusicPlayer/templates/layout.html:78
 msgid "Log Out"
 msgstr "Terminar Sessão"
 
-#: MusicPlayer/templates/layout.html:84
+#: MusicPlayer/templates/layout.html:85
 msgid "Log In"
 msgstr "Iniciar Sessão"
 
 #: MusicPlayer/templates/listAlbuns.html:8
-#, fuzzy
-#| msgid "All Albuns"
 msgid "List of Albuns"
 msgstr "Lista de Albuns"
 
 #: MusicPlayer/templates/listAlbuns.html:21
 #: MusicPlayer/templates/listArtists.html:22
 #: MusicPlayer/templates/listBands.html:22
+#: MusicPlayer/templates/listGenres.html:20
 #: MusicPlayer/templates/listMusics.html:21
 msgid "Edit"
 msgstr "Editar"
@@ -260,19 +286,22 @@ msgstr "Editar"
 #: MusicPlayer/templates/listAlbuns.html:29
 #: MusicPlayer/templates/listArtists.html:30
 #: MusicPlayer/templates/listBands.html:30
+#: MusicPlayer/templates/listGenres.html:28
 #: MusicPlayer/templates/listMusics.html:29
-#: MusicPlayer/templates/playlists.html:15
+#: MusicPlayer/templates/playlists.html:14
 #: venv/lib/python3.10/site-packages/django/forms/formsets.py:499
 msgid "Delete"
 msgstr "Remover"
 
 #: MusicPlayer/templates/listAlbuns.html:39
+#: MusicPlayer/templates/listGenres.html:47
 #, fuzzy
 #| msgid "Delete"
 msgid "Delete Album!"
 msgstr "Remover"
 
 #: MusicPlayer/templates/listAlbuns.html:43
+#: MusicPlayer/templates/listGenres.html:51
 #: venv/lib/python3.10/site-packages/django/forms/widgets.py:771
 msgid "Yes"
 msgstr "Sim"
@@ -282,8 +311,6 @@ msgid "Are you sure you want to delete the following album: "
 msgstr "Tem a certeza que deseja remover o seguinte album: "
 
 #: MusicPlayer/templates/listArtists.html:8
-#, fuzzy
-#| msgid "All Artists"
 msgid "List of Artists"
 msgstr "Lista de Artistas"
 
@@ -299,7 +326,7 @@ msgstr "Tem a certeza que deseja remover o seguinte artista: "
 
 #: MusicPlayer/templates/listBands.html:8
 msgid "List of Bands"
-msgstr ""
+msgstr "Lista de Bandas"
 
 #: MusicPlayer/templates/listBands.html:40
 #, fuzzy
@@ -311,9 +338,17 @@ msgstr "Remover"
 msgid "Are you sure you want to delete the following band: "
 msgstr "Tem a certeza que deseja remover a seguinte banda: "
 
+#: MusicPlayer/templates/listGenres.html:8
+msgid "List of Genres"
+msgstr "Lista de Géneros"
+
+#: MusicPlayer/templates/listGenres.html:72
+msgid "Are you sure you want to delete the following genre: "
+msgstr "Tem a certeza que deseja remover o seguinte género: "
+
 #: MusicPlayer/templates/listMusics.html:8
 msgid "List of Songs"
-msgstr ""
+msgstr "Lista de Músicas"
 
 #: MusicPlayer/templates/listMusics.html:64
 msgid "Are you sure you want to delete the following song: "
@@ -335,23 +370,37 @@ msgstr "Criar Conta"
 msgid "Log in"
 msgstr "Iniciar Sessão"
 
-#: MusicPlayer/templates/playlistInfo.html:116
+#: MusicPlayer/templates/playlistInfo.html:137
 msgid "Are you sure you want to remove from the playlist the following song: "
 msgstr "Tem a certeza que deseja remover da playlist a seguinte música: "
 
-#: MusicPlayer/templates/playlists.html:14
+#: MusicPlayer/templates/playlists.html:12
+#, fuzzy
+#| msgid "Username"
+msgid "User"
+msgstr "Nome de Utilizador"
+
+#: MusicPlayer/templates/playlists.html:13
 msgid "Quantity"
 msgstr "Quantidade"
 
-#: MusicPlayer/templates/playlists.html:44
+#: MusicPlayer/templates/playlists.html:43
 #, fuzzy
 #| msgid "Playlist name"
 msgid "Delete Playlist!"
 msgstr "Nome da Playlist"
 
-#: MusicPlayer/templates/playlists.html:68
+#: MusicPlayer/templates/playlists.html:67
 msgid "Are you sure you want to delete the following playlist: "
 msgstr "Tem a certeza que deseja remover a seguinte playlist: "
+
+#: MusicPlayer/templates/songQueue.html:15
+msgid "Remove all songs!"
+msgstr "Remover todas as músicas!"
+
+#: MusicPlayer/templates/songQueue.html:143
+msgid "Are you sure you want to remove from the queue the following song: "
+msgstr "Tem a certeza que deseja remover da playlist a seguinte música: "
 
 #: venv/lib/python3.10/site-packages/django/contrib/messages/apps.py:15
 msgid "Messages"
@@ -1574,6 +1623,12 @@ msgstr ""
 #: venv/lib/python3.10/site-packages/django/views/templates/default_urlconf.html:249
 msgid "Connect, get help, or contribute"
 msgstr ""
+
+msgid "We're sorry but you can't delete this Genre because it's still the gender of some existing tracks."
+msgstr "Pedimos desculpa mas não pode apagar esse género porque ainda é o género de algumas músicas existentes."
+
+#~ msgid "Likes"
+#~ msgstr "Likes"
 
 #~ msgid "email address"
 #~ msgstr "endereço de email"

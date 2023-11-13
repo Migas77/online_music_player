@@ -72,6 +72,9 @@
   {% endfor %}
 </div>
 {% endfor %}
+{% if not songs_by_genre %}
+    <h2 class="margin">{% translate 'No results found...' %}</h2>
+{% endif %}
 <div  class="" style="margin-left: 93%;">
   {% if songs_by_genre.paginator %}
       <div class=" style="margin-top: 25px">

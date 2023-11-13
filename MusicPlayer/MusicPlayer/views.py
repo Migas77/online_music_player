@@ -19,6 +19,7 @@ from itertools import groupby
 from django.http import JsonResponse
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db import IntegrityError
+from django.utils.translation import gettext_lazy as _
 
 # Custom User
 def home(request):
@@ -384,7 +385,7 @@ def editBand(request, band_id):
             return redirect('adminPanel')
     else:
         form = AddEditBandForm(instance=band)
-    return render(request, 'add_edit_Artist.html', {'form': form})
+    return render(request, 'add_edit_Band.html', {'form': form})
 
 
 @login_required
@@ -526,7 +527,7 @@ def deleteGenre(request, id):
     except ProtectedError:
         return render(request, 'listGenres.html', {
             'genres': Genre.objects.all(),
-            'deletionErrors': "We're sorry but you can't delete this Genre because it's still the gender of some existing tracks."
+            'deletionErrors': _("We're sorry but you can't delete this Genre because it's still the gender of some existing tracks.")
         })
 
     return redirect('listAlbuns')
