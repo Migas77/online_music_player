@@ -126,9 +126,10 @@ class Music(MediaContent):
         audio_file_path = self.audio_file.path
 
         audio = TinyTag.get(audio_file_path)
-        duration = round(audio.duration / 60)
+        hours, remainder = divmod(audio.duration, 3600)
+        minutes, seconds = divmod(remainder, 60)
 
-        duration_timedelta = timedelta(minutes=duration)
+        duration_timedelta = timedelta(hours=round(hours),minutes=round(minutes), seconds=round(seconds))
 
         self.duration = duration_timedelta
         super().save(*args, **kwargs)
