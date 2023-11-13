@@ -4,69 +4,88 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Spotify - Music On The Go</title>
+    <title>Music Streaming - Music On The Go</title>
 
-    {% load static %}
-    {% load i18n %}
+    {% load static %} {% load i18n %}
     <link
       href="https://cdn.jsdelivr.net/npm/daisyui@3.9.3/dist/full.css"
       rel="stylesheet"
       type="text/css"
     />
-    <link rel="stylesheet" type="text/css" href="{% static 'css/login.css' %}" />
-</head>
-<body>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'css/login.css' %}"
+    />
+  </head>
+  <body>
     {% if SignUpForm.errors %}
-        <dialog id="my_modal_1" class="modal">
-          <div class="modal-box">
-            <h1 style="font-weight: bolder;font-size: larger; padding-bottom: 10px">{% translate 'Sign Up errors: ' %}</h1>
-                {% for k,v in SignUpForm.errors.items %}
-                    {{ v }}
-                {% endfor %}
-            <div class="modal-action">
-              <form method="dialog">
-                <button class="btn">Close</button>
-              </form>
-            </div>
-          </div>
-        </dialog>
-        <script> my_modal_1.showModal() </script>
+    <dialog id="my_modal_1" class="modal">
+      <div class="modal-box">
+        <h1
+          style="font-weight: bolder; font-size: larger; padding-bottom: 10px"
+        >
+          {% translate 'Sign Up errors: ' %}
+        </h1>
+        {% for k,v in SignUpForm.errors.items %} {{ v }} {% endfor %}
+        <div class="modal-action">
+          <form method="dialog">
+            <button class="btn">Close</button>
+          </form>
+        </div>
+      </div>
+    </dialog>
+    <script>
+      my_modal_1.showModal();
+    </script>
     {% elif form.errors %}
-        <dialog id="my_modal_1" class="modal">
-          <div class="modal-box">
-            <h1 style="font-weight: bolder;font-size: larger; padding-bottom: 10px">{% translate 'Login errors: ' %}</h1>
-                {% for k,v in form.errors.items %}
-                    {{ v }}
-                {% endfor %}
-            <div class="modal-action">
-              <form method="dialog">
-                <button class="btn">Close</button>
-              </form>
-            </div>
-          </div>
-        </dialog>
-        <script> my_modal_1.showModal() </script>
+    <dialog id="my_modal_1" class="modal">
+      <div class="modal-box">
+        <h1
+          style="font-weight: bolder; font-size: larger; padding-bottom: 10px"
+        >
+          {% translate 'Login errors: ' %}
+        </h1>
+        {% for k,v in form.errors.items %} {{ v }} {% endfor %}
+        <div class="modal-action">
+          <form method="dialog">
+            <button class="btn">Close</button>
+          </form>
+        </div>
+      </div>
+    </dialog>
+    <script>
+      my_modal_1.showModal();
+    </script>
     {% endif %}
 
     <div class="main_ia">
-        <a href="/"><label class="brand_tp"><img src="{% static 'images/logo.png' %}" />Spotify</label></a>
-        {% if SignUpForm.errors %}
-        <input type="checkbox" id="chk" aria-hidden="true"/> <!--SIGNIN-->
-        {% else %}
-        <input type="checkbox" id="chk" aria-hidden="true" checked/> <!--LOGIN-->
-        {% endif %}
+      <a href="/"
+        ><label class="brand_tp"
+          ><img src="{% static 'images/logo.png' %}" />Music Streaming</label
+        ></a
+      >
+      {% if SignUpForm.errors %}
+      <input type="checkbox" id="chk" aria-hidden="true" />
+      <!--SIGNIN-->
+      {% else %}
+      <input type="checkbox" id="chk" aria-hidden="true" checked />
+      <!--LOGIN-->
+      {% endif %}
 
-        <div class="singup_tp">
-            <form action="{% url 'signup' %}" method="post">
-                {% csrf_token %}
-                <label for="chk" aria-hidden="true" style="margin: 10px;">{% translate 'Sign up' %}</label>
-                {{ SignUpForm.email }}
-                {{ SignUpForm.username }}
-                {{ SignUpForm.password1 }}
-                {{ SignUpForm.password2 }}
-                <button class="button_tp" type="submit">{% translate 'Sign up' %}</button>
-            </form>
-        </div>
+      <div class="singup_tp">
+        <form action="{% url 'signup' %}" method="post">
+          {% csrf_token %}
+          <label for="chk" aria-hidden="true" style="margin: 10px"
+            >{% translate 'Sign up' %}</label
+          >
+          {{ SignUpForm.email }} {{ SignUpForm.username }} {{
+          SignUpForm.password1 }} {{ SignUpForm.password2 }}
+          <button class="button_tp" type="submit">
+            {% translate 'Sign up' %}
+          </button>
+        </form>
+      </div>
 
       <div class="login_tp">
         <form action="{% url 'login_signup' %}" method="post">
@@ -74,7 +93,9 @@
           <label for="chk" aria-hidden="true">{% translate 'Log in'%}</label>
           <div>{{ form.username }}</div>
           <div>{{ form.password }}</div>
-          <button class="button_tp" type="submit">{% translate 'Log in'%}</button>
+          <button class="button_tp" type="submit">
+            {% translate 'Log in'%}
+          </button>
         </form>
       </div>
     </div>
