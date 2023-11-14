@@ -156,7 +156,7 @@ class Playlist(models.Model):
 
     def get_memberships(self):
         # I am acessing the through field because I want the relationship attribute added_date
-        return [self.musics.through.objects.get(music__id=music_id) for music_id in self.order]
+        return [self.musics.through.objects.get(music__id=music_id, playlist=self) for music_id in self.order]
 
     def change_order(self, prev_pos, next_pos):
         music_id = self.order.pop(prev_pos)
