@@ -44,13 +44,11 @@ class Listener(AbstractUser):
 
 
 class MediaContent(models.Model):
-    name = models.CharField(max_length=50, verbose_name=_("Name"))
-    release_date = models.DateTimeField(auto_now_add=True, verbose_name=_("Release Date"))
+    name = models.CharField(max_length=50, verbose_name=_("Name"), unique=True)
     # will set to timezone.now when instance is created
     duration = models.DurationField(null=True, verbose_name=_("Duration"))
 
     class Meta:
-        unique_together = ['name', 'release_date']
         abstract = True
 
     def __str__(self):
