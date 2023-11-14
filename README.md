@@ -7,6 +7,8 @@ TP1 TPW
 git clone git@github.com:Migas77/online_music_player.git
 # go inside project 
 cd MusicPlayer/
+# for translation to work in ubuntu (I don't know about MAC)
+sudo apt-get install gettext
 # create venv
 python3 -m venv venv
 # go inside the venv
