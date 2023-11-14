@@ -15,6 +15,8 @@ python3 -m venv venv
 source venv/bin/activate
 # install requirements
 pip install -r requirements.txt
+# compile translations
+django-admin compilemessages
 # setup database
 python3 manage.py makemigrations MusicPlayer
 python3 manage.py migrate
