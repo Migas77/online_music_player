@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
+import {Router, RouterOutlet} from '@angular/router';
 import {NavbarComponent} from "./navbar/navbar.component";
 
 @Component({
@@ -12,4 +12,11 @@ import {NavbarComponent} from "./navbar/navbar.component";
 })
 export class AppComponent {
   title = 'Music Streaming';
+
+  constructor(private router : Router) {
+  }
+
+  showNavBar() : boolean{
+    return !this.router.url.includes('login')
+  }
 }
