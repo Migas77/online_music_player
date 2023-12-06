@@ -10,6 +10,12 @@ export class MusicService {
 
   constructor() { }
 
+  async getMusicsByGenre(): Promise<Music[]>{
+    const url: string = this.baseURL + "musicsbygenre";
+    const data: Response = await fetch(url);
+    return await data.json() ?? [];
+  }
+
   async getMusics(): Promise<Music[]>{
     const url: string = this.baseURL + "musics";
     const data: Response = await fetch(url);

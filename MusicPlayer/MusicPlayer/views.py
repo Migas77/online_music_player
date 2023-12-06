@@ -24,7 +24,8 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from MusicPlayer.serializers import MusicSerializer
+from MusicPlayer.serializers import MusicSerializer, GenreSerializer, AlbumSerializer, ArtistSerializer, BandSerializer
+from django.core import serializers
 
 # Custom User
 def home(request):
@@ -550,7 +551,53 @@ def listGenres(request):
 ### Web Services 2nd Project
 
 @api_view(['GET'])
+def get_musics_by_genre(request):
+    musics = Music.objects.all()
+    serialized_data = {genre: MusicSerializer(musics, many=True).data for genre, musics in
+                      groupby(sorted(musics, key=lambda music: music.genre.title.upper()),
+                              key=lambda music: music.genre.title.upper())}
+    return Response(serialized_data)
+
+
+@api_view(['GET'])
 def get_musics(request):
     musics = Music.objects.all()
     serializer = MusicSerializer(musics, many=True)
     return Response(serializer.data)
+
+
+@api_view(['GET'])
+def get_musics(request):
+    musics = Music.objects.all()
+    serializer = MusicSerializer(musics, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+def get_genres(request):
+    genres = Genre.objects.all()
+    serializer = GenreSerializer(genres, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+def get_albums(request):
+    albums = Album.objects.all()
+    serializer = AlbumSerializer(albums, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+def get_artists(request):
+    artists = Artist.objects.all()
+    serializer = ArtistSerializer(artists, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+def get_bands(request):
+    bands = Artist.objects.all()
+    serializer = BandSerializer(bands, many=True)
+    return Response(serializer.data)
+
+

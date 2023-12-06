@@ -14,8 +14,8 @@ export class MusicsComponent {
   musicService : MusicService = inject(MusicService)
 
   constructor() {
-    this.musicService.getMusics().then((music : Music[]) => {
-      this.musics = music;
+    this.musicService.getMusics().then((musics : Music[]) => {
+      this.musics = musics;
       console.log(this.musics)
     })
   }
