@@ -74,4 +74,7 @@ urlpatterns = [
     path('songQueue/', views.songQueue, name='songQueue'),
     path('songQueue/removeSongQueue/<int:id>', views.removeMusicFromQueue, name='removeSongQueue'),
 
+    ### Web Services 2nd Project
+    path('ws/musics', views.get_musics),
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

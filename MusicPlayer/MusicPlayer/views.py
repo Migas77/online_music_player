@@ -20,6 +20,11 @@ from django.http import JsonResponse
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.db import IntegrityError
 from django.utils.translation import gettext_lazy as _
+### Web Services 2nd Project
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from MusicPlayer.serializers import MusicSerializer
 
 # Custom User
 def home(request):
@@ -540,3 +545,12 @@ def listGenres(request):
         'genres': genres
     }
     return render(request, 'listGenres.html', tparams)
+
+
+### Web Services 2nd Project
+
+@api_view(['GET'])
+def get_musics(request):
+    musics = Music.objects.all()
+    serializer = MusicSerializer(musics, many=True)
+    return Response(serializer.data)
