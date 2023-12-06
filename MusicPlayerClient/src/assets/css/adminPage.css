@@ -1,0 +1,33 @@
+h1 {
+  font-size: 2rem!important;
+  font-weight: 600!important;
+  padding: 1rem 0rem!important;
+}
+
+h2 {
+  font-size: 1.5rem!important;
+  font-weight: 600!important;
+  padding: 1rem 0rem!important;
+}
+
+hr {
+  margin: 1rem 0rem!important;
+}
+
+
+
+.btn_tp {
+  font-size: 17px;
+  background: transparent;
+  border: none;
+  padding: 1em 1.5em;
+  color: #fff;
+  text-transform: uppercase;
+  transition: 0.5s ease;
+}
+
+.btn_tp:hover {
+  color: black;
+  background-color: #ceceef;
+  transition-delay: 0.3s;
+}

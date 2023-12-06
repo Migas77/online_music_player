@@ -1,0 +1,54 @@
+.scrollable-row {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+}
+
+.scrollable-row > .flex {
+    flex: 0.2 0 auto;
+    margin-right: 10px;
+    margin-left: 10px;
+}
+
+.play-button {
+    display: none;
+}
+
+.song-info:hover {
+    background-color: #4C4E52; /* Change this color to your desired hover background color */
+    transition: background-color 0.3s; /* Adjust the transition duration as needed */
+}
+
+.song-info:hover .play-button {
+    display: inline-block;
+    transition: display 1s; /* Adjust the transition duration as needed */
+}
+
+.play-button i {
+    color: #c061cb;
+    font-size: 20px;
+    margin-right: 10px;
+}
+
+.album_songs{
+    ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    li {
+        display: flex;
+        justify-content: space-between;
+        margin: 10px 0;
+        padding: 10px;
+        background-color: #000;
+        border: 1px solid #000;
+        border-radius: 5px;
+    }
+
+    /* Style for likes and duration */
+    .info {
+        font-size: 14px;
+        color: #777;
+    }
+}
