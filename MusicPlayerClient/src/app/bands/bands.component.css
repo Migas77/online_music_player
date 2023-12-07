@@ -1,0 +1,47 @@
+.image_tp {
+    width: 250px!important;
+    height: 125px!important;
+}
+
+figure {
+    align-self: center;
+    
+}
+
+.card_tp {
+    margin: 10px!important;
+    display: flex;
+    flex-direction: column;
+    border-radius: var(--rounded-box, 1rem);
+}
+
+.card-body {
+    width: 250px!important; /* ou qualquer valor que desejar */
+    height: 150px!important;
+    padding: var(--padding-card, 0.5rem)!important;
+}
+
+.container_tp {
+    display: flex!important;
+    align-items: flex-start!important;
+    flex-wrap: wrap!important; /* para permitir que os cartões sejam dispostos em várias linhas */
+}
+
+.songlist_tp {
+    display: flex!important;
+    flex-direction: column!important;
+    justify-content: center!important;
+    align-items: center!important;
+}
+
+.card-actions {
+    padding-top: 10px!important;
+}
+
+p {
+    margin: 20px!important;
+}
+
+.btn-error{
+    margin-right: 10px!important;
+}
