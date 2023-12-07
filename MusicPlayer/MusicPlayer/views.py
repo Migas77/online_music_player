@@ -22,10 +22,15 @@ from django.db import IntegrityError
 from django.utils.translation import gettext_lazy as _
 ### Web Services 2nd Project
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.authentication import SessionAuthentication, TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.response import Response
-from MusicPlayer.serializers import MusicSerializer, GenreSerializer, AlbumSerializer, ArtistSerializer, BandSerializer
-from django.core import serializers
+from MusicPlayer.serializers import MusicSerializer, GenreSerializer, AlbumSerializer, ArtistSerializer, BandSerializer, \
+    ListenerSerializer, UserSerializer
+from rest_framework.authtoken.models import Token
+from rest_framework.authtoken.serializers import AuthTokenSerializer
+
 
 # Custom User
 def home(request):
@@ -48,8 +53,8 @@ def home(request):
         songs = Music.objects.all()
         page = request.GET.get("page")
         songs_by_genre = {genre: list(songs) for genre, songs in
-                      groupby(sorted(songs, key=lambda music: music.genre.title.upper()),
-                              key=lambda music: music.genre.title.upper())}
+                          groupby(sorted(songs, key=lambda music: music.genre.title.upper()),
+                                  key=lambda music: music.genre.title.upper())}
         # Only want pages if I didn't search anything
         pgtr = Paginator(tuple(songs_by_genre.items()), 5)
         try:
@@ -165,6 +170,7 @@ def adminPanel(request):
     }
     return render(request, 'adminPage.html', tparams)
 
+
 @login_required
 def addArtist(request):
     if request.method == 'POST':
@@ -201,6 +207,7 @@ def getAlbumsByPerfomer(request):
     else:
         return JsonResponse({"error": "No performer is provided"}, status=400)
 
+
 @login_required
 def addMusic(request):
     if request.method == 'POST':
@@ -214,6 +221,7 @@ def addMusic(request):
     else:
         form = AddEditMusicForm()
     return render(request, 'add_edit_Music.html', {'form': form})
+
 
 @login_required
 def editMusic(request, music_id):
@@ -275,6 +283,7 @@ def editAlbum(request, album_id):
         form = AddEditAlbumForm(instance=album)
     return render(request, 'add_edit_Album.html', {'form': form})
 
+
 @login_required
 def listMusics(request):
     songs = Music.objects.all()
@@ -288,6 +297,7 @@ def listMusics(request):
 def is_ajax(request):
     return request.headers.get('X-Requested-With') == 'XMLHttpRequest'
 
+
 @login_required
 def addLike(request):
     music_id = request.POST.get("music_id")
@@ -300,6 +310,7 @@ def addLike(request):
 
     except Music.DoesNotExist:
         return JsonResponse({"success": False, "error": "Music not found"})
+
 
 @login_required
 def removeLike(request):
@@ -409,9 +420,9 @@ def playlistInfo(request, playlist_id):
     tparams = {
         'memberships': playlist.get_memberships()
     }
-    #print([m.music for m in playlist.membership_set.all()])
-    #print(playlist.get_musics())
-    #print(playlist.membership_set.first().added_date)
+    # print([m.music for m in playlist.membership_set.all()])
+    # print(playlist.get_musics())
+    # print(playlist.membership_set.first().added_date)
     return render(request, 'playlistInfo.html', tparams)
 
 
@@ -479,6 +490,7 @@ def deleteSongPlaylist(request, songId, playlistId):
     membership.delete()
     return redirect('playlistInfo', playlist_id=playlistId)
 
+
 @login_required
 def songQueue(request):
     # se eliminar música musics_ids não estará atualizado
@@ -486,6 +498,7 @@ def songQueue(request):
     music_ids = request.session.get("music_ids", [])
     musics = Music.objects.filter(id__in=music_ids)
     return render(request, 'songQueue.html', {'musics': musics})
+
 
 @login_required
 def removeMusicFromQueue(request, id):
@@ -533,7 +546,8 @@ def deleteGenre(request, id):
     except ProtectedError:
         return render(request, 'listGenres.html', {
             'genres': Genre.objects.all(),
-            'deletionErrors': _("We're sorry but you can't delete this Genre because it's still the gender of some existing tracks.")
+            'deletionErrors': _(
+                "We're sorry but you can't delete this Genre because it's still the gender of some existing tracks.")
         })
 
     return redirect('listAlbuns')
@@ -550,23 +564,46 @@ def listGenres(request):
 
 ### Web Services 2nd Project
 
+
+@api_view(['POST'])
+def auth_sign_in(request):
+    serializer = AuthTokenSerializer(data=request.data, context={'request': request})
+    serializer.is_valid(raise_exception=True)
+    user = serializer.validated_data['user']
+    token, created = Token.objects.get_or_create(user=user)
+    return Response({
+        'token': token.key,
+        'user_id': user.pk,
+        'email': user.email
+    })
+
+
+@api_view(['POST'])
+def auth_sign_up(request):
+    serializer = UserSerializer(data=request.data)
+    if serializer.is_valid():
+        user = serializer.save()
+        token, created = Token.objects.get_or_create(user=user)
+        return Response({
+            'token': token.key,
+            'user_id': user.pk,
+            'email': user.email
+        }, status=status.HTTP_201_CREATED)
+    return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
 @api_view(['GET'])
 def get_musics_by_genre(request):
     musics = Music.objects.all()
     serialized_data = {genre: MusicSerializer(musics, many=True).data for genre, musics in
-                      groupby(sorted(musics, key=lambda music: music.genre.title.upper()),
-                              key=lambda music: music.genre.title.upper())}
+                       groupby(sorted(musics, key=lambda music: music.genre.title.upper()),
+                               key=lambda music: music.genre.title.upper())}
     return Response(serialized_data)
 
 
 @api_view(['GET'])
-def get_musics(request):
-    musics = Music.objects.all()
-    serializer = MusicSerializer(musics, many=True)
-    return Response(serializer.data)
-
-
-@api_view(['GET'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def get_musics(request):
     musics = Music.objects.all()
     serializer = MusicSerializer(musics, many=True)
@@ -599,5 +636,3 @@ def get_bands(request):
     bands = Artist.objects.all()
     serializer = BandSerializer(bands, many=True)
     return Response(serializer.data)
-
-

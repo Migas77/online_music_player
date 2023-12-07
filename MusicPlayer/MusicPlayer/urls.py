@@ -20,6 +20,8 @@ from MusicPlayer import views
 from MusicPlayer.forms import LoginForm, SignUpForm
 from django.contrib.auth import views as auth_views
 from django.conf import settings
+### Web Services 2nd Project
+from rest_framework.authtoken.views import ObtainAuthToken
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -75,6 +77,9 @@ urlpatterns = [
     path('songQueue/removeSongQueue/<int:id>', views.removeMusicFromQueue, name='removeSongQueue'),
 
     ### Web Services 2nd Project
+    path('ws/token-auth', ObtainAuthToken.as_view()),
+    path('ws/sign-in', views.auth_sign_in),
+    path('ws/sign-up', views.auth_sign_up),
     path('ws/musicsbygenre', views.get_musics_by_genre),
     path('ws/musics', views.get_musics),
     path('ws/genres', views.get_genres),
