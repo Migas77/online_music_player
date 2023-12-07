@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'crispy_daisyui',
     'MusicPlayer',
     'rest_framework',
-    'corsheaders'
+    'corsheaders',
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
@@ -143,6 +144,10 @@ MEDIA_URL = '/media/'
 
 # DJANGO REST FRAMEWORK Config
 REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication'
+    ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny'
     ]

@@ -2,6 +2,12 @@ from MusicPlayer.models import Listener, MediaContent, Performer, Artist, Band, 
     Membership
 from rest_framework import serializers
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Listener
+        fields = ('id', 'email', 'username', 'password')
+
+
 
 class ListenerSerializer(serializers.ModelSerializer):
     class Meta:
