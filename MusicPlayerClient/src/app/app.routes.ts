@@ -4,12 +4,12 @@ import {GenresComponent} from "./genres/genres.component";
 import {AlbumsComponent} from "./albums/albums.component";
 import {ArtistsComponent} from "./artists/artists.component";
 import {BandsComponent} from "./bands/bands.component";
-import {LoginComponent} from "./login/login.component";
+import {AuthComponent} from "./auth/auth.component";
 import {AdminComponent} from "./admin/admin.component";
 import {AddEditArtistComponent} from "./add-edit-artist/add-edit-artist.component";
 
 export const routes: Routes = [
-  {path: 'login', component: LoginComponent},
+  {path: 'auth', component: AuthComponent},
   {path: 'musics', component: MusicsComponent},
   {path: 'genres', component: GenresComponent},
   {path: 'albums', component: AlbumsComponent},
