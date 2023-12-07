@@ -1,0 +1,24 @@
+<div class="">
+  <section id="add_edit_Artist">
+    <h1 class="margin">Add Artist</h1>
+    <form [formGroup]="addArtistForm" (ngSubmit)="onSubmit()" enctype="multipart/form-data">
+      <hr />
+      <div class="form-group">
+        <label>Name</label>
+        <input class="form-control" type="text" formControlName="name" />
+        <br />
+        <label>Description</label>
+        <input class="form-control" type="text" formControlName="description" />
+        <br />
+        <label>Image</label>
+        <input class="form-control" type="file" (change)="onFileChange($event)" />
+        <br />
+      </div>
+      <div >
+        <button class="btn btn-primary" type="submit">Add Artist</button>
+      </div>
+    </form>
+  </section>
+</div>
+
+

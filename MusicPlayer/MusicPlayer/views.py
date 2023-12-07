@@ -636,3 +636,15 @@ def get_bands(request):
     bands = Artist.objects.all()
     serializer = BandSerializer(bands, many=True)
     return Response(serializer.data)
+
+@api_view(['POST'])
+def add_artist(request):
+   print(request.data)
+   serializer = ArtistSerializer(data=request.data)
+   if serializer.is_valid():
+       serializer.save()
+       print("Artist saved")
+       print(serializer.data)
+       return Response(serializer.data, status=status.HTTP_201_CREATED)
+   print(serializer.errors)
+   return Response(status=status.HTTP_400_BAD_REQUEST)

@@ -51,11 +51,7 @@ export class BandsComponent {
   }
 
   deleteBand(bandName : String) {
-    this.bandService.deleteBand(bandName).then(() => {
-      this.bands = this.bands.filter((band : Band) => {
-        return band.name != bandName;
-      })
-    })
+    console.log("Deleting band: ", bandName)
   }
 
 

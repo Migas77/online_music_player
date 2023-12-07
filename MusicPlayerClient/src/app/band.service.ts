@@ -6,9 +6,6 @@ import {Band} from "./models/Band";
   providedIn: 'root'
 })
 export class BandService {
-  deleteBand(bandName: String) {
-    throw new Error('Method not implemented.');
-  }
 
   private baseURL : string = "http://localhost:8000/ws/";
 

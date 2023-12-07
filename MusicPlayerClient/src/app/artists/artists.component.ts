@@ -1,11 +1,14 @@
 import {Component, inject} from '@angular/core';
 import {ArtistService} from "../artist.service";
 import {Artist} from "../models/Artist";
+import {CommonModule, NgOptimizedImage} from "@angular/common";
+import {RouterLink} from "@angular/router";
+import {HttpClientModule} from "@angular/common/http";
 
 @Component({
   selector: 'app-artists',
   standalone: true,
-  imports: [],
+  imports: [CommonModule, NgOptimizedImage, RouterLink, HttpClientModule],
   templateUrl: './artists.component.html',
   styleUrl: './artists.component.css'
 })
@@ -18,5 +21,15 @@ export class ArtistsComponent {
       this.artists = artists;
       console.log(this.artists)
     })
+  }
+
+  showModal(target: EventTarget | null) {
+    if (target instanceof HTMLElement) {
+      target.setAttribute('data-bs-toggle', 'modal');
+      target.setAttribute('data-bs-target', '#exampleModal');
+    }
+
+
+
   }
 }
