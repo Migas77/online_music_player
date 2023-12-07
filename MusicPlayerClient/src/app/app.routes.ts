@@ -5,6 +5,7 @@ import {AlbumsComponent} from "./albums/albums.component";
 import {ArtistsComponent} from "./artists/artists.component";
 import {BandsComponent} from "./bands/bands.component";
 import {LoginComponent} from "./login/login.component";
+import {AdminComponent} from "./admin/admin.component";
 
 export const routes: Routes = [
   {path: 'login', component: LoginComponent},
@@ -13,4 +14,5 @@ export const routes: Routes = [
   {path: 'albums', component: AlbumsComponent},
   {path: 'artists', component: ArtistsComponent},
   {path: 'bands', component: BandsComponent},
+  {path: 'admin', component: AdminComponent},
 ];
