@@ -17,6 +17,6 @@ export class AppComponent {
   }
 
   showNavBar() : boolean{
-    return !this.router.url.includes('login')
+    return !this.router.url.includes('auth')
   }
 }
