@@ -34,7 +34,7 @@
     </div>
 
     <div class="login_tp">
-      <form [formGroup]="signin_form<1" (ngSubmit)="signin()">
+      <form [formGroup]="signin_form" (ngSubmit)="signin()">
         <label for="chk" aria-hidden="true">Log in</label>
         <div>
           <input type="text" formControlName="username" name="username" autofocus autocapitalize="none" autocomplete="username" maxlength="150" class="input w-full bg-primary-content"

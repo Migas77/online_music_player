@@ -1,6 +1,7 @@
 <div class="">
   <section id="add_edit_Artist">
-    <h1 class="margin">Add Artist</h1>
+    <h1 class="margin" *ngIf="id != null" >Edit Artist</h1>
+    <h1 class="margin" *ngIf="id == null" >Add Artist</h1>
     <form [formGroup]="addArtistForm" (ngSubmit)="onSubmit()" enctype="multipart/form-data">
       <hr />
       <div class="form-group">
