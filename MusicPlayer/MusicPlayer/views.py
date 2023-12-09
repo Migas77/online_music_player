@@ -677,6 +677,51 @@ def delete_artist(request, id):
     except Artist.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     artist.delete()
-    print("Deleted")
     return Response(status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['GET'])
+def get_genre(request, id):
+    try:
+        genre = Genre.objects.get(id=id)
+    except Genre.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    serializer = GenreSerializer(genre)
+    return Response(serializer.data)
+
+@api_view(['POST'])
+def add_genre(request):
+    serializer = GenreSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['DELETE'])
+def delete_genre(request, id):
+    try:
+        genre = Genre.objects.get(id=id)
+    except Genre.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    genre.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['PUT'])
+def update_genre(request, id):
+    print("UPDATE GENRE")
+    print(request.data)
+    try:
+        genre = Genre.objects.get(id=id)
+    except Genre.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    request.data._mutable = True
+    if request.data.get('image') == '':
+        request.data['image'] = genre.image
+    request.data._mutable = False
+    serializer = GenreSerializer(genre, data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+    print(serializer.errors)
+    return Response(status=status.HTTP_400_BAD_REQUEST)
+
 

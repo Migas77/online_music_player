@@ -28,7 +28,9 @@ class PerformerSerializer(serializers.ModelSerializer):
 
 
 class ArtistSerializer(PerformerSerializer):
-    pass
+    class Meta:
+        model = Artist
+        fields = PerformerSerializer.Meta.fields
 
 
 class BandSerializer(PerformerSerializer):

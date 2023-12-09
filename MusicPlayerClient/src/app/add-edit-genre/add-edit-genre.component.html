@@ -1,0 +1,22 @@
+<div class="">
+  <section id="add_edit_Genre">
+    <h1 class="margin" *ngIf="id != null" >Edit Genre</h1>
+    <h1 class="margin" *ngIf="id == null" >Add Genre</h1>
+    <form [formGroup]="addGenreForm" (ngSubmit)="onSubmit()" enctype="multipart/form-data">
+      <hr />
+      <div class="form-group">
+        <label>Genre</label>
+        <input class="form-control" type="text" formControlName="title" />
+        <br />
+        <label>Image</label>
+        <input class="form-control" type="file" (change)="onFileChange($event)" />
+        <br />
+      </div>
+      <div >
+        <button class="btn btn-primary" type="submit">Add Genre</button>
+      </div>
+    </form>
+  </section>
+</div>
+
+
