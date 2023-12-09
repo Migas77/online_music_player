@@ -1,1 +1,45 @@
-<p>genres works!</p>
+<h1 class="margin underline">List of Genres</h1>
+<hr />
+<div class="container_tp">
+  <div class="card_tp bg-base-100 shadow-xl" *ngFor="let genre of genres">
+    <figure *ngIf="genre.image">
+      <img class="image_tp image-full" [src]="'http://localhost:8000/' + genre.image"  alt="1" />
+    </figure>
+    <div class="songitem_tp card-body">
+      <span class="songName card-title"> {{ genre.title }}</span>
+      <div class="card-actions justify-end">
+        <a class="badge badge-outline" routerLink="/editGenre/{{ genre.id }}"
+        >Edit</a
+        >
+        <button
+          class="badge badge-outline btn-error"
+          onclick="document.getElementById('modalDelete').show()"
+          (click)="currentGenreTitle = genre.title; currentGenreId = genre.id"
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<dialog id="modalDelete" class="modal">
+  <div class="modal-box">
+    <h3 class="font-bold text-lg">Delete Genre!</h3>
+    <p class="py-4">
+      Are you sure you want to delete the <b>{{currentGenreTitle}} genre</b>?
+    </p>
+    <p>This action cannot be undone.</p>
+    <div class="modal-action">
+      <input type="hidden" id="globalId" value="" />
+      <a class="btn btn-error" id="deleteLink" (click)="deleteGenre(currentGenreId)">Yes</a>
+      <button
+        id="closeModal"
+        class="btn"
+        onclick="document.getElementById('modalDelete').close();"
+      >
+        Close
+      </button>
+    </div>
+  </div>
+</dialog>
