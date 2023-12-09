@@ -87,6 +87,7 @@ urlpatterns = [
     path('ws/addArtist', views.add_artist),
     path('ws/artist/<int:id>', views.get_artist),
     path('ws/updateArtist/<int:id>', views.update_artist),
+    path('ws/deleteArtist/<int:id>', views.delete_artist),
 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

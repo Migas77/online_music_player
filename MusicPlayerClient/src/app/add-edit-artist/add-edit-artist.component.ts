@@ -41,14 +41,24 @@ export class AddEditArtistComponent implements OnInit{
   }
   async onSubmit(): Promise<void>{
     const artist = this.addArtistForm.value;
+
     if (this.id == null) {
-      const res = this.artistService.createArtist(artist);
-      this.addArtistForm.reset();
+      this.artistService.createArtist(artist).then((res: any) => {
+        if (res.ok){
+          console.log("Artist created successfully");
+          this.addArtistForm.reset();
+        }
+      }
+      );
     }
     else {
-      const res = await this.artistService.updateArtist(this.id, artist);
-      this.addArtistForm.reset();
-      this.router.navigate(['/artists']);
+      this.artistService.updateArtist(this.id, artist).then((res: any) => {
+        if (res.ok){
+          console.log("Artist updated successfully");
+          this.addArtistForm.reset();
+          this.router.navigate(['/artists']);
+        }
+      });
     }
   }
 

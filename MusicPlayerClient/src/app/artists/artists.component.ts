@@ -14,7 +14,9 @@ import {HttpClientModule} from "@angular/common/http";
 })
 export class ArtistsComponent {
   artists : Artist[] = [];
-  artistService : ArtistService = inject(ArtistService)
+  artistService : ArtistService = inject(ArtistService);
+  currentArtistName! : string;
+  currentArtistId! : number;
 
   constructor() {
     this.artistService.getArtists().then((artists : Artist[]) => {
@@ -23,13 +25,16 @@ export class ArtistsComponent {
     })
   }
 
-  showModal(target: EventTarget | null) {
-    if (target instanceof HTMLElement) {
-      target.setAttribute('data-bs-toggle', 'modal');
-      target.setAttribute('data-bs-target', '#exampleModal');
-    }
-
-
-
+  deleteArtist(id : number) {
+    this.artistService.deleteArtist(id).then((res: any) => {
+      if (res.ok){
+        console.log("Artist deleted successfully");
+        this.artists = this.artists.filter(artist => artist.id !== id);
+        document.getElementById("closeModal")?.click();
+      }
+    });
   }
+
+
+
 }

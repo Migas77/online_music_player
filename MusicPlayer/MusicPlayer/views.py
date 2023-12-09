@@ -639,27 +639,27 @@ def get_bands(request):
 
 @api_view(['POST'])
 def add_artist(request):
-    print(request.data)
     serializer = ArtistSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
-        print("Artist saved")
-        print(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    print(serializer.errors)
     return Response(status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
 def get_artist(request, id):
-    print("ID: ", id)
-    artist = Artist.objects.get(id=id)
-    print(artist)
+    try:
+        artist = Artist.objects.get(id=id)
+    except Artist.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
     serializer = ArtistSerializer(artist)
     return Response(serializer.data)
 
 @api_view(['PUT'])
 def update_artist(request, id):
-    artist = Artist.objects.get(id=id)
+    try:
+        artist = Artist.objects.get(id=id)
+    except Artist.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
     request.data._mutable = True
     if request.data.get('image') == '':
         request.data['image'] = artist.image
@@ -669,4 +669,14 @@ def update_artist(request, id):
         serializer.save()
         return Response(serializer.data)
     return Response(status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['DELETE'])
+def delete_artist(request, id):
+    try:
+        artist = Artist.objects.get(id=id)
+    except Artist.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    artist.delete()
+    print("Deleted")
+    return Response(status=status.HTTP_204_NO_CONTENT)
 

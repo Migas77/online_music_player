@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
-import {Genre} from "./models/Genre";
+import {Injectable} from '@angular/core';
 import {Artist} from "./models/Artist";
+import {retry} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -17,19 +17,17 @@ export class ArtistService {
     return await data.json() ?? [];
   }
 
-  async createArtist(artist: Artist): Promise<void> {
+  async createArtist(artist: Artist): Promise<Response> {
     const url: string = this.baseURL + "addArtist";
     const formData = new FormData();
     formData.append('name', artist.name);
     formData.append('description', artist.description);
     formData.append('image', artist.image);
 
-    const response = await fetch(url, {
+    return await fetch(url, {
       method: 'POST',
       body: formData,
     });
-
-    return await response.json();
 
   }
 
@@ -47,12 +45,17 @@ export class ArtistService {
     formData.append('description', artist.description);
     formData.append('image', artist.image);
 
-    const response = await fetch(url, {
+    return  await fetch(url, {
       method: 'PUT',
       body: formData,
     });
 
-    return await response.json();
+  }
 
+  async deleteArtist(id: number) {
+    const url: string = this.baseURL + "deleteArtist/" + id;
+    return await fetch(url, {
+      method: 'DELETE',
+    });
   }
 }
