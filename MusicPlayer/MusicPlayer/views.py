@@ -574,7 +574,7 @@ def auth_sign_in(request):
     return Response({
         'token': token.key,
         'user_id': user.pk,
-        'email': user.email
+        'user_email': user.email
     })
 
 
@@ -587,7 +587,7 @@ def auth_sign_up(request):
         return Response({
             'token': token.key,
             'user_id': user.pk,
-            'email': user.email
+            'email_email': user.email
         }, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
