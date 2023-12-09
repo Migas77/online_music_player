@@ -1,5 +1,5 @@
 export interface Signresponse{
   token : string,
-  userid : number,
+  user_id : number,
   email : string,
 }

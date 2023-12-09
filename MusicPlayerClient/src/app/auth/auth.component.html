@@ -1,16 +1,16 @@
-<dialog id="my_modal_1" class="modal">
+<dialog id="my_modal_1" class="modal" [open]="error_messages.length !== 0">
   <div class="modal-box">
     <h1 style="font-weight: bolder; font-size: larger; padding-bottom: 10px">Sign Up errors</h1>
     <div class="modal-action">
+      <ul *ngFor="let error of error_messages">
+        <li>{{ error }}</li>
+      </ul>
       <form method="dialog">
         <button class="btn">Close</button>
       </form>
     </div>
   </div>
 </dialog>
-<script>
-  my_modal_1.showModal();
-</script>
 <body>
   <div class="main_ia">
     <a href="/">
@@ -38,9 +38,9 @@
         <label for="chk" aria-hidden="true">Log in</label>
         <div>
           <input type="text" formControlName="username" name="username" autofocus autocapitalize="none" autocomplete="username" maxlength="150" class="input w-full bg-primary-content"
-                 id="InputUsername1" placeholder="Nome de Utilizador" aria-describedby="usernameHelp" required>
+                 id="InputUsername3" placeholder="Nome de Utilizador" aria-describedby="usernameHelp" required>
         </div>
-        <div><input type="password" formControlName="password" name="password" autocomplete="current-password" class="input w-full bg-primary-content" placeholder="Palavra-passe" id="InputPassword1" required></div>
+        <div><input type="password" formControlName="password" name="password" autocomplete="current-password" class="input w-full bg-primary-content" placeholder="Palavra-passe" id="InputPassword3" required></div>
         <button class="button_tp" type="submit">Log in</button>
       </form>
     </div>

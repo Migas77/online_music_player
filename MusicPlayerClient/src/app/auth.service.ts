@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import {Signin} from "./models/Signin";
 import {Signup} from "./models/Signup";
+import {Signinresponse} from "./models/Signinresponse";
+import {Signupresponse} from "./models/Signupresponse";
 
 
 @Injectable({
@@ -12,23 +14,19 @@ export class AuthService {
 
   constructor() { }
 
-  async signin(user: Signin): Promise<any>{
+  async signin(user: Signin): Promise<Signinresponse>{
     const url: string = this.baseURL + "sign-in";
     const data: Response = await fetch(url, {
       method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(user)
     });
-    if (data.status == 400)
-      return null
     return data.json();
   }
 
-  async signup(user: Signup): Promise<any>{
-    const url: string = this.baseURL + "sign-in";
+  async signup(user: Signup): Promise<Signupresponse>{
+    const url: string = this.baseURL + "sign-up";
     const data: Response = await fetch(url, {
       method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(user)
     });
-    if (data.status == 400)
-      return null
     return await data.json();
   }
 }
