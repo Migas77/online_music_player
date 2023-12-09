@@ -2,60 +2,34 @@ import {Component, inject} from '@angular/core';
 import {Band} from "../models/Band";
 import {BandService} from "../band.service";
 import { CommonModule } from '@angular/common';
-import { Artist } from '../models/Artist';
+import {RouterLink} from "@angular/router";
 
 @Component({
   selector: 'app-bands',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './bands.component.html',
   styleUrl: './bands.component.css'
 })
 export class BandsComponent {
   bands : Band[] = [];
-  bandService : BandService = inject(BandService)
-  artists : Artist[] = [];
-  bandName : String = "";
-  
+  bandService : BandService = inject(BandService);
+  currentBandName! : string;
+  currentBandId! : number;
+
   constructor() {
     this.bandService.getBands().then((bands : Band[]) => {
       this.bands = bands;
-      this.artists = bands.map((band : Band) => {
-        return band.members
-      }).flat()
-      
-      console.log(this.bands)
-      console.log("ARTIS T: ", this.artists)
     })
-    
   }
 
-  getBandName() {
-    return this.bandName;
+  deleteBand(id : number) {
+    this.bandService.deleteBand(id).then((res: any) => {
+      if (res.ok) {
+        console.log("Artist deleted successfully");
+        this.bands = this.bands.filter(band => band.id !== id);
+        document.getElementById("closeModal")?.click();
+      }
+    });
   }
-
-  setBandName(bandName : String) {
-    this.bandName = bandName;
-  }
-
-  showModal() {
-    let modal = document.getElementById("modal-id");
-    modal?.classList.add("show");
-    modal?.setAttribute("style", "display: block");
-  }
-
-  closeModal() {
-    let modal = document.getElementById("modal-id");
-    modal?.classList.remove("show");
-    modal?.setAttribute("style", "display: none");
-  }
-
-  deleteBand(bandName : String) {
-    console.log("Deleting band: ", bandName)
-  }
-
-
-
-  
-
 }

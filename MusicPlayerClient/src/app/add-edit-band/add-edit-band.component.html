@@ -1,0 +1,31 @@
+<div class="">
+  <section id="add_edit_Genre">
+    <h1 class="margin" *ngIf="id != null" >Edit Band</h1>
+    <h1 class="margin" *ngIf="id == null" >Add Band</h1>
+    <form [formGroup]="addBandForm" (ngSubmit)="onSubmit()" enctype="multipart/form-data">
+      <hr />
+      <div class="form-group">
+        <label>Name</label>
+        <input class="form-control" type="text" formControlName="name" />
+        <br />
+        <label>Description</label>
+        <input class="form-control" type="text" formControlName="description" />
+        <br />
+        <label>Image</label>
+        <input class="form-control" type="file" (change)="onFileChange($event)" />
+        <br />
+        <label>Members</label>
+        <div *ngFor="let artist of artists">
+          <input class="form-control" type="checkbox" formControlName="members" (change)="onMemberChange($event, artist.id)" />
+          <label>{{ artist.name }}</label>
+        </div>
+        <br />
+      </div>
+      <div >
+        <button class="btn btn-primary" type="submit">Add Genre</button>
+      </div>
+    </form>
+  </section>
+</div>
+
+

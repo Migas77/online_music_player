@@ -724,4 +724,53 @@ def update_genre(request, id):
     print(serializer.errors)
     return Response(status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['GET'])
+def get_band(request, id):
+    try:
+        band = Band.objects.get(id=id)
+    except Band.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    serializer = BandSerializer(band)
+    return Response(serializer.data)
+
+@api_view(['POST'])
+def add_band(request):
+    print("ADD BAND")
+    print(request.data)
+    request.data._mutable = True
+    request.data['members'] = json.loads(request.POST['members'])
+    request.data._mutable = False
+    print("2,", request.data)
+    serializer = BandSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    print(serializer.errors)
+    return Response(status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['DELETE'])
+def delete_band(request, id):
+    try:
+        band = Band.objects.get(id=id)
+    except Band.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    band.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['PUT'])
+def update_band(request, id):
+    try:
+        band = Band.objects.get(id=id)
+    except Band.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    request.data._mutable = True
+    if request.data.get('image') == '':
+        request.data['image'] = band.image
+    request.data._mutable = False
+    serializer = BandSerializer(band, data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+    return Response(status=status.HTTP_400_BAD_REQUEST)
+
 

@@ -8,6 +8,7 @@ import {AuthComponent} from "./auth/auth.component";
 import {AdminComponent} from "./admin/admin.component";
 import {AddEditArtistComponent} from "./add-edit-artist/add-edit-artist.component";
 import {AddEditGenreComponent} from "./add-edit-genre/add-edit-genre.component";
+import {AddEditBandComponent} from "./add-edit-band/add-edit-band.component";
 
 export const routes: Routes = [
   {path: 'auth', component: AuthComponent},
@@ -21,5 +22,7 @@ export const routes: Routes = [
   {path: 'editArtist/:id', component: AddEditArtistComponent},
   {path: 'addGenre', component: AddEditGenreComponent},
   {path: 'editGenre/:id', component: AddEditGenreComponent},
+  {path: 'addBand', component: AddEditBandComponent},
+  {path: 'editBand/:id', component: AddEditBandComponent},
 
 ];

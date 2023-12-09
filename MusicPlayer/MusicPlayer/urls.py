@@ -92,6 +92,10 @@ urlpatterns = [
     path('ws/genre/<int:id>', views.get_genre),
     path('ws/updateGenre/<int:id>', views.update_genre),
     path('ws/deleteGenre/<int:id>', views.delete_genre),
+    path('ws/addBand', views.add_band),
+    path('ws/band/<int:id>', views.get_band),
+    path('ws/updateBand/<int:id>', views.update_band),
+    path('ws/deleteBand/<int:id>', views.delete_band),
 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

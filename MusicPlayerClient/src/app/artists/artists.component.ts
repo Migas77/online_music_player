@@ -21,7 +21,6 @@ export class ArtistsComponent {
   constructor() {
     this.artistService.getArtists().then((artists : Artist[]) => {
       this.artists = artists;
-      console.log(this.artists)
     })
   }
 

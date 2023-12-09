@@ -34,7 +34,8 @@ class ArtistSerializer(PerformerSerializer):
 
 
 class BandSerializer(PerformerSerializer):
-    members = ArtistSerializer(read_only=True)
+    members = ArtistSerializer(many=True)
+    members = serializers.ListField(child=ArtistSerializer())
 
     class Meta:
         model = Band

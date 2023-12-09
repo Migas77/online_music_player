@@ -1,15 +1,21 @@
-<h1 class="margin">List of Bands </h1>
+<h1 class="margin underline">List of Bands</h1>
 <hr />
-<div class="container_tp" *ngFor="let band of artists">
-  <div class="card_tp bg-base-100 shadow-xl">
+<div class="container_tp">
+  <div class="card_tp bg-base-100 shadow-xl" *ngFor="let band of bands">
     <figure *ngIf="band.image">
-      <img class="image_tp image-full" src="{{ band.image }}" alt="1" />
+      <img class="image_tp image-full" [src]="'http://localhost:8000/' + band.image"  alt="1" />
     </figure>
     <div class="songitem_tp card-body">
       <span class="songName card-title"> {{ band.name }}</span>
       <div class="card-actions justify-end">
-        <a class="badge badge-outline" routerLink="'/editBand/' + band.id">Edit</a>
-        <button class="badge badge-outline btn-error" (click)="showModal()">
+        <a class="badge badge-outline" routerLink="/editArtist/{{ band.id }}"
+        >Edit</a
+        >
+        <button
+          class="badge badge-outline btn-error"
+          onclick="document.getElementById('modalDelete').show()"
+          (click)="currentBandName = band.name; currentBandId = band.id"
+        >
           Delete
         </button>
       </div>
@@ -17,31 +23,23 @@
   </div>
 </div>
 
-
-<div class="modal" id="modal-id">
-  <a class="modal-overlay" aria-label="Close"></a>
-  <div class="modal-container">
-    <div class="modal-header">
-      <a
-        (click)="closeModal()"
-        class="btn btn-clear float-right"
-        aria-label="Close"
-      ></a>
-      <div class="modal-title h5">Delete Band</div>
-    </div>
-    <div class="modal-body">
-      <div class="content">
-        <p>Are you sure you want to delete the band {{ bandName }}?</p>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn" (click)="closeModal()">
-        Cancel
-      </button>
-      <button class="btn btn-error" (click)="deleteBand(bandName)">
-        Delete
+<dialog id="modalDelete" class="modal">
+  <div class="modal-box">
+    <h3 class="font-bold text-lg">Delete Band!</h3>
+    <p class="py-4">
+      Are you sure you want to delete the band <b>{{currentBandName}}</b>?
+    </p>
+    <p>This action cannot be undone.</p>
+    <div class="modal-action">
+      <input type="hidden" id="globalId" value="" />
+      <a class="btn btn-error" id="deleteLink" (click)="deleteBand(currentBandId)">Yes</a>
+      <button
+        id="closeModal"
+        class="btn"
+        onclick="document.getElementById('modalDelete').close();"
+      >
+        Close
       </button>
     </div>
   </div>
-
-
+</dialog>
