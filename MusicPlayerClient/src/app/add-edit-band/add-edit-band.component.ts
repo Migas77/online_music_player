@@ -18,6 +18,7 @@ import {
   checkCustomElementSelectorForErrors
 } from "@angular/compiler-cli/src/ngtsc/annotations/component/src/diagnostics";
 import {EventLoopMonitorOptions} from "perf_hooks";
+import {Band} from "../models/Band";
 
 @Component({
   selector: 'app-add-edit-band',
@@ -79,12 +80,13 @@ export class AddEditBandComponent implements OnInit{
     // search true and falses for the values
     band.members = band.members.map((selected: boolean, i: number) => {
       if (selected)
-        return {
-          id: this.artists[i].id, // Assuming Artist has an 'id' property
-        };
+        return this.artists[i].id;
       return undefined
     }).filter((m : any) => m!==undefined)
-
+    this.bandService.createBand(band).then((res : Band) => {
+      console.log("Band created successfully");
+      this.addBandForm.reset();
+    })
   }
   onFileChange($event: Event) {
   }

@@ -63,10 +63,6 @@ export class AuthComponent {
             void this.router.navigate(['']);
           }else{
             this.error_messages = this.error_messages.concat(response.email).concat(response.username).concat(response.password);
-            console.log(response.email)
-            console.log(response.username)
-            console.log(response.password)
-            console.log(this.error_messages)
           }
         })
     }

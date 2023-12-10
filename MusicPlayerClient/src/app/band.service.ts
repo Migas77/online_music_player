@@ -29,6 +29,7 @@ export class BandService {
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(band),
     });
+    console.log(JSON.stringify(band))
     return data.json()
   }
 
