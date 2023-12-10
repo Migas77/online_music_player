@@ -737,10 +737,6 @@ def get_band(request, id):
 def add_band(request):
     print("ADD BAND")
     print(request.data)
-    request.data._mutable = True
-    request.data['members'] = json.loads(request.POST['members'])
-    request.data._mutable = False
-    print("2,", request.data)
     serializer = BandSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()

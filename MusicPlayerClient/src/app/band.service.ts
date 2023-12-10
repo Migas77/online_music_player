@@ -20,21 +20,16 @@ export class BandService {
   async getBand(id: string) {
     const url: string = this.baseURL + "band/" + id;
     return fetch(url).then((res) => res.json());
-
   }
 
-  async createBand(band: any) {
+  async createBand(band: Band) : Promise<Band> {
     const url: string = this.baseURL + "addBand";
-    const formData = new FormData();
-    formData.append('name', band.name);
-    formData.append('image', band.image);
-    formData.append('description', band.description);
-    formData.append('members', JSON.stringify(band.members));
-    return fetch(url, {
+    const data : Response = await fetch(url, {
       method: 'POST',
-      body: formData,
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(band),
     });
-
+    return data.json()
   }
 
   async updateBand(id: string, band: any) {

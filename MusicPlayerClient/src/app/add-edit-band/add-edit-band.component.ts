@@ -1,11 +1,23 @@
 import {Component, inject, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {
+  AbstractControl,
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule
+} from "@angular/forms";
 import {CommonModule, NgIf} from "@angular/common";
 import {ActivatedRoute, Router} from "@angular/router";
 import {BandService} from "../band.service";
 import {Artist} from "../models/Artist";
 import {ArtistService} from "../artist.service";
-import {convertOutputFile} from "@angular-devkit/build-angular/src/tools/esbuild/utils";
+import {List} from "postcss/lib/list";
+import {
+  checkCustomElementSelectorForErrors
+} from "@angular/compiler-cli/src/ngtsc/annotations/component/src/diagnostics";
+import {EventLoopMonitorOptions} from "perf_hooks";
 
 @Component({
   selector: 'app-add-edit-band',
@@ -19,88 +31,61 @@ import {convertOutputFile} from "@angular-devkit/build-angular/src/tools/esbuild
   templateUrl: './add-edit-band.component.html',
   styleUrl: './add-edit-band.component.css'
 })
-export class AddEditBandComponent implements OnInit {
+export class AddEditBandComponent implements OnInit{
 
   addBandForm!: FormGroup;
   id!: string | null;
   artists: Artist[] = [];
   artistService : ArtistService = inject(ArtistService);
 
-  selectedArtists: number[] = [];
-
   constructor(private fb: FormBuilder, private bandService: BandService, private route: ActivatedRoute, private router: Router) {
     this.artistService.getArtists().then((artists : Artist[]) => {
-      this.artists = artists;
+      this.artists = artists
+      this.addBandForm = this.fb.group({
+        name: '',
+        image: '',
+        description: '',
+        members: this.fb.array(
+          this.artists.map((a : Artist) => {
+            return this.fb.control(false);
+          })
+        )
+      });
     })
   }
 
   ngOnInit(): void {
     this.addBandForm = this.fb.group({
-      name: [''],
-      image: [''],
-      description: [''],
-      members: [[]]
+      name: '',
+      image: '',
+      description: '',
+      members: this.fb.array([])
     });
+  }
 
-    if (this.route.snapshot.paramMap.get('id')) {
-      this.id = this.route.snapshot.paramMap.get('id');
-      if (this.id != null) {
-        this.bandService.getBand(this.id).then((band) => {
-          this.addBandForm.patchValue({
-            name: band.name,
-            description: band.description,
-            members: band.members
-          });
-        });
-      }
-    }
+  get members() {
+    return this.addBandForm.get('members') as FormArray;
+  };
+
+  getMemberFormControl(index: number): FormControl {
+    return this.members.at(index) as FormControl;
   }
 
   onMemberChange(e: any, id: number) {
-    if (e.target.checked) {
-      this.selectedArtists.push(id);
-    }
-    else {
-      this.selectedArtists = this.selectedArtists.filter(m => m != id);
-    }
   }
 
   async onSubmit(): Promise<void>{
-    const band = this.addBandForm.value;
-    console.log(band);
-    band.members = [];
-    for (let i = 0; i < this.selectedArtists.length; i++) {
-      const artist = await this.artistService.getArtist(this.selectedArtists[i].toString());
-      console.log("aaa", artist);
-      band.members.push(artist)
-      console.log("bbb", band.members);
-    }
-    if (this.id == null) {
-      this.bandService.createBand(band).then((res: any) => {
-          if (res.ok){
-            console.log("Band created successfully");
-            this.addBandForm.reset();
-          }
-        }
-      );
-    }
-    else {
-      this.bandService.updateBand(this.id, band).then((res: any) => {
-        if (res.ok){
-          console.log("Band updated successfully");
-          this.addBandForm.reset();
-          this.router.navigate(['/bands']);
-        }
-      });
-    }
+    let band = this.addBandForm.value
+    // search true and falses for the values
+    band.members = band.members.map((selected: boolean, i: number) => {
+      if (selected)
+        return {
+          id: this.artists[i].id, // Assuming Artist has an 'id' property
+        };
+      return undefined
+    }).filter((m : any) => m!==undefined)
+
   }
   onFileChange($event: Event) {
-    const file = ($event.target as HTMLInputElement).files![0];
-    this.addBandForm.patchValue({
-      image: file
-    });
-    this.addBandForm.get('image')?.updateValueAndValidity();
-
   }
-
 }
