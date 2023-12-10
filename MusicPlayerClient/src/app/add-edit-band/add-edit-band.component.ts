@@ -19,6 +19,7 @@ import {
 } from "@angular/compiler-cli/src/ngtsc/annotations/component/src/diagnostics";
 import {EventLoopMonitorOptions} from "perf_hooks";
 import {Band} from "../models/Band";
+import {read} from "fs";
 
 @Component({
   selector: 'app-add-edit-band',
@@ -88,6 +89,10 @@ export class AddEditBandComponent implements OnInit{
       this.addBandForm.reset();
     })
   }
-  onFileChange($event: Event) {
+  onFileChange(event: Event) {
+    const file : File = (event.target as HTMLInputElement).files![0];
+    this.addBandForm.patchValue({
+      image: file
+    });
   }
 }
