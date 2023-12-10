@@ -4,7 +4,7 @@ import {Form, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule} from "@a
 import {Router} from "@angular/router";
 import {Signupresponse} from "../models/Signupresponse";
 import {Signinresponse} from "../models/Signinresponse";
-import {NgForOf, NgIf} from "@angular/common";
+import {NgForOf, NgIf, CommonModule} from "@angular/common";
 
 @Component({
   selector: 'app-auth',
@@ -13,7 +13,8 @@ import {NgForOf, NgIf} from "@angular/common";
     FormsModule,
     ReactiveFormsModule,
     NgIf,
-    NgForOf
+    NgForOf,
+    CommonModule
   ],
   templateUrl: './auth.component.html',
   styleUrl: './auth.component.css'
