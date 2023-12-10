@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {Genre} from "./models/Genre";
 import {Band} from "./models/Band";
+import {retry} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -20,21 +21,21 @@ export class BandService {
   async getBand(id: string) {
     const url: string = this.baseURL + "band/" + id;
     return fetch(url).then((res) => res.json());
-
   }
 
-  async createBand(band: any) {
+  async createBand(band: Band) : Promise<Band> {
+    console.log("CREATE BAND", band.image)
     const url: string = this.baseURL + "addBand";
     const formData = new FormData();
     formData.append('name', band.name);
-    formData.append('image', band.image);
+    formData.append('image', band.image, band.image.name)
     formData.append('description', band.description);
-    formData.append('members', JSON.stringify(band.members));
-    return fetch(url, {
+    band.members.forEach((member : number) => formData.append('members', member.toString()));
+    const data : Response = await fetch(url, {
       method: 'POST',
-      body: formData,
+      body: formData
     });
-
+    return data.json()
   }
 
   async updateBand(id: string, band: any) {

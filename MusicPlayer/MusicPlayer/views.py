@@ -735,18 +735,11 @@ def get_band(request, id):
 
 @api_view(['POST'])
 def add_band(request):
-    print("ADD BAND")
-    print(request.data)
-    request.data._mutable = True
-    request.data['members'] = json.loads(request.POST['members'])
-    request.data._mutable = False
-    print("2,", request.data)
     serializer = BandSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    print(serializer.errors)
-    return Response(status=status.HTTP_400_BAD_REQUEST)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['DELETE'])
 def delete_band(request, id):

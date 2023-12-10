@@ -15,9 +15,9 @@
         <input class="form-control" type="file" (change)="onFileChange($event)" />
         <br />
         <label>Members</label>
-        <div *ngFor="let artist of artists">
-          <input class="form-control" type="checkbox" formControlName="members" (change)="onMemberChange($event, artist.id)" />
-          <label>{{ artist.name }}</label>
+        <div *ngFor="let member of members.controls; let i = index">
+          <input class="form-control" type="checkbox" [formControl]="getMemberFormControl(i)"/>
+          <label>{{ artists[i].name }}</label>
         </div>
         <br />
       </div>
@@ -27,5 +27,3 @@
     </form>
   </section>
 </div>
-
-
