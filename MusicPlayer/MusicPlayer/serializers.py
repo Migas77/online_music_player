@@ -40,7 +40,6 @@ class BandSerializer(PerformerSerializer):
 
 
 class AlbumSerializer(serializers.ModelSerializer):
-    performer = PerformerSerializer(read_only=True)
 
     class Meta:
         model = Album

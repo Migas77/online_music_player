@@ -13,7 +13,8 @@
         <br />
       </div>
       <div >
-        <button class="btn btn-primary" type="submit">Add Genre</button>
+        <button *ngIf="id == null" class="btn btn-primary" type="submit">Add Genre</button>
+        <button *ngIf="id != null" class="btn btn-primary" type="submit">Edit Genre</button>
       </div>
     </form>
   </section>

@@ -17,12 +17,13 @@
         <label>Members</label>
         <div *ngFor="let member of members.controls; let i = index">
           <input class="form-control" type="checkbox" [formControl]="getMemberFormControl(i)"/>
-          <label>{{ artists[i].name }}</label>
+            <label>{{ artists[i].name }}</label>
         </div>
         <br />
       </div>
       <div >
-        <button class="btn btn-primary" type="submit">Add Genre</button>
+        <button *ngIf="id == null" class="btn btn-primary" type="submit">Add Band</button>
+        <button *ngIf="id != null" class="btn btn-primary" type="submit">Edit Band</button>
       </div>
     </form>
   </section>

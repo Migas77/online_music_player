@@ -1,0 +1,29 @@
+<div class="">
+  <section id="add_edit_Album">
+    <h1 class="margin" *ngIf="id != null" >Edit Album</h1>
+    <h1 class="margin" *ngIf="id == null" >Add Album</h1>
+    <form [formGroup]="addAlbumForm" (ngSubmit)="onSubmit()" enctype="multipart/form-data">
+      <hr />
+      <div class="form-group">
+        <label>Name</label>
+        <input class="form-control" type="text" formControlName="name" />
+        <br />
+        <label>Date</label>
+        <input class="form-control" type="date" formControlName="release_date" />
+        <br />
+        <label>Image</label>
+        <input class="form-control" type="file" (change)="onFileChange($event)" />
+        <br />
+        <label>Performer</label>
+        <select class="form-control" formControlName="performer">
+          <option *ngFor="let performer of performers" [value]="performer.id">{{ performer.name }}</option>
+        </select>
+        <br />
+      </div>
+      <div >
+        <button *ngIf="id == null" class="btn btn-primary" type="submit">Add Album</button>
+        <button *ngIf="id != null" class="btn btn-primary" type="submit">Edit Album</button>
+      </div>
+    </form>
+  </section>
+</div>

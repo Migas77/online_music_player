@@ -26,7 +26,7 @@ export class BandsComponent {
   deleteBand(id : number) {
     this.bandService.deleteBand(id).then((res: any) => {
       if (res.ok) {
-        console.log("Artist deleted successfully");
+        console.log("Band deleted successfully");
         this.bands = this.bands.filter(band => band.id !== id);
         document.getElementById("closeModal")?.click();
       }

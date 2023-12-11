@@ -1,22 +1,38 @@
 import {Component, inject} from '@angular/core';
 import {AlbumService} from "../album.service";
 import {Album} from "../models/Album";
+import {NgForOf, NgIf} from "@angular/common";
+import {RouterLink} from "@angular/router";
 
 @Component({
   selector: 'app-albums',
   standalone: true,
-  imports: [],
+    imports: [
+        NgForOf,
+        NgIf,
+        RouterLink
+    ],
   templateUrl: './albums.component.html',
   styleUrl: './albums.component.css'
 })
 export class AlbumsComponent {
   albums : Album[] = [];
   albumService : AlbumService = inject(AlbumService)
+  currentAlbumName! : string;
+  currentAlbumId! : number;
 
   constructor() {
     this.albumService.getAlbums().then((albums : Album[]) => {
-      this.albums = albums;
-      console.log(this.albums)
-    })
+      this.albums = albums;})
+  }
+
+  deleteAlbum(id : number) {
+    this.albumService.deleteAlbum(id).then((res: any) => {
+      if (res.ok) {
+        console.log("Band deleted successfully");
+        this.albums = this.albums.filter(album => album.id !== id);
+        document.getElementById("closeModal")?.click();
+      }
+    });
   }
 }

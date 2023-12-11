@@ -24,7 +24,6 @@ export class BandService {
   }
 
   async createBand(band: Band) : Promise<Band> {
-    console.log("CREATE BAND", band.image)
     const url: string = this.baseURL + "addBand";
     const formData = new FormData();
     formData.append('name', band.name);
