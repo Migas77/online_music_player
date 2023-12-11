@@ -633,7 +633,7 @@ def get_artists(request):
 
 @api_view(['GET'])
 def get_bands(request):
-    bands = Artist.objects.all()
+    bands = Band.objects.all()
     serializer = BandSerializer(bands, many=True)
     return Response(serializer.data)
 

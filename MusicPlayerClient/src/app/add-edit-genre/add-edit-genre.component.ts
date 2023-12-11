@@ -40,7 +40,6 @@ export class AddEditGenreComponent implements OnInit{
   }
   async onSubmit(): Promise<void>{
     const genre = this.addGenreForm.value;
-    console.log(genre);
     if (this.id == null) {
       this.genreService.createGenre(genre).then((res: any) => {
           if (res.ok){
