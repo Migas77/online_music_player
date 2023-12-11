@@ -80,9 +80,6 @@ export class AddEditBandComponent implements OnInit{
     return this.members.at(index) as FormControl;
   }
 
-  onMemberChange(e: any, id: number) {
-  }
-
   async onSubmit(): Promise<void>{
     let band = this.addBandForm.value
     if (this.id == null) {

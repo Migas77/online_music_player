@@ -736,6 +736,7 @@ def get_band(request, id):
 @api_view(['POST'])
 def add_band(request):
     serializer = BandSerializer(data=request.data)
+    print(request.data)
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -766,4 +767,49 @@ def update_band(request, id):
         return Response(serializer.data)
     return Response(status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['GET'])
+def get_album(request, id):
+    try:
+        album = Album.objects.get(id=id)
+    except Album.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    serializer = AlbumSerializer(album)
+    return Response(serializer.data)
+
+@api_view(['POST'])
+def add_album(request):
+    serializer = AlbumSerializer(data=request.data)
+    print(request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    print(serializer.errors)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['DELETE'])
+def delete_album(request, id):
+    try:
+        album = Album.objects.get(id=id)
+    except Album.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    album.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['PUT'])
+def update_album(request, id):
+    try:
+        album = Album.objects.get(id=id)
+    except Album.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    request.data._mutable = True
+    if request.data.get('image') == '':
+        request.data['image'] = album.image
+    request.data._mutable = False
+    serializer = AlbumSerializer(album, data=request.data)
+    print(request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+    print(serializer.errors)
+    return Response(status=status.HTTP_400_BAD_REQUEST)
 
