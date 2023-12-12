@@ -813,3 +813,15 @@ def update_album(request, id):
     print(serializer.errors)
     return Response(status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['POST'])
+def search_music(request):
+    query = request.data['query']
+    print(query)
+
+    songs = Music.objects.filter(
+        Q(name__icontains=query) | Q(performer__name__icontains=query) | Q(genre__title__icontains=query) | Q(album__name__icontains=query)
+    )
+
+    serializer = MusicSerializer(songs, many=True)
+    return Response(serializer.data)
+

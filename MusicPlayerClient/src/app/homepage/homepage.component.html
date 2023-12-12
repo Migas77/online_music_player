@@ -1,0 +1,34 @@
+<div class="flex flex-row justify between relative">
+  <h1 class="font-bold">Welcome to our Music Streaming Web App</h1>
+  <form [formGroup]="searchForm" (ngSubmit)="onSubmit()">
+    <div class="flex flex-row absolute right-5 top-5">
+      <input
+        type="text"
+        formControlName="searchQuery"
+        placeholder="Search for a song"
+        class="input input-ghost w-full max-w-xs"
+      />
+      <button type="submit" class="btn btn-outline">Search</button>
+    </div>
+  </form>
+</div>
+<div *ngIf="searchResult.length > 0">
+  <div *ngFor="let music of searchResult"></div>
+</div>
+
+<div class="bottom_tp margin">
+  <input type="range" name="range" id="ProgressBar" min="0" max="100" />
+  <div class="songinfo-container_tp">
+    <div class="songinfo_tp">
+      <img src="../../assets/images/playing.gif" width="45px" alt="" id="gif" />
+      <span id="masterSongName"></span>
+    </div>
+    <div class="icon">
+      <button>
+        <i class="fas fa-2x fa-step-backward" id="previous"></i>
+        <i class="far fa-2x fa-play-circle" id="masterPlay"></i>
+        <i class="fas fa-2x fa-step-forward" id="next"></i>
+      </button>
+    </div>
+  </div>
+</div>

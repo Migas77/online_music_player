@@ -9,15 +9,19 @@
         <input class="form-control" type="text" formControlName="name" />
         <br />
         <label>Date</label>
-        <input class="form-control" type="date" formControlName="release_date" />
+        <div class="w-[10%]">
+          <input class="form-control" type="date" formControlName="release_date" />
+        </div>
         <br />
         <label>Image</label>
         <input class="form-control" type="file" (change)="onFileChange($event)" />
         <br />
         <label>Performer</label>
-        <select class="form-control" formControlName="performer">
-          <option *ngFor="let performer of performers" [value]="performer.id">{{ performer.name }}</option>
-        </select>
+        <div class="w-[20%]">
+          <select class="form-control" formControlName="performer">
+            <option *ngFor="let performer of performers" [value]="performer.id">{{ performer.name }}</option>
+          </select>
+        </div>
         <br />
       </div>
       <div >

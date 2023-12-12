@@ -10,8 +10,10 @@ import {AddEditArtistComponent} from "./add-edit-artist/add-edit-artist.componen
 import {AddEditGenreComponent} from "./add-edit-genre/add-edit-genre.component";
 import {AddEditBandComponent} from "./add-edit-band/add-edit-band.component";
 import {AddEditAlbumComponent} from "./add-edit-album/add-edit-album.component";
+import { HomepageComponent } from './homepage/homepage.component';
 
 export const routes: Routes = [
+  {path: '', component: HomepageComponent},
   {path: 'auth', component: AuthComponent},
   {path: 'musics', component: MusicsComponent},
   {path: 'genres', component: GenresComponent},
