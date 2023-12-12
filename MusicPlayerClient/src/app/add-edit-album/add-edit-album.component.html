@@ -4,22 +4,23 @@
     <h1 class="margin" *ngIf="id == null" >Add Album</h1>
     <form [formGroup]="addAlbumForm" (ngSubmit)="onSubmit()" enctype="multipart/form-data">
       <hr />
-      <div class="form-group">
+      <div class="form-group mt-[20px]">
         <label>Name</label>
-        <input class="form-control" type="text" formControlName="name" />
+        <br />
+        <input type="text" placeholder="Album Title" class="input w-full max-w-3xl mb-[30px] mt-[3px]"  formControlName="name"/>
         <br />
         <label>Date</label>
-        <div class="w-[10%]">
-          <input class="form-control" type="date" formControlName="release_date" />
-        </div>
+        <br />
+        <input type="date" class="input w-full max-w-xs mb-[30px] mt-[3px]"  formControlName="release_date"/>
         <br />
         <label>Image</label>
-        <input class="form-control" type="file" (change)="onFileChange($event)" />
+        <br />
+        <input type="file" class="file-input file-input-bordered w-full max-w-lg mb-[30px]" (change)="onFileChange($event)"/>
         <br />
         <label>Performer</label>
         <div class="w-[20%]">
-          <select class="form-control" formControlName="performer">
-            <option *ngFor="let performer of performers" [value]="performer.id">{{ performer.name }}</option>
+          <select class="select w-full max-w-lg mb-[30px]" formControlName="performer">
+            <option *ngFor="let performer of performers" [value]="performer.id" class="text-lg">{{ performer.name }}</option>
           </select>
         </div>
         <br />

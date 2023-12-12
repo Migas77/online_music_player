@@ -4,15 +4,18 @@
     <h1 class="margin" *ngIf="id == null" >Add Artist</h1>
     <form [formGroup]="addArtistForm" (ngSubmit)="onSubmit()" enctype="multipart/form-data">
       <hr />
-      <div class="form-group">
+      <div class="form-group mt-[20px]">
         <label>Name</label>
-        <input class="form-control" type="text" formControlName="name" />
+        <br />
+        <input type="text" placeholder="Name" class="input w-full max-w-3xl mb-[30px] mt-[3px]"  formControlName="name"/>
         <br />
         <label>Description</label>
-        <input class="form-control" type="text" formControlName="description" />
+        <br />
+        <input type="text" placeholder="Description" class="input w-full max-w-3xl mb-[30px] mt-[3px]"  formControlName="description"/>
         <br />
         <label>Image</label>
-        <input class="form-control" type="file" (change)="onFileChange($event)" />
+        <br />
+        <input type="file" class="file-input file-input-bordered w-full max-w-lg mb-[30px]" (change)="onFileChange($event)"/>
         <br />
       </div>
       <div >
