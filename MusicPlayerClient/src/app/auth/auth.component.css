@@ -126,3 +126,12 @@ a{
   text-decoration: none;
   color: #fff;
 }
+
+.alert_message {
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.alert_message.show {
+  opacity: 1;
+}
