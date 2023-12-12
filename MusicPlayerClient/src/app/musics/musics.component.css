@@ -1,0 +1,9 @@
+.container_tp {
+  display: flex!important;
+  align-items: flex-start!important;
+  flex-wrap: wrap!important; /* para permitir que os cartões sejam dispostos em várias linhas */
+}
+
+p {
+  margin: 20px!important;
+}

@@ -54,10 +54,7 @@ class GenreSerializer(serializers.ModelSerializer):
 
 class MusicSerializer(serializers.ModelSerializer):
     likes = ListenerSerializer(many=True, read_only=True)
-    genre = GenreSerializer(read_only=True)
-    performer = PerformerSerializer(read_only=True)
-    album = AlbumSerializer(read_only=True)
 
     class Meta:
         model = Music
-        fields = ('id', 'likes', 'genre', 'performer', 'album', 'image', 'audio_file')
+        fields = ('id', 'name', 'likes', 'genre', 'performer', 'album', 'image', 'audio_file')

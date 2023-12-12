@@ -22,6 +22,52 @@ export class MusicService {
     return await data.json() ?? [];
   }
 
+  async getMusic(id: string) {
+    const url: string = this.baseURL + "music/" + id;
+    return fetch(url).then((response) => response.json());
+  }
+
+  async createMusic(music: any) {
+    const url: string = this.baseURL + "addMusic";
+    const formData = new FormData();
+    formData.append('name', music.name);
+    formData.append('image', music.image);
+    formData.append('genre', music.genre);
+    formData.append('performer', music.performer);
+    formData.append('album', music.album);
+    formData.append('audio_file', music.audio_file);
+
+    return fetch(url, {
+      method: 'POST',
+      body: formData,
+    });
+
+  }
+
+  async updateMusic(id: string, music: any) {
+    const url: string = this.baseURL + "updateMusic/" + id;
+    const formData = new FormData();
+    formData.append('name', music.name);
+    formData.append('image', music.image);
+    formData.append('genre', music.genre);
+    formData.append('performer', music.performer);
+    formData.append('album', music.album);
+    formData.append('audio_file', music.audio_file);
+
+    return fetch(url, {
+      method: 'PUT',
+      body: formData,
+    });
+
+  }
+
+  async deleteMusic(id: number) {
+    const url: string = this.baseURL + "deleteMusic/" + id;
+    return fetch(url, {
+      method: 'DELETE',
+    });
+  }
+
   async searchMusics(query: string): Promise<Music[]> {
     console.log("Im going to make the request")
     const url: string = this.baseURL + "searchMusic";
