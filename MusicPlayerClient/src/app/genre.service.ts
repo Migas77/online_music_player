@@ -23,7 +23,7 @@ export class GenreService {
 
   }
 
-  createGenre(genre: any) {
+  async createGenre(genre: any) {
     const url: string = this.baseURL + "addGenre";
     const formData = new FormData();
     formData.append('title', genre.title);
@@ -36,7 +36,7 @@ export class GenreService {
 
   }
 
-  updateGenre(id: string, genre: any) {
+  async updateGenre(id: string, genre: any) {
     const url: string = this.baseURL + "updateGenre/" + id;
     const formData = new FormData();
     formData.append('title', genre.title);
@@ -48,7 +48,7 @@ export class GenreService {
     });
   }
 
-  deleteGenre(id: number) {
+  async deleteGenre(id: number) {
     const url: string = this.baseURL + "deleteGenre/" + id;
     return fetch(url, {
       method: 'DELETE',

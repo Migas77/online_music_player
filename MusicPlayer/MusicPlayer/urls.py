@@ -100,6 +100,10 @@ urlpatterns = [
     path('ws/album/<int:id>', views.get_album),
     path('ws/updateAlbum/<int:id>', views.update_album),
     path('ws/deleteAlbum/<int:id>', views.delete_album),
+    path('ws/addMusic', views.add_music),
+    path('ws/music/<int:id>', views.get_music),
+    path('ws/updateMusic/<int:id>', views.update_music),
+    path('ws/deleteMusic/<int:id>', views.delete_music),
 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

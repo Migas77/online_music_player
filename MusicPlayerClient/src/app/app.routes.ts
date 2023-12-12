@@ -10,6 +10,7 @@ import {AddEditArtistComponent} from "./add-edit-artist/add-edit-artist.componen
 import {AddEditGenreComponent} from "./add-edit-genre/add-edit-genre.component";
 import {AddEditBandComponent} from "./add-edit-band/add-edit-band.component";
 import {AddEditAlbumComponent} from "./add-edit-album/add-edit-album.component";
+import {AddEditMusicComponent} from "./add-edit-music/add-edit-music.component";
 
 export const routes: Routes = [
   {path: 'auth', component: AuthComponent},
@@ -27,5 +28,7 @@ export const routes: Routes = [
   {path: 'editBand/:id', component: AddEditBandComponent},
   {path: 'addAlbum', component: AddEditAlbumComponent},
   {path: 'editAlbum/:id', component: AddEditAlbumComponent},
+  {path: 'addMusic', component: AddEditMusicComponent},
+  {path: 'editMusic/:id', component: AddEditMusicComponent},
 
 ];

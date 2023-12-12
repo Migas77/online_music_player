@@ -1,1 +1,45 @@
-<p>musics works!</p>
+<h1 class="margin underline">List of Musics</h1>
+<hr />
+<div class="container_tp">
+  <div class="card_tp bg-base-100 shadow-xl" *ngFor="let music of musics">
+    <figure *ngIf="music.image">
+      <img class="image_tp image-full" [src]="'http://localhost:8000/' + music.image"  alt="1" />
+    </figure>
+    <div class="songitem_tp card-body">
+      <span class="songName card-title"> {{ music.name }}</span>
+      <div class="card-actions justify-end">
+        <a class="badge badge-outline" routerLink="/editMusic/{{ music.id }}"
+        >Edit</a
+        >
+        <button
+          class="badge badge-outline btn-error"
+          onclick="document.getElementById('modalDelete').show()"
+          (click)="currentMusicName = music.name; currentMusicId = music.id"
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<dialog id="modalDelete" class="modal">
+  <div class="modal-box">
+    <h3 class="font-bold text-lg">Delete Music!</h3>
+    <p class="py-4">
+      Are you sure you want to delete the Music <b>{{currentMusicName}}</b>?
+    </p>
+    <p>This action cannot be undone.</p>
+    <div class="modal-action">
+      <input type="hidden" id="globalId" value="" />
+      <a class="btn btn-error" id="deleteLink" (click)="deleteMusic(currentMusicId)">Yes</a>
+      <button
+        id="closeModal"
+        class="btn"
+        onclick="document.getElementById('modalDelete').close();"
+      >
+        Close
+      </button>
+    </div>
+  </div>
+</dialog>
