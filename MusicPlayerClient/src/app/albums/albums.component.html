@@ -1,4 +1,4 @@
-<h1 class="margin underline">List of Albums</h1>
+<h1 class="margin ">List of Albums</h1>
 <hr />
 <div class="container_tp">
   <div class="card_tp bg-base-100 shadow-xl" *ngFor="let album of albums">
@@ -8,11 +8,11 @@
     <div class="songitem_tp card-body">
       <span class="songName card-title"> {{ album.name }}</span>
       <div class="card-actions justify-end">
-        <a class="badge badge-outline" routerLink="/editAlbum/{{ album.id }}"
+        <a class="btn btn-outline" routerLink="/editAlbum/{{ album.id }}"
         >Edit</a
         >
         <button
-          class="badge badge-outline btn-error"
+          class="btn btn-outline btn-error"
           onclick="document.getElementById('modalDelete').show()"
           (click)="currentAlbumName = album.name; currentAlbumId = album.id"
         >

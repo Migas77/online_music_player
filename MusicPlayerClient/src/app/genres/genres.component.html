@@ -1,4 +1,4 @@
-<h1 class="margin underline">List of Genres</h1>
+<h1 class="margin ">List of Genres</h1>
 <hr />
 <div class="container_tp">
   <div class="card_tp bg-base-100 shadow-xl" *ngFor="let genre of genres">
@@ -8,11 +8,11 @@
     <div class="songitem_tp card-body">
       <span class="songName card-title"> {{ genre.title }}</span>
       <div class="card-actions justify-end">
-        <a class="badge badge-outline" routerLink="/editGenre/{{ genre.id }}"
+        <a class="btn btn-outline" routerLink="/editGenre/{{ genre.id }}"
         >Edit</a
         >
         <button
-          class="badge badge-outline btn-error"
+          class="btn btn-outline btn-error"
           onclick="document.getElementById('modalDelete').show()"
           (click)="currentGenreTitle = genre.title; currentGenreId = genre.id"
         >

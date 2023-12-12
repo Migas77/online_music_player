@@ -2,8 +2,7 @@
 
 .image_tp {
   width: 250px!important;
-  height: 200px!important;
-
+  height: 125px!important;
 }
 
 figure {
@@ -16,14 +15,12 @@ figure {
   display: flex;
   flex-direction: column;
   border-radius: var(--rounded-box, 1rem);
-
 }
 
 .card-body {
   width: 250px!important; /* ou qualquer valor que desejar */
-  height: 125px!important;
-  padding: 0.5rem!important;
-
+  height: 150px!important;
+  padding: var(--padding-card, 0.5rem)!important;
 }
 
 .container_tp {
