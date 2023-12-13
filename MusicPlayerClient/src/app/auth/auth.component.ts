@@ -5,6 +5,7 @@ import {Router} from "@angular/router";
 import {Signupresponse} from "../models/Signupresponse";
 import {Signinresponse} from "../models/Signinresponse";
 import {NgForOf, NgIf, CommonModule} from "@angular/common";
+import {ErrorDisplayComponent} from "../error-display/error-display.component";
 
 @Component({
   selector: 'app-auth',
@@ -14,7 +15,8 @@ import {NgForOf, NgIf, CommonModule} from "@angular/common";
     ReactiveFormsModule,
     NgIf,
     NgForOf,
-    CommonModule
+    CommonModule,
+    ErrorDisplayComponent
   ],
   templateUrl: './auth.component.html',
   styleUrl: './auth.component.css'
@@ -31,20 +33,20 @@ export class AuthComponent {
     'username': '',
     'password': '',
   })
-  error_messages : string[] = []
+  auth_errors : string[] = []
 
 
   constructor(private formBuilder: FormBuilder, private router : Router) { }
 
   signin(): void{
     const attrs = this.signin_form.value;
-    if (this.error_messages.length === 0 && attrs.username && attrs.password){
+    if (attrs.username && attrs.password){
       this.authService.signin({username : attrs.username, password: attrs.password})
         .then((response : Signinresponse) => {
           if (!response.non_field_errors){
             void this.router.navigate(['']);
           }else{
-            this.error_messages = response.non_field_errors;
+            this.auth_errors = response.non_field_errors;
           }
         })
     }
@@ -52,9 +54,10 @@ export class AuthComponent {
 
   signup(): void{
     const attrs = this.signup_form.value;
-    if (this.error_messages.length === 0 && attrs.username && attrs.email && attrs.password1 && attrs.password2){
+    if (attrs.username && attrs.email && attrs.password1 && attrs.password2){
       if (attrs.password1 !== attrs.password2){
-        this.error_messages = ["Given passwords don't match."];
+        console.log(this.auth_errors)
+        this.auth_errors = ["Given passwords don't match."];
         return
       }
       // verify if both passwords are the same
@@ -63,15 +66,10 @@ export class AuthComponent {
           if (!response.email && !response.username && !response.password){
             void this.router.navigate(['']);
           }else{
-            this.error_messages = this.error_messages.concat(response.email).concat(response.username).concat(response.password);
+            this.auth_errors = [response.email, response.username, response.password].filter(val => val !== undefined);
+            console.log(this.auth_errors)
           }
         })
     }
   }
-
-  reset_error_messages() : void {
-    this.error_messages = []
-  }
-
-
 }
