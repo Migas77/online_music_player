@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {NgIf} from "@angular/common";
+import {NgIf, NgTemplateOutlet} from "@angular/common";
 import {FormBuilder, FormGroup, ReactiveFormsModule} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {GenreService} from "../genre.service";
@@ -10,6 +10,7 @@ import {GenreService} from "../genre.service";
     imports: [
         NgIf,
         ReactiveFormsModule,
+        NgTemplateOutlet,
 
     ],
   templateUrl: './add-edit-genre.component.html',

@@ -1,6 +1,6 @@
 import {Component, inject, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {NgForOf, NgIf} from "@angular/common";
+import {NgForOf, NgIf, NgTemplateOutlet} from "@angular/common";
 import {Performer} from "../models/Performer";
 import {ArtistService} from "../artist.service";
 import {BandService} from "../band.service";
@@ -16,12 +16,13 @@ import {GenreService} from "../genre.service";
 @Component({
   selector: 'app-add-edit-music',
   standalone: true,
-    imports: [
-        FormsModule,
-        NgForOf,
-        NgIf,
-        ReactiveFormsModule
-    ],
+  imports: [
+    FormsModule,
+    NgForOf,
+    NgIf,
+    ReactiveFormsModule,
+    NgTemplateOutlet
+  ],
   templateUrl: './add-edit-music.component.html',
   styleUrl: './add-edit-music.component.css'
 })

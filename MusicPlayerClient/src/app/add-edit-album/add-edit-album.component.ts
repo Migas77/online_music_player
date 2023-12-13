@@ -1,6 +1,6 @@
 import {Component, inject, OnInit} from '@angular/core';
-import {NgForOf, NgIf} from "@angular/common";
-import {FormArray, FormBuilder, FormControl, FormGroup, ReactiveFormsModule} from "@angular/forms";
+import {NgForOf, NgIf, NgTemplateOutlet} from "@angular/common";
+import {FormBuilder, FormGroup, ReactiveFormsModule} from "@angular/forms";
 import {Artist} from "../models/Artist";
 import {ArtistService} from "../artist.service";
 import {BandService} from "../band.service";
@@ -12,11 +12,12 @@ import {Performer} from "../models/Performer";
 @Component({
   selector: 'app-add-edit-album',
   standalone: true,
-    imports: [
-        NgForOf,
-        NgIf,
-        ReactiveFormsModule
-    ],
+  imports: [
+    NgForOf,
+    NgIf,
+    ReactiveFormsModule,
+    NgTemplateOutlet
+  ],
   templateUrl: './add-edit-album.component.html',
   styleUrl: './add-edit-album.component.css'
 })
