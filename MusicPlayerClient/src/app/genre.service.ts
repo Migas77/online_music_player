@@ -28,12 +28,13 @@ export class GenreService {
     const formData = new FormData();
     formData.append('title', genre.title);
     formData.append('image', genre.image);
-
-    return fetch(url, {
+    const data = await fetch(url, {
       method: 'POST',
       body: formData,
     });
-
+    if (data.status != 201)
+      throw new Error(JSON.stringify(await data.json()))
+    return data.json()
   }
 
   async updateGenre(id: string, genre: any) {
@@ -41,17 +42,22 @@ export class GenreService {
     const formData = new FormData();
     formData.append('title', genre.title);
     formData.append('image', genre.image);
-
-    return fetch(url, {
+    const data = await fetch(url, {
       method: 'PUT',
       body: formData,
     });
+    if (data.status != 200)
+      throw new Error(JSON.stringify(await data.json()))
+    return data.json()
   }
 
   async deleteGenre(id: number) {
     const url: string = this.baseURL + "deleteGenre/" + id;
-    return fetch(url, {
+    const data = await fetch(url, {
       method: 'DELETE',
     });
+    if (data.status != 204)
+      throw new Error()
+    return data.text()
   }
 }

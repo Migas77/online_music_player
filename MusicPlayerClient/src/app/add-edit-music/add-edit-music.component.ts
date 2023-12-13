@@ -105,7 +105,7 @@ export class AddEditMusicComponent implements OnInit {
         })
         .catch(error => {
           this.submit_errors = JSON.parse(error.message)
-        })
+        });
     }
     else {
       this.musicService.updateMusic(this.id, music)

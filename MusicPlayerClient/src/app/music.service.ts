@@ -40,9 +40,8 @@ export class MusicService {
       method: 'POST',
       body: formData,
     });
-    if (data.status != 201){
+    if (data.status != 201)
       throw new Error(JSON.stringify(await data.json()))
-    }
     return data.json()
   }
 
@@ -69,7 +68,7 @@ export class MusicService {
     const data = await fetch(url, {
       method: 'DELETE',
     });
-    if (data.status != 200)
+    if (data.status != 204)
       throw new Error()
     return data.text()
   }

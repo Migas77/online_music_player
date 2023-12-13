@@ -13,6 +13,7 @@ import {BandService} from "../band.service";
 import {Artist} from "../models/Artist";
 import {ArtistService} from "../artist.service";
 import {Band} from "../models/Band";
+import {ErrorDisplayComponent} from "../error-display/error-display.component";
 
 @Component({
   selector: 'app-add-edit-band',
@@ -22,6 +23,7 @@ import {Band} from "../models/Band";
     NgIf,
     ReactiveFormsModule,
     CommonModule,
+    ErrorDisplayComponent,
   ],
   templateUrl: './add-edit-band.component.html',
   styleUrl: './add-edit-band.component.css'
@@ -30,6 +32,7 @@ export class AddEditBandComponent implements OnInit{
 
   addBandForm!: FormGroup;
   id!: string | null;
+  submit_errors! : Artist;
   artists: Artist[] = [];
   selectedArtistIds: number[] = [];
   artistService : ArtistService = inject(ArtistService);
@@ -88,10 +91,15 @@ export class AddEditBandComponent implements OnInit{
           return this.artists[i].id;
         return undefined
       }).filter((m : any) => m!==undefined)
-      this.bandService.createBand(band).then((res : Band) => {
-        console.log("Band created successfully");
-        this.addBandForm.reset();
-      })
+      this.bandService.createBand(band)
+        .then(res  => {
+          console.log(res)
+          console.log("Band created successfully");
+          this.addBandForm.reset();
+        })
+        .catch(error => {
+          this.submit_errors = JSON.parse(error.message)
+        });
     }
     else {
       band.members = band.members.map((selected: boolean, i: number) => {
@@ -99,13 +107,15 @@ export class AddEditBandComponent implements OnInit{
           return this.artists[i].id;
         return undefined
       }).filter((m : any) => m!==undefined)
-      this.bandService.updateBand(this.id, band).then((res: any) => {
-        if (res.ok){
+      this.bandService.updateBand(this.id, band)
+        .then((res: any) => {
           console.log("Band updated successfully");
           this.addBandForm.reset();
           this.router.navigate(['/bands']);
-        }
-      });
+        })
+        .catch(error => {
+          this.submit_errors = JSON.parse(error.message)
+        });
     }
   }
   onFileChange(event: Event) {
