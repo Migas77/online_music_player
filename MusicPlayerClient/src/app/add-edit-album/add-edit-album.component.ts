@@ -8,6 +8,8 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {Band} from "../models/Band";
 import {AlbumService} from "../album.service";
 import {Performer} from "../models/Performer";
+import {ErrorDisplayComponent} from "../error-display/error-display.component";
+import {Album} from "../models/Album";
 
 @Component({
   selector: 'app-add-edit-album',
@@ -16,7 +18,8 @@ import {Performer} from "../models/Performer";
     NgForOf,
     NgIf,
     ReactiveFormsModule,
-    NgTemplateOutlet
+    NgTemplateOutlet,
+    ErrorDisplayComponent
   ],
   templateUrl: './add-edit-album.component.html',
   styleUrl: './add-edit-album.component.css'
@@ -24,6 +27,7 @@ import {Performer} from "../models/Performer";
 export class AddEditAlbumComponent implements OnInit {
   addAlbumForm!: FormGroup;
   id!: string | null;
+  submit_errors! : Album;
   performers: Performer[] = [];
   artistService : ArtistService = inject(ArtistService);
   bandService : BandService = inject(BandService);
@@ -70,20 +74,24 @@ export class AddEditAlbumComponent implements OnInit {
   async onSubmit(): Promise<void>{
     let album = this.addAlbumForm.value
     if (this.id == null) {
-      this.albumService.createAlbum(album).then((res: Response) => {
-        if (res.ok)
+      this.albumService.createAlbum(album)
+        .then(res => {
           console.log("Album created successfully");
           this.addAlbumForm.reset();
-      })
+        })
+        .catch(error =>
+          this.submit_errors = JSON.parse(error.message)
+        )
     }
     else {
-      this.albumService.updateAlbum(this.id, album).then((res: any) => {
-        if (res.ok){
-          console.log("Album updated successfully");
-          this.addAlbumForm.reset();
-          this.router.navigate(['/albums']);
-        }
-      });
+      this.albumService.updateAlbum(this.id, album)
+        .then(res => {
+            this.addAlbumForm.reset();
+            this.router.navigate(['/albums']);
+        })
+        .catch(error =>
+          this.submit_errors = JSON.parse(error.message)
+        )
     }
   }
 

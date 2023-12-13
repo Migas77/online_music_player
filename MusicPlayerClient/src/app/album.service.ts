@@ -22,41 +22,48 @@ export class AlbumService {
 
   }
 
-  createAlbum(album: Album) {
+  async createAlbum(album: Album) {
     const url: string = this.baseURL + "addAlbum";
     const formData = new FormData();
     formData.append('name', album.name);
     formData.append('image', album.image);
     formData.append('release_date', album.release_date.toString());
     formData.append('performer', album.performer.toString());
-
-    return fetch(url, {
+    const data = await fetch(url, {
       method: 'POST',
       body: formData,
     });
+    if (data.status != 201){
+      throw new Error(JSON.stringify(await data.json()))
+    }
+    return data.json();
 
   }
 
-  updateAlbum(id: string, album: any) {
+  async updateAlbum(id: string, album: any) {
     const url: string = this.baseURL + "updateAlbum/" + id;
     const formData = new FormData();
     formData.append('name', album.name);
     formData.append('image', album.image);
     formData.append('release_date', album.release_date);
     formData.append('performer', album.performer);
-
-    return fetch(url, {
+    const data = await fetch(url, {
       method: 'PUT',
       body: formData,
     });
+    if (data.status != 200)
+      throw new Error(JSON.stringify(await data.json()))
+    return data.json()
 
   }
 
-  deleteAlbum(id: number) {
+  async deleteAlbum(id: number) {
     const url: string = this.baseURL + "deleteAlbum/" + id;
-    return fetch(url, {
+    const data = await fetch(url, {
       method: 'DELETE',
     });
-
+    if (data.status != 200)
+      throw new Error()
+    return data.text()
   }
 }
