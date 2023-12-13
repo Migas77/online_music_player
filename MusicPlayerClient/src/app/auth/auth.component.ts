@@ -33,7 +33,7 @@ export class AuthComponent {
     'username': '',
     'password': '',
   })
-  auth_errors : string[] = []
+  auth_errors = {}
 
 
   constructor(private formBuilder: FormBuilder, private router : Router) { }
