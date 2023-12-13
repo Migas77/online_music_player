@@ -10,7 +10,7 @@ export class MusicService {
 
   constructor() { }
 
-  async getMusicsByGenre(): Promise<Music[]>{
+  async getMusicsByGenre(): Promise<{ [key: string]: Music[] }>{
     const url: string = this.baseURL + "musicsbygenre";
     const data: Response = await fetch(url);
     return await data.json() ?? [];
@@ -69,30 +69,18 @@ export class MusicService {
   }
 
   async searchMusics(query: string): Promise<Music[]> {
-    console.log("Im going to make the request")
-    const url: string = this.baseURL + "searchMusic";
+    const url: string = this.baseURL + "searchMusic?query=" + encodeURIComponent(query);
     const formData = new FormData();
     formData.append('query', query);
  
     const data: Response = await fetch(
       url, {
-        method: 'POST',
-        body: formData
+        method: 'GET'
       }
     );
- 
-    const songs = await data.json();
- 
-    // Group songs by genre
-    const songsByGenre = songs.reduce((acc: { [x: string]: any[]; }, song: { genre: { title: any; }; }) => {
-      const genre = song.genre.title;
-      if (!acc[genre]) {
-        acc[genre] = [];
-      }
-      acc[genre].push(song);
-      return acc;
-    }, {});
- 
-    return songsByGenre;
- }
+
+    const response: Music[] = await data.json() ?? [];
+
+    return response;
+ } 
 }

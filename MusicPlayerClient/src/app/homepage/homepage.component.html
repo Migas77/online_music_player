@@ -12,23 +12,34 @@
     </div>
   </form>
 </div>
-<div *ngIf="searchResult.length > 0">
-  <div *ngFor="let music of searchResult"></div>
-</div>
-
-<div class="bottom_tp margin">
-  <input type="range" name="range" id="ProgressBar" min="0" max="100" />
-  <div class="songinfo-container_tp">
-    <div class="songinfo_tp">
-      <img src="../../assets/images/playing.gif" width="45px" alt="" id="gif" />
-      <span id="masterSongName"></span>
-    </div>
-    <div class="icon">
-      <button>
-        <i class="fas fa-2x fa-step-backward" id="previous"></i>
-        <i class="far fa-2x fa-play-circle" id="masterPlay"></i>
-        <i class="fas fa-2x fa-step-forward" id="next"></i>
-      </button>
+<div *ngIf="musicsByGenre"> 
+  <div *ngFor="let item of musicsByGenre | keyvalue">
+    <h1>{{ item.key }}</h1>
+    <hr />
+    <div *ngFor="let song of item.value" class="flex flex-row pt-5">
+      <div class="card card-compact w-60 bg-base-100 shadow-xl">
+        <figure><img [src]="'http://localhost:8000/' + song.image" alt="albumCover"/></figure>
+        <div class="card-body text-center">
+          <h2 class="text-center songName">{{ song.name }}</h2>
+          <h3 class="text-lg songPerformer">{{ getName(song.performer) }}</h3>
+          <button class="songlistplay" (click)="playSong(song)">
+            <i
+              id="1"
+              class="far songItemPlay fa-play-circle"
+            ></i>
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
+
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+
+<app-playbar></app-playbar>

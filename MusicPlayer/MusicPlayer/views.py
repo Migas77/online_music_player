@@ -26,7 +26,7 @@ from rest_framework.authentication import SessionAuthentication, TokenAuthentica
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.response import Response
-from MusicPlayer.serializers import MusicSerializer, GenreSerializer, AlbumSerializer, ArtistSerializer, BandSerializer, \
+from MusicPlayer.serializers import MusicSerializer, GenreSerializer, AlbumSerializer, ArtistSerializer, BandSerializer, PerformerSerializer, \
     ListenerSerializer, UserSerializer
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.serializers import AuthTokenSerializer
@@ -850,15 +850,29 @@ def update_music(request, id):
         serializer.save()
         return Response(serializer.data)
     return Response(status=status.HTTP_400_BAD_REQUEST)
-@api_view(['POST'])
+
+
+@api_view(['GET'])
+def get_performers(request):
+    performers = Performer.objects.all()
+    serializer = PerformerSerializer(performers, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
 def search_music(request):
-    query = request.data['query']
-    print(query)
+    query = request.query_params.get('query', default=None)
+
+    if query is None:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
     songs = Music.objects.filter(
         Q(name__icontains=query) | Q(performer__name__icontains=query) | Q(genre__title__icontains=query) | Q(album__name__icontains=query)
     )
 
-    serializer = MusicSerializer(songs, many=True)
-    return Response(serializer.data)
+    serializer = {genre: MusicSerializer(musics, many=True).data for genre, musics in
+                       groupby(sorted(songs, key=lambda music: music.genre.title.upper()),
+                               key=lambda music: music.genre.title.upper())}
+    
+    return Response(serializer)
 

@@ -9,6 +9,8 @@ let playButtons = Array.from(document.getElementsByClassName('songItemPlay'));
 
 masterPlay.addEventListener('click', togglePlay);
 
+console.log('songItems: ', songItems)
+
 function getSongInfo() {
     let songItems = Array.from(document.getElementsByClassName('songitem_tp'));
     if (songItems.length === 0) {

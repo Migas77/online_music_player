@@ -1,0 +1,19 @@
+<div class="bottom_tp margin">
+    <div class="w-[100%] ml-[20%]">
+        <input type="range" name="range" min="0" max="100" value="40" class="range" id="ProgressBar" (mousedown)="seekTo($event)" (input)="seekTo($event)">
+    </div>
+    <div class="flex flex-row">
+        <div class="songinfo_tp flex flex-row space-x-5">
+            <img src="../../assets/images/playing.gif" width="45px" id="gif" *ngIf="isPlaying"/>
+            <span id="masterSongName"></span>
+        </div>
+        <div class="icon">
+            <button>
+                <i class="fas fa-2x fa-step-backward" id="previous" (click)="previousSong()"></i>
+                <i class="far fa-2x pl-2 pr-2" id="masterPlay" [ngClass]="{'fa-pause-circle': isPlaying, 'fa-play-circle': !isPlaying}" (click)="togglePlay()"></i>
+                <i class="fas fa-2x fa-step-forward" id="next" (click)="nextSong()"></i>
+            </button>
+        </div>
+    </div>
+</div>
+

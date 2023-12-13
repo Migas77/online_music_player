@@ -104,6 +104,7 @@ urlpatterns = [
     path('ws/music/<int:id>', views.get_music),
     path('ws/updateMusic/<int:id>', views.update_music),
     path('ws/deleteMusic/<int:id>', views.delete_music),
+    path('ws/performers', views.get_performers),
     path('ws/searchMusic', views.search_music)
 
 
