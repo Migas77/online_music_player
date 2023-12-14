@@ -873,3 +873,23 @@ def search_music(request):
     
     return Response(serializer)
 
+@api_view(['GET'])
+def get_albums_by_performer(request, id):
+    if id is None:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+    
+    albums = Album.objects.filter(performer__id=id)
+    serializer = AlbumSerializer(albums, many=True)
+
+    return Response(serializer.data)
+    
+@api_view(['GET'])
+def get_musics_by_artist(request, id):
+    if id is None:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+    
+    musics = Music.objects.filter(performer__id=id)
+    serializer = MusicSerializer(musics, many=True)
+
+    return Response(serializer.data)
+

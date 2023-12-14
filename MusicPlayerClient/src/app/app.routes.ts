@@ -1,17 +1,18 @@
 import { Routes } from '@angular/router';
-import {MusicsComponent} from "./musics/musics.component";
-import {GenresComponent} from "./genres/genres.component";
-import {AlbumsComponent} from "./albums/albums.component";
-import {ArtistsComponent} from "./artists/artists.component";
-import {BandsComponent} from "./bands/bands.component";
-import {AuthComponent} from "./auth/auth.component";
-import {AdminComponent} from "./admin/admin.component";
-import {AddEditArtistComponent} from "./add-edit-artist/add-edit-artist.component";
-import {AddEditGenreComponent} from "./add-edit-genre/add-edit-genre.component";
-import {AddEditBandComponent} from "./add-edit-band/add-edit-band.component";
-import {AddEditAlbumComponent} from "./add-edit-album/add-edit-album.component";
-import {AddEditMusicComponent} from "./add-edit-music/add-edit-music.component";
+import { MusicsComponent } from "./musics/musics.component";
+import { GenresComponent } from "./genres/genres.component";
+import { AlbumsComponent } from "./albums/albums.component";
+import { ArtistsComponent } from "./artists/artists.component";
+import { BandsComponent } from "./bands/bands.component";
+import { AuthComponent } from "./auth/auth.component";
+import { AdminComponent } from "./admin/admin.component";
+import { AddEditArtistComponent } from "./add-edit-artist/add-edit-artist.component";
+import { AddEditGenreComponent } from "./add-edit-genre/add-edit-genre.component";
+import { AddEditBandComponent } from "./add-edit-band/add-edit-band.component";
+import { AddEditAlbumComponent } from "./add-edit-album/add-edit-album.component";
+import { AddEditMusicComponent } from "./add-edit-music/add-edit-music.component";
 import { HomepageComponent } from './homepage/homepage.component';
+import { ArtistDetailsComponent } from './artist-details/artist-details.component';
 
 export const routes: Routes = [
   {path: '', component: HomepageComponent},
@@ -32,5 +33,5 @@ export const routes: Routes = [
   {path: 'editAlbum/:id', component: AddEditAlbumComponent},
   {path: 'addMusic', component: AddEditMusicComponent},
   {path: 'editMusic/:id', component: AddEditMusicComponent},
-
+  {path: 'artistDetails/:id', component: ArtistDetailsComponent},
 ];

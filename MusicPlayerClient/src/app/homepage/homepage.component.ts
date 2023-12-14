@@ -6,11 +6,12 @@ import { PerformerService } from '../performer.service';
 import { Music } from '../models/Music';
 import { Performer } from '../models/Performer';
 import { PlaybarComponent } from '../playbar/playbar.component';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-homepage',
   standalone: true,
-  imports: [NgForOf, NgIf, ReactiveFormsModule, CommonModule, PlaybarComponent],
+  imports: [NgForOf, NgIf, ReactiveFormsModule, CommonModule, PlaybarComponent, RouterLink],
   templateUrl: './homepage.component.html',
   styleUrl: './homepage.component.css'
 })
