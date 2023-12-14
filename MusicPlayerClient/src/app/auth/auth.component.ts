@@ -33,7 +33,7 @@ export class AuthComponent {
     'username': '',
     'password': '',
   })
-  auth_errors = {}
+  auth_errors! : { [key: string] : string } | Signupresponse
 
 
   constructor(private formBuilder: FormBuilder, private router : Router) { }
@@ -46,7 +46,11 @@ export class AuthComponent {
           if (!response.non_field_errors){
             void this.router.navigate(['']);
           }else{
-            this.auth_errors = response.non_field_errors;
+            this.auth_errors = {} as { [key: string] : string };
+            response.non_field_errors.forEach((error:string, index:number) => {
+              // @ts-ignore REMOVE THIS LATER
+              this.auth_errors[`Error ${index + 1}`] = error;
+            })
           }
         })
     }
@@ -57,7 +61,7 @@ export class AuthComponent {
     if (attrs.username && attrs.email && attrs.password1 && attrs.password2){
       if (attrs.password1 !== attrs.password2){
         console.log(this.auth_errors)
-        this.auth_errors = ["Given passwords don't match."];
+        this.auth_errors = { 'password' : "Given passwords don't match."};
         return
       }
       // verify if both passwords are the same
@@ -66,7 +70,8 @@ export class AuthComponent {
           if (!response.email && !response.username && !response.password){
             void this.router.navigate(['']);
           }else{
-            this.auth_errors = [response.email, response.username, response.password].filter(val => val !== undefined);
+            this.auth_errors = response
+            // this.auth_errors = [response.email, response.username, response.password].filter(val => val !== undefined);
             console.log(this.auth_errors)
           }
         })

@@ -13,5 +13,5 @@ import {NgOptimizedImage} from "@angular/common";
   styleUrl: './navbar.component.css'
 })
 export class NavbarComponent {
-  
+
 }

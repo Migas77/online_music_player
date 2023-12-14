@@ -1,13 +1,7 @@
-body {
-  margin: 0;
-  padding: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  font-family: 'Century Gothic', 'URW Gothic', 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-  background: url("/assets/images/bg.jpg");
-  background-size: cover;
+main {
+  background-color: yellow;
+  margin-left: 0 !important;
+  padding: 0 !important;
 }
 
 .main_ia{

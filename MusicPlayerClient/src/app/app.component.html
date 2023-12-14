@@ -1,7 +1,7 @@
-<ng-container *ngIf="showNavBar()">
-  <app-navbar></app-navbar>
-</ng-container>
-<main>
+<app-navbar *ngIf="showNavBar()"></app-navbar>
+<main [ngClass]="{
+  'new-main' : !showNavBar()
+}">
   <div>
     <p></p>
     <router-outlet></router-outlet>
