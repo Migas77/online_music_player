@@ -17,7 +17,6 @@ import { PlaybarComponent } from '../playbar/playbar.component';
 export class HomepageComponent {
 
   @ViewChild(PlaybarComponent) playbarComponent!: PlaybarComponent;
-
   musicService: MusicService = inject(MusicService);
   performerService: PerformerService = inject(PerformerService);
   
@@ -25,7 +24,8 @@ export class HomepageComponent {
   musicsByGenre: { [key: string] :Music[]} = {};
   allMusics: Music[] = [];
   performers: Performer[] = [];
-  searchResult: { [key: string] :Music[]};
+  searchResult: { [key: string] :Music[]} = {};
+  
 
   constructor(private fb: FormBuilder, private elementRef: ElementRef) {
 
@@ -40,14 +40,9 @@ export class HomepageComponent {
     this.searchForm = this.fb.group({
       searchQuery: ''
     });
-
-    this.searchResult = {};
-
-    console.log("SEARCH RESULT: ", this.searchResult)
-
   }
 
-  async onSubmit(): Promise<{ [key: string] :Music[]}> {
+  async onSubmit(): Promise<void> {
     this.searchResult = {};
     let query = this.searchForm.value.searchQuery;
     if (query) {
@@ -59,8 +54,6 @@ export class HomepageComponent {
         this.musicsByGenre = musics;
       });
     }
-
-    return this.searchResult;
   }
 
   getName(performer: Performer): string {

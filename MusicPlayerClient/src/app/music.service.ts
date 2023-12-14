@@ -27,7 +27,7 @@ export class MusicService {
     return fetch(url).then((response) => response.json());
   }
 
-  async createMusic(music: any){
+  async createMusic(music: any) {
     const url: string = this.baseURL + "addMusic";
     const formData = new FormData();
     formData.append('name', music.name);
@@ -36,13 +36,12 @@ export class MusicService {
     formData.append('performer', music.performer);
     formData.append('album', music.album);
     formData.append('audio_file', music.audio_file);
-    const data = await fetch(url, {
+
+    return fetch(url, {
       method: 'POST',
       body: formData,
     });
-    if (data.status != 201)
-      throw new Error(JSON.stringify(await data.json()))
-    return data.json()
+
   }
 
   async updateMusic(id: string, music: any) {
@@ -54,23 +53,19 @@ export class MusicService {
     formData.append('performer', music.performer);
     formData.append('album', music.album);
     formData.append('audio_file', music.audio_file);
-    const data = await fetch(url, {
+
+    return fetch(url, {
       method: 'PUT',
       body: formData,
     });
-    if (data.status != 200)
-      throw new Error(JSON.stringify(await data.json()))
-    return data.json()
+
   }
 
   async deleteMusic(id: number) {
     const url: string = this.baseURL + "deleteMusic/" + id;
-    const data = await fetch(url, {
+    return fetch(url, {
       method: 'DELETE',
     });
-    if (data.status != 204)
-      throw new Error()
-    return data.text()
   }
 
   async searchMusics(query: string): Promise<{ [key: string]: Music[] }> {

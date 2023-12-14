@@ -12,32 +12,10 @@
     </div>
   </form>
 </div>
-<div *ngIf="getObjectSize(searchResult) !== 0">
-  <h2 class="font-regular">Searched for "<span class="font-bold">{{ searchForm.value.searchQuery }}</span>"</h2>
-  <div *ngFor="let item of searchResult | keyvalue">
-    <h1>{{ item.key }}</h1>
-    <hr />
-    <div *ngFor="let song of item.value" class="flex flex-row pt-5">
-      <div class="card card-compact w-60 bg-base-100 shadow-xl">
-        <figure><img [src]="'http://localhost:8000/' + song.image" alt="albumCover"/></figure>
-        <div class="card-body text-center">
-          <h2 class="text-center songName">{{ song.name }}</h2>
-          <h3 class="text-lg songPerformer">{{ getName(song.performer) }}</h3>
-          <button class="songlistplay" (click)="playSong(song)">
-            <i
-              id="1"
-              class="far songItemPlay fa-play-circle"
-            ></i>
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div *ngIf="getObjectSize(searchResult) === 0">
-  <div *ngIf="musicsByGenre"> 
-    <div *ngFor="let item of musicsByGenre | keyvalue" class="pl-5 pr-5 pt-5">
+<div class="mb-[150px]">
+  <div *ngIf="getObjectSize(searchResult) !== 0">
+    <h2 class="font-regular">Searched for "<span class="font-bold">{{ searchForm.value.searchQuery }}</span>"</h2>
+    <div *ngFor="let item of searchResult | keyvalue">
       <h1>{{ item.key }}</h1>
       <hr />
       <div *ngFor="let song of item.value" class="flex flex-row pt-5">
@@ -46,26 +24,63 @@
           <div class="card-body text-center">
             <h2 class="text-center songName">{{ song.name }}</h2>
             <h3 class="text-lg songPerformer">{{ getName(song.performer) }}</h3>
-            <button class="songlistplay" (click)="playSong(song)">
-              <i
-                id="1"
-                class="far songItemPlay fa-play-circle"
-              ></i>
-            </button>
+            <div class="text-lg space-x-3 flex flex-row justify-center">
+              <button class="songlistplay" (click)="playSong(song)">
+                <i
+                  id="1"
+                  class="far songItemPlay fa-play-circle"
+                ></i>
+              </button>
+              <button>
+                <i class="fa-solid fa-heart" style="color: #c10bbb;"></i> {{ song.likes.length }}
+              </button>
+              <button>
+                <i class="fa-solid fa-cloud-arrow-down"></i>
+              </button>
+              <button>
+                <i class="fa-solid fa-square-plus"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="getObjectSize(searchResult) === 0">
+    <div *ngIf="musicsByGenre"> 
+      <div *ngFor="let item of musicsByGenre | keyvalue" class="pl-5 pr-5 pt-5">
+        <h1>{{ item.key }}</h1>
+        <hr />
+        <div *ngFor="let song of item.value" class="flex flex-row pt-5">
+          <div class="card card-compact w-60 bg-base-100 shadow-xl">
+            <figure><img [src]="'http://localhost:8000/' + song.image" alt="albumCover"/></figure>
+            <div class="card-body text-center">
+              <h2 class="text-center songName">{{ song.name }}</h2>
+              <h3 class="text-lg songPerformer">{{ getName(song.performer) }}</h3>
+              <div class="text-lg space-x-3 flex flex-row justify-center">
+                <button class="songlistplay" (click)="playSong(song)">
+                  <i
+                    id="1"
+                    class="far songItemPlay fa-play-circle"
+                  ></i>
+                </button>
+                <button>
+                  <i class="fa-solid fa-heart" style="color: #c10bbb;"></i> {{ song.likes.length }}
+                </button>
+                <button>
+                  <i class="fa-solid fa-cloud-arrow-down"></i>
+                </button>
+                <button>
+                  <i class="fa-solid fa-square-plus"></i>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
-
-
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
-<br />
 
 <app-playbar></app-playbar>

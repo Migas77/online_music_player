@@ -35,7 +35,6 @@ export class PlaybarComponent {
     });
 
     this.audioElement = new Audio();
-
     this.audioElement.addEventListener('timeupdate', () => {
       const progress = (this.audioElement.currentTime / this.audioElement.duration) * 100;
       this.elementRef.nativeElement.querySelector('#ProgressBar').value = progress;
@@ -44,7 +43,6 @@ export class PlaybarComponent {
     this.audioElement.addEventListener('ended', () => {
       this.updateSongInfo();
     });
-
   }
 
   playSong(song: Music): void {
