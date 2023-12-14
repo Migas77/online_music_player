@@ -13,6 +13,7 @@ import { AddEditAlbumComponent } from "./add-edit-album/add-edit-album.component
 import { AddEditMusicComponent } from "./add-edit-music/add-edit-music.component";
 import { HomepageComponent } from './homepage/homepage.component';
 import { ArtistDetailsComponent } from './artist-details/artist-details.component';
+import {PlaylistsComponent} from "./playlists/playlists.component";
 
 export const routes: Routes = [
   {path: '', component: HomepageComponent},
@@ -34,4 +35,5 @@ export const routes: Routes = [
   {path: 'addMusic', component: AddEditMusicComponent},
   {path: 'editMusic/:id', component: AddEditMusicComponent},
   {path: 'artistDetails/:id', component: ArtistDetailsComponent},
+  {path: 'playlists', component: PlaylistsComponent}
 ];

@@ -58,3 +58,10 @@ class MusicSerializer(serializers.ModelSerializer):
     class Meta:
         model = Music
         fields = ('id', 'name', 'likes', 'genre', 'performer', 'album', 'image', 'audio_file')
+
+class PlaylistSerializer(serializers.ModelSerializer):
+    author = ListenerSerializer(read_only=True)
+
+    class Meta:
+        model = Playlist
+        fields = ('id', 'name', 'author', 'order')

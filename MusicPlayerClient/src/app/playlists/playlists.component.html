@@ -1,0 +1,33 @@
+<h1 class="margin">Playlists</h1>
+<hr />
+<div class="overflow-x-auto">
+  <table class="table mt-1">
+    <thead>
+      <tr class="text-xl bg-base-100 text-slate-50">
+        <th></th>
+        <th>Name</th>
+        <th>User</th>
+        <th>Quantity</th>
+        <th>Delete</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="hover" *ngFor="let playlist of playlists">
+        <th>{{playlist.id}}</th>
+        <td>
+          <a routerLink="/playlist">{{playlist.name}}</a>
+        </td>
+        <td>{{playlist.author}}</td>
+        <td>{{playlist.musics}}</td>
+        <td>
+          <button
+            class="badge badge-outline btn-error"
+            onclick="showModal(this)"
+          >
+            <i class="fa fa-trash-o"></i>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

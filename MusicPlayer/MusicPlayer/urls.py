@@ -108,6 +108,9 @@ urlpatterns = [
     path('ws/searchMusic', views.search_music),
     path('ws/getAlbumsByPerformer/<int:id>', views.get_albums_by_performer),
     path('ws/getMusicsByArtist/<int:id>', views.get_musics_by_artist),
+    path('ws/playlists', views.get_playlists),
+    path('ws/playlist/<int:id>', views.get_playlist),
+    path('ws/addPlaylist', views.add_playlist),
 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -27,7 +27,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.response import Response
 from MusicPlayer.serializers import MusicSerializer, GenreSerializer, AlbumSerializer, ArtistSerializer, BandSerializer, PerformerSerializer, \
-    ListenerSerializer, UserSerializer
+    ListenerSerializer, UserSerializer, PlaylistSerializer
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 
@@ -892,4 +892,28 @@ def get_musics_by_artist(request, id):
     serializer = MusicSerializer(musics, many=True)
 
     return Response(serializer.data)
+
+@api_view(['GET'])
+def get_playlists(request):
+    playlists = Playlist.objects.all()
+    serializer = PlaylistSerializer(playlists, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def get_playlist(request, id):
+    try:
+        playlist = Playlist.objects.get(id=id)
+    except Playlist.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    serializer = PlaylistSerializer(playlist)
+    return Response(serializer.data)
+
+@api_view(['POST'])
+def add_playlist(request):
+    serializer = PlaylistSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    print(serializer.errors)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

@@ -7,6 +7,8 @@ import { Music } from '../models/Music';
 import { Performer } from '../models/Performer';
 import { PlaybarComponent } from '../playbar/playbar.component';
 import { RouterLink } from '@angular/router';
+import {Playlist} from "../models/Playlist";
+import {PlaylistService} from "../playlist.service";
 
 @Component({
   selector: 'app-homepage',
@@ -20,13 +22,19 @@ export class HomepageComponent {
   @ViewChild(PlaybarComponent) playbarComponent!: PlaybarComponent;
   musicService: MusicService = inject(MusicService);
   performerService: PerformerService = inject(PerformerService);
-  
+
   searchForm!: FormGroup;
   musicsByGenre: { [key: string] :Music[]} = {};
   allMusics: Music[] = [];
   performers: Performer[] = [];
   searchResult: { [key: string] :Music[]} = {};
-  
+
+  playlists : Playlist[] = [];
+  playlistService : PlaylistService = inject(PlaylistService)
+  currentMusicName! : string;
+  currentMusicId! : number;
+
+  createPlaylistForm!: FormGroup;
 
   constructor(private fb: FormBuilder, private elementRef: ElementRef) {
 
@@ -41,6 +49,15 @@ export class HomepageComponent {
     this.searchForm = this.fb.group({
       searchQuery: ''
     });
+
+    this.createPlaylistForm = this.fb.group({
+      name: ''
+    });
+
+    this.playlistService.getPlaylists().then((playlists : Playlist[]) => {
+      this.playlists = playlists;
+      console.log(this.playlists)
+    })
   }
 
   async onSubmit(): Promise<void> {
@@ -67,5 +84,29 @@ export class HomepageComponent {
 
   getObjectSize(obj: { [key: string] : any}): number {
     return Object.keys(obj).length;
+  }
+
+  addMusicToPlaylist(musicId: number, playlistId: number) {
+    this.playlistService.addMusicToPlaylist(musicId, playlistId).then((res: any) => {
+      if (res.ok) {
+        console.log("Music added successfully");
+        document.getElementById("closeModal")?.click();
+      }
+    });
+  }
+
+  async onSubmitCreatePlaylist(): Promise<void>{
+    const playlist = this.createPlaylistForm.value;
+    this.playlistService.createPlaylist(playlist).then((res: any) => {
+      if (res.ok) {
+        console.log("Playlist created successfully");
+        document.getElementById("closeModal")?.click();
+        this.playlistService.getPlaylists().then((playlists : Playlist[]) => {
+          this.playlists = playlists;
+          console.log(this.playlists)
+        })
+      }
+    });
+
   }
 }

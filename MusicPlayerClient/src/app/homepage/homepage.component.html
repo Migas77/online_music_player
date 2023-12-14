@@ -37,7 +37,7 @@
               <button>
                 <i class="fa-solid fa-cloud-arrow-down"></i>
               </button>
-              <button>
+              <button  onclick="document.getElementById('modalAddToPlaylist').show()"  (click)="currentMusicName = song.name; currentMusicId = song.id">
                 <i class="fa-solid fa-square-plus"></i>
               </button>
             </div>
@@ -48,7 +48,7 @@
   </div>
 
   <div *ngIf="getObjectSize(searchResult) === 0">
-    <div *ngIf="musicsByGenre"> 
+    <div *ngIf="musicsByGenre">
       <div *ngFor="let item of musicsByGenre | keyvalue" class="pl-5 pr-5 pt-5">
         <h1>{{ item.key }}</h1>
         <hr />
@@ -71,7 +71,7 @@
                 <button>
                   <i class="fa-solid fa-cloud-arrow-down"></i>
                 </button>
-                <button>
+                <button  onclick="document.getElementById('modalAddToPlaylist').show()"  (click)="currentMusicName = song.name; currentMusicId = song.id">
                   <i class="fa-solid fa-square-plus"></i>
                 </button>
               </div>
@@ -83,4 +83,69 @@
   </div>
 </div>
 
+<dialog id="modalAddToPlaylist" class="modal">
+  <div class="modal-box w-11/12 max-w-5xl">
+    <h3 class="font-bold text-lg">Playlists</h3>
+    <hr />
+    <div style="max-height: 400px; overflow-y: auto">
+      <table class="table ml-0 text-lg" id="playlistMusics">
+        <thead>
+        <tr class="text-lg">
+          <th></th>
+          <th>Name</th>
+          <th></th>
+        </tr>
+        </thead>
+        <tbody >
+        <tr *ngFor="let playlist of playlists" class="text-lg" >
+          <th>{{playlist.id}}</th>
+          <th>{{playlist.name}}</th>
+          <td>
+            <button>
+              <i class="fa fa-plus-square-o" (click)="addMusicToPlaylist(currentMusicId, playlist.id)"></i>
+            </button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="modal-action">
+      <button
+        class="btn btn-active btn-primary"
+        onclick="document.getElementById('modalCreatePlaylist').show()"
+      >
+        New playlist
+      </button>
+      <form method="dialog">
+        <button class="btn">Close</button>
+      </form>
+    </div>
+  </div>
+</dialog>
+
+<dialog id="modalCreatePlaylist" class="modal">
+  <div class="modal-box w-11/12 max-w-5xl">
+    <h3 class="font-bold text-lg">Create a new playlist</h3>
+    <hr />
+    <form [formGroup]="createPlaylistForm" (ngSubmit)="onSubmitCreatePlaylist()">
+      <div class="form-control" >
+        <label class="label">
+          <span class="label-text">Name</span>
+        </label>
+        <input
+          type="text"
+          placeholder="Playlist name"
+          class="input input-bordered"
+          formControlName="name"
+        />
+      </div>
+      <div class="modal-action">
+        <button class="btn btn-active btn-primary" type="submit" >Create</button>
+        <form method="dialog">
+          <button class="btn">Close</button>
+        </form>
+      </div>
+    </form>
+  </div>
+</dialog>
 <app-playbar></app-playbar>
