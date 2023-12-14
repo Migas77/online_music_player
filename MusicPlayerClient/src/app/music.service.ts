@@ -73,7 +73,7 @@ export class MusicService {
     return data.text()
   }
 
-  async searchMusics(query: string): Promise<Music[]> {
+  async searchMusics(query: string): Promise<{ [key: string]: Music[] }> {
     const url: string = this.baseURL + "searchMusic?query=" + encodeURIComponent(query);
     const formData = new FormData();
     formData.append('query', query);
@@ -83,7 +83,6 @@ export class MusicService {
         method: 'GET'
       }
     );
- 
     return await data.json() ?? [];
  }
 }
