@@ -23,18 +23,19 @@ export class ArtistService {
     formData.append('name', artist.name);
     formData.append('description', artist.description);
     formData.append('image', artist.image);
-
-    return await fetch(url, {
+    const data = await fetch(url, {
       method: 'POST',
       body: formData,
     });
+    if (data.status != 201)
+      throw new Error(JSON.stringify(await data.json()))
+    return data.json()
 
   }
 
   async getArtist(id: string) {
-    console.log(id);
     const url: string = this.baseURL + "artist/" + id;
-    let response = await fetch(url);
+    const response = await fetch(url);
     return await response.json();
   }
 
@@ -44,18 +45,22 @@ export class ArtistService {
     formData.append('name', artist.name);
     formData.append('description', artist.description);
     formData.append('image', artist.image);
-
-    return  await fetch(url, {
+    const data = await fetch(url, {
       method: 'PUT',
       body: formData,
     });
-
+    if (data.status != 200)
+      throw new Error(JSON.stringify(await data.json()))
+    return data.json()
   }
 
   async deleteArtist(id: number) {
     const url: string = this.baseURL + "deleteArtist/" + id;
-    return await fetch(url, {
+    const data = await fetch(url, {
       method: 'DELETE',
     });
+    if (data.status != 204)
+      throw new Error()
+    return data.text()
   }
 }

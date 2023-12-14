@@ -1,0 +1,11 @@
+<dialog id="my_modal_3" class="modal pl-[4%]" [open]="error_messages">
+  <div class="modal-box">
+    <form method="dialog">
+      <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" (click)="reset_error_messages()">✕</button>
+    </form>
+    <h3 class="font-bold text-lg">Submission Errors</h3>
+    <ul *ngFor="let error of error_messages | keyvalue">
+      <li class="py-4"><b>{{ error.key }}</b>: {{error.value}}</li>
+    </ul>
+  </div>
+</dialog>

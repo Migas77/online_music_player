@@ -1,6 +1,6 @@
 import {Component, inject, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {NgForOf, NgIf} from "@angular/common";
+import {NgForOf, NgIf, NgTemplateOutlet} from "@angular/common";
 import {Performer} from "../models/Performer";
 import {ArtistService} from "../artist.service";
 import {BandService} from "../band.service";
@@ -12,22 +12,28 @@ import {MusicService} from "../music.service";
 import {Album} from "../models/Album";
 import {Genre} from "../models/Genre";
 import {GenreService} from "../genre.service";
+import {Music} from "../models/Music";
+import {type} from "os";
+import {ErrorDisplayComponent} from "../error-display/error-display.component";
 
 @Component({
   selector: 'app-add-edit-music',
   standalone: true,
-    imports: [
-        FormsModule,
-        NgForOf,
-        NgIf,
-        ReactiveFormsModule
-    ],
+  imports: [
+    FormsModule,
+    NgForOf,
+    NgIf,
+    ReactiveFormsModule,
+    NgTemplateOutlet,
+    ErrorDisplayComponent
+  ],
   templateUrl: './add-edit-music.component.html',
   styleUrl: './add-edit-music.component.css'
 })
 export class AddEditMusicComponent implements OnInit {
   addMusicForm!: FormGroup;
   id!: string | null;
+  submit_errors! : Music;
   performers: Performer[] = [];
   albums: Album[] = [];
   genres: Genre[] = [];
@@ -92,20 +98,25 @@ export class AddEditMusicComponent implements OnInit {
   async onSubmit(): Promise<void>{
     let music = this.addMusicForm.value
     if (this.id == null) {
-      this.musicService.createMusic(music).then((res: Response) => {
-        if (res.ok)
+      this.musicService.createMusic(music)
+        .then(res => {
           console.log("Music created successfully");
-        this.addMusicForm.reset();
-      })
+          this.addMusicForm.reset();
+        })
+        .catch(error => {
+          this.submit_errors = JSON.parse(error.message)
+        });
     }
     else {
-      this.musicService.updateMusic(this.id, music).then((res: any) => {
-        if (res.ok){
+      this.musicService.updateMusic(this.id, music)
+        .then(res => {
           console.log("Music updated successfully");
           this.addMusicForm.reset();
           this.router.navigate(['/musics']);
-        }
-      });
+        })
+        .catch(error => {
+          this.submit_errors = JSON.parse(error.message)
+        });
     }
   }
 

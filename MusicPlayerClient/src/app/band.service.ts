@@ -27,13 +27,15 @@ export class BandService {
     const url: string = this.baseURL + "addBand";
     const formData = new FormData();
     formData.append('name', band.name);
-    formData.append('image', band.image, band.image.name)
     formData.append('description', band.description);
+    formData.append('image', band.image)
     band.members.forEach((member : number) => formData.append('members', member.toString()));
     const data : Response = await fetch(url, {
       method: 'POST',
       body: formData
     });
+    if (data.status != 201)
+      throw new Error(JSON.stringify(await data.json()))
     return data.json()
   }
 
@@ -46,17 +48,22 @@ export class BandService {
     for (let i = 0; i < band.members.length; i++) {
       formData.append('members', JSON.stringify(band.members[i]));
     }
-    return fetch(url, {
+    const data = await fetch(url, {
       method: 'PUT',
       body: formData,
     });
-
+    if (data.status != 200)
+      throw new Error(JSON.stringify(await data.json()))
+    return data.json()
   }
 
   async deleteBand(id: number) {
     const url: string = this.baseURL + "deleteBand/" + id;
-    return fetch(url, {
+    const data = await fetch(url, {
       method: 'DELETE',
     });
+    if (data.status != 204)
+      throw new Error()
+    return data.text()
   }
 }

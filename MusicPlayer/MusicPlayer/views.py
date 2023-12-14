@@ -643,7 +643,7 @@ def add_artist(request):
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    return Response(status=status.HTTP_400_BAD_REQUEST)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
 def get_artist(request, id):
@@ -668,7 +668,7 @@ def update_artist(request, id):
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data)
-    return Response(status=status.HTTP_400_BAD_REQUEST)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['DELETE'])
 def delete_artist(request, id):
@@ -694,7 +694,8 @@ def add_genre(request):
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    return Response(status=status.HTTP_400_BAD_REQUEST)
+    print(serializer.errors)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['DELETE'])
 def delete_genre(request, id):
@@ -719,7 +720,7 @@ def update_genre(request, id):
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data)
-    return Response(status=status.HTTP_400_BAD_REQUEST)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
 def get_band(request, id):
@@ -761,7 +762,7 @@ def update_band(request, id):
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data)
-    return Response(status=status.HTTP_400_BAD_REQUEST)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
 def get_album(request, id):
@@ -803,7 +804,7 @@ def update_album(request, id):
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data)
-    return Response(status=status.HTTP_400_BAD_REQUEST)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
 def get_music(request, id):
@@ -817,11 +818,9 @@ def get_music(request, id):
 @api_view(['POST'])
 def add_music(request):
     serializer = MusicSerializer(data=request.data)
-    print(request.data)
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    print(serializer.errors)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['DELETE'])
@@ -849,15 +848,13 @@ def update_music(request, id):
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data)
-    return Response(status=status.HTTP_400_BAD_REQUEST)
-
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
 def get_performers(request):
     performers = Performer.objects.all()
     serializer = PerformerSerializer(performers, many=True)
     return Response(serializer.data)
-
 
 @api_view(['GET'])
 def search_music(request):

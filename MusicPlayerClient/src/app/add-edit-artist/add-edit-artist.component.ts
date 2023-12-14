@@ -3,6 +3,8 @@ import {FormBuilder, FormGroup, ReactiveFormsModule} from '@angular/forms';
 import { ArtistService } from '../artist.service';
 import {ActivatedRoute, Router} from "@angular/router";
 import {CommonModule} from "@angular/common";
+import {ErrorDisplayComponent} from "../error-display/error-display.component";
+import {Artist} from "../models/Artist";
 
 @Component({
   selector: 'app-add-edit-artist',
@@ -10,7 +12,8 @@ import {CommonModule} from "@angular/common";
   standalone: true,
   imports: [
     ReactiveFormsModule,
-    CommonModule
+    CommonModule,
+    ErrorDisplayComponent
   ],
   styleUrl: './add-edit-artist.component.css'
 })
@@ -18,6 +21,8 @@ export class AddEditArtistComponent implements OnInit{
 
   addArtistForm!: FormGroup;
   id!: string | null;
+  submit_errors! : Artist;
+
   constructor(private fb: FormBuilder, private artistService: ArtistService, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit(): void {
@@ -43,21 +48,23 @@ export class AddEditArtistComponent implements OnInit{
     const artist = this.addArtistForm.value;
 
     if (this.id == null) {
-      this.artistService.createArtist(artist).then((res: any) => {
-        if (res.ok){
+      this.artistService.createArtist(artist)
+        .then(res => {
           console.log("Artist created successfully");
           this.addArtistForm.reset();
-        }
-      }
-      );
+        })
+        .catch(error => {
+          this.submit_errors = JSON.parse(error.message)
+        });
     }
     else {
-      this.artistService.updateArtist(this.id, artist).then((res: any) => {
-        if (res.ok){
-          console.log("Artist updated successfully");
-          this.addArtistForm.reset();
-          this.router.navigate(['/artists']);
-        }
+      this.artistService.updateArtist(this.id, artist).then(res => {
+        console.log("Artist updated successfully");
+        this.addArtistForm.reset();
+        this.router.navigate(['/artists']);
+      })
+      .catch(error => {
+        this.submit_errors = JSON.parse(error.message)
       });
     }
   }
