@@ -571,11 +571,9 @@ def auth_sign_in(request):
     serializer.is_valid(raise_exception=True)
     user = serializer.validated_data['user']
     token, created = Token.objects.get_or_create(user=user)
-    return Response({
-        'token': token.key,
-        'user_id': user.pk,
-        'user_email': user.email
-    })
+    response = Response(ListenerSerializer(user).data)
+    response.set_cookie(key='token', value=token.key, httponly=True, samesite='None', secure=True)
+    return response
 
 
 @api_view(['POST'])
@@ -584,12 +582,18 @@ def auth_sign_up(request):
     if serializer.is_valid():
         user = serializer.save()
         token, created = Token.objects.get_or_create(user=user)
-        return Response({
-            'token': token.key,
-            'user_id': user.pk,
-            'email_email': user.email
-        }, status=status.HTTP_201_CREATED)
+        response = Response(ListenerSerializer(user).data)
+        response.set_cookie(key='token', value=token.key, httponly=True, samesite='None', secure=True)
+        return Response(status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+def auth_sign_out(request):
+    token = request.COOKIES.get('token')
+    print(token)
+    print(request.user)
+    print(request.user.is_authenticated)
+    return Response()
 
 
 @api_view(['GET'])

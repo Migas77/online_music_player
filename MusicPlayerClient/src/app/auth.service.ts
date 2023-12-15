@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import {Signin} from "./models/Signin";
 import {Signup} from "./models/Signup";
-import {Signinresponse} from "./models/Signinresponse";
 import {Signupresponse} from "./models/Signupresponse";
 
 
@@ -10,23 +9,33 @@ import {Signupresponse} from "./models/Signupresponse";
 })
 export class AuthService {
   private baseURL : string = "http://localhost:8000/ws/auth/";
-  private token : null | string = null
 
   constructor() { }
 
-  async signin(user: Signin): Promise<Signinresponse>{
+  async signin(user: Signin): Promise<void> {
     const url: string = this.baseURL + "sign-in";
     const data: Response = await fetch(url, {
-      method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(user)
+      method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(user), credentials: 'include', mode: "cors"
     });
-    return data.json();
+    if (data.status != 200)
+      throw new Error(JSON.stringify(await data.json()))
   }
 
-  async signup(user: Signup): Promise<Signupresponse>{
+  async signup(user: Signup): Promise<void>{
     const url: string = this.baseURL + "sign-up";
     const data: Response = await fetch(url, {
       method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(user)
     });
-    return await data.json();
+    if (data.status != 201)
+      throw new Error(JSON.stringify(await data.json()))
+  }
+
+  async signout(): Promise<void>{
+    const url: string = this.baseURL + "sign-out";
+    const data: Response = await fetch(url, {
+      method: 'POST', credentials: 'include', mode: "cors"
+    });
+    // if (data.status != 201)
+      // throw new Error(JSON.stringify(await data.json()))
   }
 }
