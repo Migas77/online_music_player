@@ -29,4 +29,13 @@ export class AuthService {
     if (data.status != 201)
       throw new Error(JSON.stringify(await data.json()))
   }
+
+  async signout(): Promise<void>{
+    const url: string = this.baseURL + "sign-out";
+    const data: Response = await fetch(url, {
+      method: 'POST', credentials: 'include', mode: "cors"
+    });
+    // if (data.status != 201)
+      // throw new Error(JSON.stringify(await data.json()))
+  }
 }

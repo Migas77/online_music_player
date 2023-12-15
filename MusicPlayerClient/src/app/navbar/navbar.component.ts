@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import {Component, inject} from '@angular/core';
 import {RouterLink} from "@angular/router";
 import {NgOptimizedImage} from "@angular/common";
+import {AuthService} from "../auth.service";
 
 @Component({
   selector: 'app-navbar',
@@ -13,5 +14,9 @@ import {NgOptimizedImage} from "@angular/common";
   styleUrl: './navbar.component.css'
 })
 export class NavbarComponent {
+  authService : AuthService = inject(AuthService)
 
+  signout() {
+    this.authService.signout()
+  }
 }

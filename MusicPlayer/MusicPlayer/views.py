@@ -587,6 +587,14 @@ def auth_sign_up(request):
         return Response(status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['POST'])
+def auth_sign_out(request):
+    token = request.COOKIES.get('token')
+    print(token)
+    print(request.user)
+    print(request.user.is_authenticated)
+    return Response()
+
 
 @api_view(['GET'])
 def get_musics_by_genre(request):

@@ -78,6 +78,7 @@ urlpatterns = [
     ### Web Services 2nd Project
     path('ws/auth/sign-in', views.auth_sign_in),
     path('ws/auth/sign-up', views.auth_sign_up),
+    path('ws/auth/sign-out', views.auth_sign_out),
     path('ws/musicsbygenre', views.get_musics_by_genre),
     path('ws/musics', views.get_musics),
     path('ws/genres', views.get_genres),
