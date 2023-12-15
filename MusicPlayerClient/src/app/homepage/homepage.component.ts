@@ -33,6 +33,8 @@ export class HomepageComponent {
   playlistService : PlaylistService = inject(PlaylistService)
   currentMusicName! : string;
   currentMusicId! : number;
+  musicAdded: boolean = false;
+  musicAddedFailed: boolean = false;
 
   createPlaylistForm!: FormGroup;
 
@@ -51,12 +53,13 @@ export class HomepageComponent {
     });
 
     this.createPlaylistForm = this.fb.group({
-      name: ''
+      name: '',
+      author: ''
     });
 
     this.playlistService.getPlaylists().then((playlists : Playlist[]) => {
       this.playlists = playlists;
-      // console.log(this.playlists)
+      console.log(this.playlists)
     })
   }
 
@@ -86,24 +89,35 @@ export class HomepageComponent {
     return Object.keys(obj).length;
   }
 
-  addMusicToPlaylist(musicId: number, playlistId: number) {
+  async addMusicToPlaylist(musicId: number, playlistId: number) {
+    this.musicAdded = false;
+    this.musicAddedFailed = false;
     this.playlistService.addMusicToPlaylist(musicId, playlistId).then((res: any) => {
       if (res.ok) {
         console.log("Music added successfully");
-        document.getElementById("closeModal")?.click();
+        this.musicAdded = true;
+        setTimeout(() => {
+          this.musicAdded = false;
+        }, 3000);
+      } else {
+        this.musicAddedFailed = true;
+        setTimeout(() => {
+          this.musicAddedFailed = false;
+        }, 3000);
+
       }
     });
   }
 
   async onSubmitCreatePlaylist(): Promise<void>{
     const playlist = this.createPlaylistForm.value;
+    playlist.author = "2"
     this.playlistService.createPlaylist(playlist).then((res: any) => {
       if (res.ok) {
         console.log("Playlist created successfully");
-        document.getElementById("closeModal")?.click();
+        document.getElementById("closeAddPlaylistModal")?.click();
         this.playlistService.getPlaylists().then((playlists : Playlist[]) => {
           this.playlists = playlists;
-          // console.log(this.playlists)
         })
       }
     });
