@@ -13,13 +13,15 @@
   </form>
 </div>
 <div class="mb-[150px]">
-  <div *ngIf="getObjectSize(searchResult) !== 0">
-    <h2 class="font-regular">Searched for "<span class="font-bold">{{ searchForm.value.searchQuery }}</span>"</h2>
-    <div *ngFor="let item of searchResult | keyvalue">
+  <div *ngIf="(getObjectSize(searchResult) !== 0 && searchResult) || (getObjectSize(searchResult) === 0 && musicsByGenre)">
+    <h2 class="font-regular" *ngIf="getObjectSize(searchResult) !== 0">
+      Searched for "<span class="font-bold">{{ searchForm.value.searchQuery }}</span>"
+    </h2>
+    <div *ngFor="let item of ( (getObjectSize(searchResult) !== 0) ? searchResult : musicsByGenre ) | keyvalue">
       <h1>{{ item.key }}</h1>
       <hr />
       <div class="display flex flex-wrap pt-5">
-        <div *ngFor="let song of item.value" >
+        <div *ngFor="let song of item.value">
           <div class="card w-96 bg-base-100 shadow-xl m-5">
             <div>
               <figure><img [src]="'http://localhost:8000/' + song.image" class="object-right-top object-cover h-72 w-full rounded-tr-xl rounded-tl-xl" alt="musicCover"/></figure>
@@ -29,10 +31,7 @@
               <h3 class="text-lg songPerformer"><a routerLink="artistDetails/{{ song.performer }}">{{ getName(song.performer) }}</a></h3>
               <div class="text-lg space-x-3 flex flex-row justify-center">
                 <button class="songlistplay" (click)="playSong(song)">
-                  <i
-                    id="1"
-                    class="far songItemPlay fa-play-circle"
-                  ></i>
+                  <i id="1" class="far songItemPlay fa-play-circle"></i>
                 </button>
                 <button>
                   <i class="fa-solid fa-heart" style="color: #c10bbb;"></i> {{ song.likes.length }}
@@ -40,7 +39,7 @@
                 <button>
                   <i class="fa-solid fa-cloud-arrow-down"></i>
                 </button>
-                <button  onclick="document.getElementById('modalAddToPlaylist').show()"  (click)="currentMusicName = song.name; currentMusicId = song.id">
+                <button onclick="document.getElementById('modalAddToPlaylist').show()" (click)="currentMusicName = song.name; currentMusicId = song.id">
                   <i class="fa-solid fa-square-plus"></i>
                 </button>
               </div>
@@ -51,44 +50,6 @@
     </div>
   </div>
 
-  <div *ngIf="getObjectSize(searchResult) === 0">
-    <div *ngIf="musicsByGenre">
-      <div *ngFor="let item of musicsByGenre | keyvalue" >
-        <h1>{{ item.key }}</h1>
-        <hr />
-        <div class="display flex flex-wrap pt-5">
-          <div *ngFor="let song of item.value"  >
-            <div class="card w-96 bg-base-100 shadow-xl m-5">
-              <div>
-              <figure><img [src]="'http://localhost:8000/' + song.image" class="object-right-top object-cover h-72 w-full rounded-tr-xl rounded-tl-xl" alt="musicCover"/></figure>
-              </div>
-              <div class="card-body w-96 text-center">
-                <h2 class="text-center songName">{{ song.name }}</h2>
-                <h3 class="text-lg songPerformer"><a routerLink="artistDetails/{{ song.performer }}">{{ getName(song.performer) }}</a></h3>
-                <div class="text-lg space-x-3 flex flex-row justify-center">
-                  <button class="songlistplay" (click)="playSong(song)">
-                    <i
-                      id="1"
-                      class="far songItemPlay fa-play-circle"
-                    ></i>
-                  </button>
-                  <button>
-                    <i class="fa-solid fa-heart" style="color: #c10bbb;"></i> {{ song.likes.length }}
-                  </button>
-                  <button>
-                    <i class="fa-solid fa-cloud-arrow-down"></i>
-                  </button>
-                  <button  onclick="document.getElementById('modalAddToPlaylist').show()"  (click)="currentMusicName = song.name; currentMusicId = song.id">
-                    <i class="fa-solid fa-square-plus"></i>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
 </div>
 
 <dialog id="modalAddToPlaylist" class="modal">
