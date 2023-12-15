@@ -28,4 +28,21 @@ export class PlaylistService {
 
     return await fetch(url, {method: 'POST', body: formData});
   }
+
+  async deletePlaylist(playlistId: number) {
+    const url: string = this.baseURL + "deletePlaylist/" + playlistId;
+    return await fetch(url, {method: 'DELETE'});
+  }
+
+  async getPlaylist(id: string) {
+    const url: string = this.baseURL + "playlist/" + id;
+    const data: Response = await fetch(url);
+    return await data.json() ?? [];
+  }
+
+  async removeSong(currentMusicId: number, id: number) {
+    const url: string = this.baseURL + "deleteSongPlaylist/" + currentMusicId + "/" + id;
+    return await fetch(url, {method: 'DELETE'});
+
+  }
 }
