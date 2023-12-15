@@ -1,4 +1,4 @@
-import {Component, inject} from '@angular/core';
+import {Component, inject, ViewChild} from '@angular/core';
 import {PlaylistService} from "../playlist.service";
 import {ActivatedRoute} from "@angular/router";
 import {Playlist} from "../models/Playlist";
@@ -8,12 +8,14 @@ import {PerformerService} from "../performer.service";
 import {Genre} from "../models/Genre";
 import {Music} from "../models/Music";
 import {GenreService} from "../genre.service";
+import {PlaybarComponent} from "../playbar/playbar.component";
 
 @Component({
   selector: 'app-playlist-details',
   standalone: true,
   imports: [
-    NgForOf
+    NgForOf,
+    PlaybarComponent
   ],
   templateUrl: './playlist-details.component.html',
   styleUrl: './playlist-details.component.css'
@@ -32,6 +34,8 @@ export class PlaylistDetailsComponent {
 
   genreService: GenreService = inject(GenreService);
   genres!: Genre[];
+
+  @ViewChild(PlaybarComponent) playbarComponent!: PlaybarComponent;
 
   constructor(private playlistService: PlaylistService, private route: ActivatedRoute) {
     this.id = this.route.snapshot.paramMap.get('id');
@@ -72,5 +76,9 @@ export class PlaylistDetailsComponent {
       }
     });
 
+  }
+
+  playSong(song: Music) {
+    this.playbarComponent.playSong(song, this.playlist);
   }
 }

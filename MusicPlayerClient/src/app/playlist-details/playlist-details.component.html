@@ -5,7 +5,7 @@
       <tbody class="text-lg">
       <tr class="" *ngFor="let music of musics">
         <td>
-          <button>
+          <button (click)="playSong(music)">
             <i class="fa fa-play-circle text-3xl"></i>
           </button>
         </td>
@@ -49,7 +49,6 @@
       </tbody>
     </table>
 </div>
-
 <dialog id="modalDelete" class="modal">
   <div class="modal-box">
     <h3 class="font-bold text-xl">Remove song from playlist!</h3>
@@ -69,3 +68,6 @@
     </div>
   </div>
 </dialog>
+
+<app-playbar></app-playbar>
+
