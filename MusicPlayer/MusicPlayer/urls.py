@@ -20,6 +20,10 @@ from MusicPlayer import views
 from MusicPlayer.forms import LoginForm, SignUpForm
 from django.contrib.auth import views as auth_views
 from django.conf import settings
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
 
 
 urlpatterns = [
@@ -79,6 +83,7 @@ urlpatterns = [
     path('ws/auth/sign-in', views.auth_sign_in),
     path('ws/auth/sign-up', views.auth_sign_up),
     path('ws/auth/sign-out', views.auth_sign_out),
+    path('ws/auth/refresh', TokenRefreshView.as_view()),
     path('ws/musicsbygenre', views.get_musics_by_genre),
     path('ws/musics', views.get_musics),
     path('ws/genres', views.get_genres),

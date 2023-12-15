@@ -26,10 +26,11 @@ from rest_framework.authentication import SessionAuthentication, TokenAuthentica
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.response import Response
-from MusicPlayer.serializers import MusicSerializer, GenreSerializer, AlbumSerializer, ArtistSerializer, BandSerializer, PerformerSerializer, \
+from MusicPlayer.serializers import MusicSerializer, GenreSerializer, AlbumSerializer, ArtistSerializer, BandSerializer, \
+    PerformerSerializer, \
     ListenerSerializer, UserSerializer, PlaylistSerializer, MembershipSerializer
-from rest_framework.authtoken.models import Token
-from rest_framework.authtoken.serializers import AuthTokenSerializer
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 
 # Custom User
@@ -565,14 +566,22 @@ def listGenres(request):
 ### Web Services 2nd Project
 
 
+
+"""
+In auth_sign_in and auth_sign_up I send the access token in response and the refresh token in an httponly cookie
+In the frontend will only work with the access token which will be saved in the local storage (and not with the
+refresh token as it is httponly)
+https://www.cyberchief.ai/2023/05/secure-jwt-token-storage.html
+"""
+
 @api_view(['POST'])
 def auth_sign_in(request):
-    serializer = AuthTokenSerializer(data=request.data, context={'request': request})
+    serializer = TokenObtainPairSerializer(data=request.data, context={'request': request})
     serializer.is_valid(raise_exception=True)
-    user = serializer.validated_data['user']
-    token, created = Token.objects.get_or_create(user=user)
-    response = Response(ListenerSerializer(user).data)
-    response.set_cookie(key='token', value=token.key, httponly=True, samesite='None', secure=True)
+    access = serializer.validated_data['access']
+    refresh = serializer.validated_data['refresh']
+    response = Response({'access': str(access)})
+    response.set_cookie(key='refresh', value=refresh, httponly=True, samesite='None', secure=True)
     return response
 
 
@@ -581,11 +590,12 @@ def auth_sign_up(request):
     serializer = UserSerializer(data=request.data)
     if serializer.is_valid():
         user = serializer.save()
-        token, created = Token.objects.get_or_create(user=user)
-        response = Response(ListenerSerializer(user).data)
-        response.set_cookie(key='token', value=token.key, httponly=True, samesite='None', secure=True)
-        return Response(status=status.HTTP_201_CREATED)
+        refresh = RefreshToken.for_user(user=user)
+        response = Response({'access': str(refresh.access_token)}, status=status.HTTP_201_CREATED)
+        response.set_cookie(key='refresh', value=refresh, httponly=True, samesite='None', secure=True)
+        return response
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(['POST'])
 def auth_sign_out(request):
@@ -606,8 +616,8 @@ def get_musics_by_genre(request):
 
 
 @api_view(['GET'])
-#@authentication_classes([SessionAuthentication, TokenAuthentication])
-#@permission_classes([IsAuthenticated])
+# @authentication_classes([SessionAuthentication, TokenAuthentication])
+# @permission_classes([IsAuthenticated])
 def get_musics(request):
     musics = Music.objects.all()
     serializer = MusicSerializer(musics, many=True)
@@ -641,6 +651,7 @@ def get_bands(request):
     serializer = BandSerializer(bands, many=True)
     return Response(serializer.data)
 
+
 @api_view(['POST'])
 def add_artist(request):
     serializer = ArtistSerializer(data=request.data)
@@ -648,6 +659,7 @@ def add_artist(request):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(['GET'])
 def get_artist(request, id):
@@ -657,6 +669,7 @@ def get_artist(request, id):
         return Response(status=status.HTTP_404_NOT_FOUND)
     serializer = ArtistSerializer(artist)
     return Response(serializer.data)
+
 
 @api_view(['PUT'])
 def update_artist(request, id):
@@ -674,6 +687,7 @@ def update_artist(request, id):
         return Response(serializer.data)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 @api_view(['DELETE'])
 def delete_artist(request, id):
     try:
@@ -682,6 +696,7 @@ def delete_artist(request, id):
         return Response(status=status.HTTP_404_NOT_FOUND)
     artist.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 @api_view(['GET'])
 def get_genre(request, id):
@@ -692,6 +707,7 @@ def get_genre(request, id):
     serializer = GenreSerializer(genre)
     return Response(serializer.data)
 
+
 @api_view(['POST'])
 def add_genre(request):
     serializer = GenreSerializer(data=request.data)
@@ -699,6 +715,7 @@ def add_genre(request):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(['DELETE'])
 def delete_genre(request, id):
@@ -708,6 +725,7 @@ def delete_genre(request, id):
         return Response(status=status.HTTP_404_NOT_FOUND)
     genre.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 @api_view(['PUT'])
 def update_genre(request, id):
@@ -725,6 +743,7 @@ def update_genre(request, id):
         return Response(serializer.data)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 @api_view(['GET'])
 def get_band(request, id):
     try:
@@ -734,6 +753,7 @@ def get_band(request, id):
     serializer = BandSerializer(band)
     return Response(serializer.data)
 
+
 @api_view(['POST'])
 def add_band(request):
     serializer = BandSerializer(data=request.data)
@@ -741,6 +761,7 @@ def add_band(request):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(['DELETE'])
 def delete_band(request, id):
@@ -750,6 +771,7 @@ def delete_band(request, id):
         return Response(status=status.HTTP_404_NOT_FOUND)
     band.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 @api_view(['PUT'])
 def update_band(request, id):
@@ -767,6 +789,7 @@ def update_band(request, id):
         return Response(serializer.data)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 @api_view(['GET'])
 def get_album(request, id):
     try:
@@ -776,6 +799,7 @@ def get_album(request, id):
     serializer = AlbumSerializer(album)
     return Response(serializer.data)
 
+
 @api_view(['POST'])
 def add_album(request):
     serializer = AlbumSerializer(data=request.data)
@@ -783,6 +807,7 @@ def add_album(request):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(['DELETE'])
 def delete_album(request, id):
@@ -792,6 +817,7 @@ def delete_album(request, id):
         return Response(status=status.HTTP_404_NOT_FOUND)
     album.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 @api_view(['PUT'])
 def update_album(request, id):
@@ -809,6 +835,7 @@ def update_album(request, id):
         return Response(serializer.data)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 @api_view(['GET'])
 def get_music(request, id):
     try:
@@ -818,6 +845,7 @@ def get_music(request, id):
     serializer = MusicSerializer(music)
     return Response(serializer.data)
 
+
 @api_view(['POST'])
 def add_music(request):
     serializer = MusicSerializer(data=request.data)
@@ -825,6 +853,7 @@ def add_music(request):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(['DELETE'])
 def delete_music(request, id):
@@ -834,6 +863,7 @@ def delete_music(request, id):
         return Response(status=status.HTTP_404_NOT_FOUND)
     music.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 @api_view(['PUT'])
 def update_music(request, id):
@@ -853,11 +883,13 @@ def update_music(request, id):
         return Response(serializer.data)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 @api_view(['GET'])
 def get_performers(request):
     performers = Performer.objects.all()
     serializer = PerformerSerializer(performers, many=True)
     return Response(serializer.data)
+
 
 @api_view(['GET'])
 def search_music(request):
@@ -867,40 +899,45 @@ def search_music(request):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
     songs = Music.objects.filter(
-        Q(name__icontains=query) | Q(performer__name__icontains=query) | Q(genre__title__icontains=query) | Q(album__name__icontains=query)
+        Q(name__icontains=query) | Q(performer__name__icontains=query) | Q(genre__title__icontains=query) | Q(
+            album__name__icontains=query)
     )
 
     serializer = {genre: MusicSerializer(musics, many=True).data for genre, musics in
-                       groupby(sorted(songs, key=lambda music: music.genre.title.upper()),
-                               key=lambda music: music.genre.title.upper())}
-    
+                  groupby(sorted(songs, key=lambda music: music.genre.title.upper()),
+                          key=lambda music: music.genre.title.upper())}
+
     return Response(serializer)
+
 
 @api_view(['GET'])
 def get_albums_by_performer(request, id):
     if id is None:
         return Response(status=status.HTTP_400_BAD_REQUEST)
-    
+
     albums = Album.objects.filter(performer__id=id)
     serializer = AlbumSerializer(albums, many=True)
 
     return Response(serializer.data)
-    
+
+
 @api_view(['GET'])
 def get_musics_by_artist(request, id):
     if id is None:
         return Response(status=status.HTTP_400_BAD_REQUEST)
-    
+
     musics = Music.objects.filter(performer__id=id)
     serializer = MusicSerializer(musics, many=True)
 
     return Response(serializer.data)
+
 
 @api_view(['GET'])
 def get_playlists(request):
     playlists = Playlist.objects.all()
     serializer = PlaylistSerializer(playlists, many=True)
     return Response(serializer.data)
+
 
 @api_view(['GET'])
 def get_playlist(request, id):
@@ -911,6 +948,7 @@ def get_playlist(request, id):
     serializer = PlaylistSerializer(playlist)
     return Response(serializer.data)
 
+
 @api_view(['POST'])
 def add_playlist(request):
     serializer = PlaylistSerializer(data=request.data)
@@ -918,6 +956,7 @@ def add_playlist(request):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(['DELETE'])
 def delete_playlist(request, id):
@@ -927,6 +966,7 @@ def delete_playlist(request, id):
         return Response(status=status.HTTP_404_NOT_FOUND)
     playlist.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 @api_view(['PUT'])
 def update_playlist(request, id):
@@ -940,6 +980,7 @@ def update_playlist(request, id):
         return Response(serializer.data)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
 @api_view(['POST'])
 def add_music_to_playlist(request, songId, playlistId):
     try:
@@ -952,7 +993,6 @@ def add_music_to_playlist(request, songId, playlistId):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 
 @api_view(['DELETE'])
