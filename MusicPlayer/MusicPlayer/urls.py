@@ -111,6 +111,11 @@ urlpatterns = [
     path('ws/playlists', views.get_playlists),
     path('ws/playlist/<int:id>', views.get_playlist),
     path('ws/addPlaylist', views.add_playlist),
+    path('ws/updatePlaylist', views.update_playlist),
+    path('ws/deletePlaylist/<int:id>', views.delete_playlist),
+    path('ws/addMusicToPlaylist/<int:songId>/<int:playlistId>', views.add_music_to_playlist),
+    path('ws/deleteSongPlaylist/<int:songId>/<int:playlistId>', views.delete_song_playlist),
+
 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

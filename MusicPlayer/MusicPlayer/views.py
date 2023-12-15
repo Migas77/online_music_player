@@ -27,7 +27,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.response import Response
 from MusicPlayer.serializers import MusicSerializer, GenreSerializer, AlbumSerializer, ArtistSerializer, BandSerializer, PerformerSerializer, \
-    ListenerSerializer, UserSerializer, PlaylistSerializer
+    ListenerSerializer, UserSerializer, PlaylistSerializer, MembershipSerializer
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 
@@ -913,6 +913,44 @@ def add_playlist(request):
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    print(serializer.errors)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['DELETE'])
+def delete_playlist(request, id):
+    try:
+        playlist = Playlist.objects.get(id=id)
+    except Playlist.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    playlist.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['PUT'])
+def update_playlist(request, id):
+    try:
+        playlist = Playlist.objects.get(id=id)
+    except Playlist.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    serializer = PlaylistSerializer(playlist, data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+def add_music_to_playlist(request, songId, playlistId):
+    try:
+        song = Music.objects.get(id=songId)
+        playlist = Playlist.objects.get(id=playlistId)
+    except (Music.DoesNotExist, Playlist.DoesNotExist):
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    serializer = MembershipSerializer(data={'playlist': playlistId, 'music': songId})
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+@api_view(['DELETE'])
+def delete_song_playlist(request, song_id, playlist_id):
+    pass
