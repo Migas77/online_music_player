@@ -4,6 +4,7 @@ import { Music } from '../models/Music';
 import { Performer } from '../models/Performer';
 import { PerformerService } from '../performer.service';
 import { MusicService } from '../music.service';
+import {Playlist} from "../models/Playlist";
 
 @Component({
   selector: 'app-playbar',
@@ -18,8 +19,11 @@ export class PlaybarComponent {
   performers: Performer[] = [];
   currentSongIndex: number | null = null;
   currentSong: Music | null = null;
-  audioElement: HTMLAudioElement;
+  audioElement!: HTMLAudioElement;
   isPlaying: boolean = false;
+
+  playlistMusics: Music[] = [];
+  isPlaylist: boolean = false;
 
   musicService: MusicService = inject(MusicService);
   performerService: PerformerService = inject(PerformerService);
@@ -45,9 +49,16 @@ export class PlaybarComponent {
     });
   }
 
-  playSong(song: Music): void {
+  playSong(song: Music, playlist?:Playlist): void {
+    if (playlist) {
+      this.isPlaylist = true;
+      this.playlistMusics = playlist.musics;
+    } else {
+      this.isPlaylist = false;
+      this.playlistMusics = [];
+    }
     this.currentSong = song;
-    this.currentSongIndex = this.allMusics.indexOf(song);
+    this.currentSongIndex = this.isPlaylist ? this.playlistMusics.indexOf(song) : this.allMusics.indexOf(song);
     this.audioElement.src = 'http://localhost:8000/' + song.audio_file;
     this.audioElement.currentTime = 0;
     this.isPlaying = true;
@@ -64,14 +75,14 @@ export class PlaybarComponent {
   previousSong(): void {
     if (this.currentSongIndex !== null && this.currentSongIndex > 0) {
       this.currentSongIndex--;
-      this.playSong(this.allMusics[this.currentSongIndex]);
+      this.playSong(this.isPlaylist ? this.playlistMusics[this.currentSongIndex] : this.allMusics[this.currentSongIndex]);
     }
   }
 
   nextSong(): void {
-    if (this.currentSongIndex !== null && this.currentSongIndex < this.allMusics.length - 1) {
+    if (this.currentSongIndex !== null && this.currentSongIndex < (this.isPlaylist ? this.playlistMusics.length - 1 : this.allMusics.length - 1)) {
       this.currentSongIndex++;
-      this.playSong(this.allMusics[this.currentSongIndex]);
+      this.playSong(this.isPlaylist ? this.playlistMusics[this.currentSongIndex] : this.allMusics[this.currentSongIndex]);
     }
   }
 

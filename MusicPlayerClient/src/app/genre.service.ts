@@ -60,4 +60,10 @@ export class GenreService {
       throw new Error()
     return data.text()
   }
+
+  getGenreTitle(genre: Genre, genres: Genre[]) {
+    const gid = Number(genre);
+    const genre1 = genres.find(genre => genre.id === gid);
+    return genre1 ? genre1.title : '';
+  }
 }

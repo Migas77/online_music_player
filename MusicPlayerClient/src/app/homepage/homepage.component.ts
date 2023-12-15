@@ -54,7 +54,8 @@ export class HomepageComponent {
 
     this.createPlaylistForm = this.fb.group({
       name: '',
-      author: ''
+      author: '',
+      musics: '',
     });
 
     this.playlistService.getPlaylists().then((playlists : Playlist[]) => {

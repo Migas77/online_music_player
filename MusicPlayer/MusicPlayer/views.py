@@ -995,6 +995,12 @@ def add_music_to_playlist(request, songId, playlistId):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+
 @api_view(['DELETE'])
-def delete_song_playlist(request, song_id, playlist_id):
-    pass
+def delete_song_playlist(request, songId, playlistId):
+    try:
+        membership = Membership.objects.get(playlist=playlistId, music=songId)
+    except Membership.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    membership.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)

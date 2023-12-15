@@ -14,6 +14,7 @@ import { AddEditMusicComponent } from "./add-edit-music/add-edit-music.component
 import { HomepageComponent } from './homepage/homepage.component';
 import { ArtistDetailsComponent } from './artist-details/artist-details.component';
 import {PlaylistsComponent} from "./playlists/playlists.component";
+import {PlaylistDetailsComponent} from "./playlist-details/playlist-details.component";
 
 export const routes: Routes = [
   {path: '', component: HomepageComponent},
@@ -35,5 +36,6 @@ export const routes: Routes = [
   {path: 'addMusic', component: AddEditMusicComponent},
   {path: 'editMusic/:id', component: AddEditMusicComponent},
   {path: 'artistDetails/:id', component: ArtistDetailsComponent},
-  {path: 'playlists', component: PlaylistsComponent}
+  {path: 'playlists', component: PlaylistsComponent},
+  {path: 'playlistDetails/:id', component: PlaylistDetailsComponent}
 ];
