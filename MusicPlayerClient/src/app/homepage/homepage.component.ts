@@ -56,7 +56,7 @@ export class HomepageComponent {
 
     this.playlistService.getPlaylists().then((playlists : Playlist[]) => {
       this.playlists = playlists;
-      console.log(this.playlists)
+      // console.log(this.playlists)
     })
   }
 
@@ -103,7 +103,7 @@ export class HomepageComponent {
         document.getElementById("closeModal")?.click();
         this.playlistService.getPlaylists().then((playlists : Playlist[]) => {
           this.playlists = playlists;
-          console.log(this.playlists)
+          // console.log(this.playlists)
         })
       }
     });

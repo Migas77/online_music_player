@@ -19,7 +19,7 @@ export class PlaylistsComponent {
   constructor() {
     this.playlistService.getPlaylists().then((playlists : Playlist[]) => {
       this.playlists = playlists;
-      console.log(this.playlists)
+      // console.log(this.playlists)
     })
   }
 

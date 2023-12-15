@@ -3,7 +3,6 @@ import {AuthService} from "../auth.service";
 import {Form, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {Router} from "@angular/router";
 import {Signupresponse} from "../models/Signupresponse";
-import {Signinresponse} from "../models/Signinresponse";
 import {NgForOf, NgIf, CommonModule} from "@angular/common";
 import {ErrorDisplayComponent} from "../error-display/error-display.component";
 
@@ -42,39 +41,23 @@ export class AuthComponent {
     const attrs = this.signin_form.value;
     if (attrs.username && attrs.password){
       this.authService.signin({username : attrs.username, password: attrs.password})
-        .then((response : Signinresponse) => {
-          if (!response.non_field_errors){
-            void this.router.navigate(['']);
-          }else{
-            this.auth_errors = {} as { [key: string] : string };
-            response.non_field_errors.forEach((error:string, index:number) => {
-              // @ts-ignore REMOVE THIS LATER
-              this.auth_errors[`Error ${index + 1}`] = error;
-            })
-          }
-        })
+        .then(response => void this.router.navigate(['']) )
+        .catch(error => this.auth_errors = JSON.parse(error.message))
     }
   }
 
   signup(): void{
     const attrs = this.signup_form.value;
     if (attrs.username && attrs.email && attrs.password1 && attrs.password2){
+      // verify if both passwords are the same
       if (attrs.password1 !== attrs.password2){
-        console.log(this.auth_errors)
         this.auth_errors = { 'password' : "Given passwords don't match."};
         return
       }
-      // verify if both passwords are the same
+      
       this.authService.signup({email: attrs.email, username : attrs.username, password: attrs.password1})
-        .then((response : Signupresponse) => {
-          if (!response.email && !response.username && !response.password){
-            void this.router.navigate(['']);
-          }else{
-            this.auth_errors = response
-            // this.auth_errors = [response.email, response.username, response.password].filter(val => val !== undefined);
-            console.log(this.auth_errors)
-          }
-        })
+        .then(response => void this.router.navigate(['']) )
+        .catch(error => this.auth_errors = JSON.parse(error.message))
     }
   }
 }

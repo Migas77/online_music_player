@@ -12,7 +12,7 @@ class UserSerializer(serializers.ModelSerializer):
 class ListenerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Listener
-        fields = ('id', 'followers')
+        fields = ('id', 'email', 'username')
 
 
 class MediaContentSerializer(serializers.ModelSerializer):
