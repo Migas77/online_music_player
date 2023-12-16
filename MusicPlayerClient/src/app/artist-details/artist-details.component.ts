@@ -61,7 +61,6 @@ export class ArtistDetailsComponent implements OnInit {
           this.artistAlbums.forEach(album => {
             this.musicService.getMusicsByAlbum(album.id).then((musics) => {
               this.musicsByAlbum[album.id] = musics;
-              console.log("MUSICS BY ALBUM: ", this.musicsByAlbum);
             });
           });
         });
