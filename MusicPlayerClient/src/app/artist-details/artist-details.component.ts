@@ -2,22 +2,26 @@ import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { NgFor, NgIf } from '@angular/common';
 import { RouterLink, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { FormGroup, FormBuilder, ReactiveFormsModule } from '@angular/forms';
 
 import { Album } from '../models/Album';
 import { Music } from '../models/Music';
 import { Band } from '../models/Band';
 import { Artist } from '../models/Artist';
+import { Playlist } from '../models/Playlist';
 
 import { AlbumService } from '../album.service';
 import { PerformerService } from '../performer.service';
 import { ArtistService } from '../artist.service';
 import { MusicService } from '../music.service';
+import { PlaylistService } from '../playlist.service';
 
 import { PlaybarComponent } from '../playbar/playbar.component';
+import { HomepageComponent } from '../homepage/homepage.component';
 @Component({
   selector: 'app-artist-details',
   standalone: true,
-  imports: [NgFor, NgIf, RouterLink, CommonModule, RouterLink, PlaybarComponent],
+  imports: [NgFor, NgIf, RouterLink, CommonModule, RouterLink, PlaybarComponent, ReactiveFormsModule],
   templateUrl: './artist-details.component.html',
   styleUrl: './artist-details.component.css'
 })
@@ -34,11 +38,32 @@ export class ArtistDetailsComponent implements OnInit {
   performerMusics: Music[] = [];
   allArtists: Artist[] = [];
 
+  playlists : Playlist[] = [];
+  playlistService : PlaylistService = inject(PlaylistService)
+  currentMusicName! : string;
+  currentMusicId! : number;
+  musicAdded: boolean = false;
+  musicAddedFailed: boolean = false;
+
+  createPlaylistForm!: FormGroup;
+
   id!: number;
 
   @ViewChild(PlaybarComponent) playbarComponent!: PlaybarComponent;
+  @ViewChild(HomepageComponent) homepageComponent!: HomepageComponent;
 
-  constructor(private route: ActivatedRoute)  {}
+  constructor(private fb: FormBuilder, private route: ActivatedRoute)  {
+    this.createPlaylistForm = this.fb.group({
+      name: '',
+      author: '',
+      musics: '',
+    });
+
+    this.playlistService.getPlaylists().then((playlists : Playlist[]) => {
+      this.playlists = playlists;
+      console.log(this.playlists)
+    })
+  }
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
@@ -66,6 +91,41 @@ export class ArtistDetailsComponent implements OnInit {
         });
       }
     });
+  }
+
+  async addMusicToPlaylist(musicId: number, playlistId: number) {
+    this.musicAdded = false;
+    this.musicAddedFailed = false;
+    this.playlistService.addMusicToPlaylist(musicId, playlistId).then((res: any) => {
+      if (res.ok) {
+        console.log("Music added successfully");
+        this.musicAdded = true;
+        setTimeout(() => {
+          this.musicAdded = false;
+        }, 3000);
+      } else {
+        this.musicAddedFailed = true;
+        setTimeout(() => {
+          this.musicAddedFailed = false;
+        }, 3000);
+
+      }
+    });
+  }
+
+  async onSubmitCreatePlaylist(): Promise<void>{
+    const playlist = this.createPlaylistForm.value;
+    playlist.author = "2"
+    this.playlistService.createPlaylist(playlist).then((res: any) => {
+      if (res.ok) {
+        console.log("Playlist created successfully");
+        document.getElementById("closeAddPlaylistModal")?.click();
+        this.playlistService.getPlaylists().then((playlists : Playlist[]) => {
+          this.playlists = playlists;
+        })
+      }
+    });
+
   }
 
   getObjectSize(obj: { [key: string] : any}): number {
