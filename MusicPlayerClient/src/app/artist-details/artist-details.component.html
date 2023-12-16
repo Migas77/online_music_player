@@ -18,7 +18,9 @@
             >
               Show Details
             </button>
-            <button class="btn btn-outline btn-primary" (click)="playArtist(performerDetails.id)">Listen</button>
+            <div *ngIf="artistAlbums.length !== 0">
+              <button class="btn btn-outline btn-primary" (click)="playArtist(performerDetails.id)">Listen</button>
+            </div>
           </div>
         </div>
       </div>
