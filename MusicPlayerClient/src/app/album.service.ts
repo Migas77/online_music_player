@@ -16,7 +16,7 @@ export class AlbumService {
     return await data.json() ?? [];
   }
 
-  getAlbum(id: string) {
+  async getAlbum(id: string) {
     const url: string = this.baseURL + "album/" + id;
     return fetch(url).then((response) => response.json());
 
@@ -64,5 +64,11 @@ export class AlbumService {
     if (data.status != 204)
       throw new Error()
     return data.text()
+  }
+
+  async getAlbumsByPerformer(performerId: number): Promise<Album[]> {
+    const url: string = this.baseURL + "getAlbumsByPerformer/" + performerId;
+    const data: Response = await fetch(url);
+    return await data.json() ?? [];
   }
 }

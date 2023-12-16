@@ -1,1 +1,108 @@
-<p>artist-details works!</p>
+<div class="pb-[200px]">
+  <h1>Artist Details</h1>
+  <div *ngIf="getObjectSize(performerDetails) !== 0">
+    <div class="flex flex-row justify-center">
+      <div class="card card-compact w-[40%] bg-base-100 shadow-xl">
+        <figure>
+          <img
+            [src]="'http://localhost:8000/' + performerDetails.image"
+            alt="Performer"
+          />
+        </figure>
+        <div class="card-body">
+          <h2 class="card-title">{{ performerDetails.name }}</h2>
+          <div class="card-actions justify-end flex flex-row">
+            <button
+              class="btn btn-outline btn-secondary"
+              onclick="my_modal_1.showModal()"
+            >
+              Show Details
+            </button>
+            <button class="btn btn-outline btn-primary" (click)="playArtist(performerDetails.id)">Listen</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <dialog id="my_modal_1" class="modal">
+      <div class="modal-box">
+        <h3 class="font-bold text-2xl">Description</h3>
+        <p class="py-4 text-lg">{{ performerDetails.description }}</p>
+        <div *ngIf="performerDetails.members">
+          <h2>Members:</h2>
+          <div class="flex overflow-x-auto space-x-5 text-center">
+            <div *ngFor="let member of performerDetails.members">
+              <div class="avatar">
+                <div class="mask mask-squircle w-[150px]">
+                  <img
+                    [src]="'http://localhost:8000/' + getArtist(member).image"
+                    alt="{{ getArtist(member).name }}"
+                  />
+                </div>
+              </div>
+              <p>
+                <a routerLink="/artistDetails/{{ member }}">{{
+                  getArtist(member).name
+                }}</a>
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="modal-action">
+          <form method="dialog">
+            <button class="btn btn-outline btn-error">Close</button>
+          </form>
+        </div>
+      </div>
+    </dialog>
+    <div class="pl-[30px] pt-[10px] pr-[30px]">
+      <h2>Albums</h2>
+      <hr />
+      <div *ngIf="artistAlbums.length > 0" class="pt-5 flex justify-center">
+        <div class="flex flex-col">
+          <div *ngFor="let album of artistAlbums" class="pt-[50px]">
+            <div class="card lg:card-side bg-base-100 shadow-xl">
+              <figure class="max-w-[500px]"><img [src]="'http://localhost:8000/' + album.image" alt="Album"/></figure>
+              <div class="card-body">
+                <h2 class="card-title">{{album.name}}</h2>
+                <div class="flex flex-row text-lg">
+                  <p><i class="fa-regular fa-calendar" style="color: #c10bbb;"></i> {{ album.release_date }}</p>
+                </div>
+                <div class="flex flex-col">
+                  <div *ngFor="let music of musicsByAlbum[album.id]" class="pt-3">
+                    <div class="flex flex-row text-center bg-[#111] font-bold text-lg rounded-lg hover:bg-[#555] transition-colors duration-200 relative">
+                      <div class="flex flex-row justify-between pt-2 pb-2 pl-5 ">
+                          <div class="flex flex-row space-x-3">
+                            <button class="pt-1" (click)="playArtist(performerDetails.id)"><i class="fa-solid fa-circle-play" style="color: #c10bbb;"></i></button>
+                            <span class="pt-1" >{{ music.name }}</span>
+                          </div>
+                          <div class="absolute right-0 space-x-3 pt-1 pr-5">
+                            <button>
+                              <i class="fa-solid fa-heart pt-[4px]" style="color: #c10bbb;"></i> {{ music.likes.length }}
+                            </button>
+                            <button>
+                              <i class="fa-solid fa-cloud-arrow-down"></i>
+                            </button>
+                            <button>
+                              <i class="fa-solid fa-square-plus"></i>
+                            </button>
+                          </div>
+                      </div>
+                    </div>      
+                  </div>
+                </div>
+                <div class="card-actions justify-end">
+                  <button class="btn btn-outline btn-primary" (click)="playAlbum(album.id)">Listen</button>
+                </div>
+              </div>
+            </div>
+          </div>          
+        </div>
+      </div>
+      <div *ngIf="artistAlbums.length === 0" class="pt-[30px] text-center text-2xl">
+        <p><i class="fa-solid fa-circle-exclamation"></i> No albums found</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-playbar></app-playbar>

@@ -1004,3 +1004,23 @@ def delete_song_playlist(request, songId, playlistId):
         return Response(status=status.HTTP_404_NOT_FOUND)
     membership.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['GET'])
+def get_performer_information(request, performerId):
+    try:
+        artist_details = Artist.objects.get(id=performerId)
+        serializer = ArtistSerializer(artist_details)
+    except Artist.DoesNotExist:
+        artist_details = Band.objects.get(id=performerId)
+        serializer = BandSerializer(artist_details)
+
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def get_musics_by_album(request, albumId):
+    try:
+        musics = Music.objects.filter(album=albumId)
+    except Music.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    serializer = MusicSerializer(musics, many=True)
+    return Response(serializer.data)

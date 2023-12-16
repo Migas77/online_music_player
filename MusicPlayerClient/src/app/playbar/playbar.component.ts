@@ -4,7 +4,7 @@ import { Music } from '../models/Music';
 import { Performer } from '../models/Performer';
 import { PerformerService } from '../performer.service';
 import { MusicService } from '../music.service';
-import {Playlist} from "../models/Playlist";
+import { Playlist } from "../models/Playlist";
 
 @Component({
   selector: 'app-playbar',
@@ -14,16 +14,22 @@ import {Playlist} from "../models/Playlist";
   styleUrl: './playbar.component.css'
 })
 export class PlaybarComponent {
-
-  allMusics: Music[] = [];
-  performers: Performer[] = [];
+ 
   currentSongIndex: number | null = null;
   currentSong: Music | null = null;
-  audioElement!: HTMLAudioElement;
-  isPlaying: boolean = false;
 
+  audioElement!: HTMLAudioElement;
+  
+  performers: Performer[] = [];
   playlistMusics: Music[] = [];
+  albumsMusics: Music[] = [];
+  artistsMusics: Music[] = [];
+  allMusics: Music[] = [];
+
   isPlaylist: boolean = false;
+  isAlbum: boolean = false;
+  isArtist: boolean = false;
+  isPlaying: boolean = false;
 
   musicService: MusicService = inject(MusicService);
   performerService: PerformerService = inject(PerformerService);
@@ -58,7 +64,7 @@ export class PlaybarComponent {
       this.playlistMusics = [];
     }
     this.currentSong = song;
-    this.currentSongIndex = this.isPlaylist ? this.playlistMusics.indexOf(song) : this.allMusics.indexOf(song);
+    this.currentSongIndex = this.isPlaylist ? this.playlistMusics.indexOf(song) : this.isAlbum ? this.albumsMusics.indexOf(song) : this.isArtist ? this.artistsMusics.indexOf(song) : this.allMusics.indexOf(song);
     this.audioElement.src = 'http://localhost:8000/' + song.audio_file;
     this.audioElement.currentTime = 0;
     this.isPlaying = true;
@@ -72,17 +78,36 @@ export class PlaybarComponent {
       });
   }
 
+  async playAlbum(albumId: number): Promise<void> {
+    this.albumsMusics = []
+    const songs = await this.musicService.getMusicsByAlbum(albumId);
+    console.log("SONGS: ", songs);
+    this.isAlbum = true;
+    this.albumsMusics = songs;
+    console.log("PLAYLIST ALBUM: ", this.albumsMusics);
+    this.playSong(this.albumsMusics[0]);
+  }
+   
+  async playArtist(performerId: number): Promise<void> {
+    this.artistsMusics = []
+    const songs = await this.musicService.getMusicsByPerformer(performerId);
+    this.isArtist = true;
+    this.artistsMusics = songs;
+    console.log("PLAYLIST ARTIST: ", this.artistsMusics);
+    this.playSong(this.artistsMusics[0]);
+  }
+
   previousSong(): void {
     if (this.currentSongIndex !== null && this.currentSongIndex > 0) {
       this.currentSongIndex--;
-      this.playSong(this.isPlaylist ? this.playlistMusics[this.currentSongIndex] : this.allMusics[this.currentSongIndex]);
+      this.playSong(this.isPlaylist ? this.playlistMusics[this.currentSongIndex] : this.isAlbum ? this.albumsMusics[this.currentSongIndex] : this.isArtist ? this.artistsMusics[this.currentSongIndex] : this.allMusics[this.currentSongIndex]);
     }
   }
 
   nextSong(): void {
-    if (this.currentSongIndex !== null && this.currentSongIndex < (this.isPlaylist ? this.playlistMusics.length - 1 : this.allMusics.length - 1)) {
+    if (this.currentSongIndex !== null && this.currentSongIndex < (this.isPlaylist ? this.playlistMusics.length - 1 : this.isAlbum ? this.albumsMusics.length - 1 : this.isArtist ? this.artistsMusics.length - 1 : this.allMusics.length - 1)) {
       this.currentSongIndex++;
-      this.playSong(this.isPlaylist ? this.playlistMusics[this.currentSongIndex] : this.allMusics[this.currentSongIndex]);
+      this.playSong(this.isPlaylist ? this.playlistMusics[this.currentSongIndex] : this.isAlbum ? this.albumsMusics[this.currentSongIndex] : this.isArtist ? this.artistsMusics[this.currentSongIndex] : this.allMusics[this.currentSongIndex]);
     }
   }
 
