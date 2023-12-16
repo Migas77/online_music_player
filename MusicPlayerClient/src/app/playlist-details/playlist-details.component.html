@@ -18,15 +18,14 @@
             </div>
           </div>
         </td>
-        <td>
-          <button class="like-button">
+        <td >
+          <button class="like-button" *ngIf="musicLiked(music.id)" (click)="dislikeMusic(music.id)">
             <i class="heart-icon fas fa-heart" style="color: #c061cb;"></i>
           </button>
-          <span id="likes-count-{{ music.id }}"> likes </span>
-          <button class="like-button" >
+          <button class="like-button" *ngIf="!musicLiked(music.id)" (click)="likeMusic(music.id)" >
             <i class="heart-icon far fa-heart" style="color: #c061cb;"></i>
           </button>
-          <span id="likes-count-{{ music.id }}">  likes </span>
+          <span id="likes-count-{{ music.id }}">  {{ music.likes.length }} </span>
         </td>
         <td>
           <div class="songName">{{ music.name }}</div>

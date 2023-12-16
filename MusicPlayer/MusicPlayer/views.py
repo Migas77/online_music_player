@@ -8,7 +8,7 @@ import json
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Album, Music, Artist, Playlist, Membership, Performer, Band, Genre
+from .models import Album, Music, Artist, Playlist, Membership, Performer, Band, Genre, Listener
 from django.contrib.auth import views as auth_views
 from MusicPlayer.forms import LoginForm, SignUpForm, MusicSearchForm, AddEditArtistForm, AddEditMusicForm, \
     AddEditBandForm, \
@@ -1024,3 +1024,32 @@ def get_musics_by_album(request, albumId):
         return Response(status=status.HTTP_404_NOT_FOUND)
     serializer = MusicSerializer(musics, many=True)
     return Response(serializer.data)
+
+@api_view(['POST'])
+def add_like(request, songId, userId):
+    try:
+        music = Music.objects.get(id=songId)
+        try:
+            user = Listener.objects.get(id=userId)
+            print(user)
+            music.likes.add(user)
+            return Response(status=status.HTTP_201_CREATED)
+        except Listener.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+    except Music.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['DELETE'])
+def remove_like(request, songId, userId):
+    try:
+        music = Music.objects.get(id=songId)
+        try:
+            user = Listener.objects.get(id=userId)
+            music.likes.remove(user)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Listener.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+    except Music.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    return Response(status=status.HTTP_204_NO_CONTENT)

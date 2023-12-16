@@ -88,4 +88,14 @@ export class MusicService {
     const data: Response = await fetch(url);
     return (await data.json()) ?? [];
   }
+
+  async likeMusic(song_id: number, user_id: number) {
+    const url: string = this.baseURL + 'addLike/' + song_id + '/' + user_id;
+    return fetch(url, { method: 'POST' });
+  }
+
+  dislikeMusic(song_id: number, user_id: number) {
+    const url: string = this.baseURL + 'removeLike/' + song_id + '/' + user_id;
+    return fetch(url, { method: 'DELETE' });
+  }
 }

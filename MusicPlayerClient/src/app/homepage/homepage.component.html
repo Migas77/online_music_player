@@ -33,9 +33,13 @@
                 <button class="songlistplay" (click)="playSong(song)">
                   <i id="1" class="far songItemPlay fa-play-circle"></i>
                 </button>
-                <button>
-                  <i class="fa-solid fa-heart" style="color: #c10bbb;"></i> {{ song.likes.length }}
+                <button class="like-button" *ngIf="musicLiked(song.id)" (click)="dislikeMusic(song.id)">
+                  <i class="heart-icon fas fa-heart" style="color: #c061cb;"></i>
                 </button>
+                <button class="like-button" *ngIf="!musicLiked(song.id)" (click)="likeMusic(song.id)" >
+                  <i class="heart-icon far fa-heart" style="color: #c061cb;"></i>
+                </button>
+                <span id="likes-count-{{ song.id }}">  {{ song.likes.length }} </span>
                 <button>
                   <i class="fa-solid fa-cloud-arrow-down"></i>
                 </button>

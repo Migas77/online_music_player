@@ -2,20 +2,24 @@ import {Component, inject, ViewChild} from '@angular/core';
 import {PlaylistService} from "../playlist.service";
 import {ActivatedRoute} from "@angular/router";
 import {Playlist} from "../models/Playlist";
-import {NgForOf} from "@angular/common";
+import {NgForOf, NgIf} from "@angular/common";
 import {Performer} from "../models/Performer";
 import {PerformerService} from "../performer.service";
 import {Genre} from "../models/Genre";
 import {Music} from "../models/Music";
 import {GenreService} from "../genre.service";
 import {PlaybarComponent} from "../playbar/playbar.component";
+import {FormsModule} from "@angular/forms";
+import {MusicService} from "../music.service";
 
 @Component({
   selector: 'app-playlist-details',
   standalone: true,
   imports: [
     NgForOf,
-    PlaybarComponent
+    PlaybarComponent,
+    FormsModule,
+    NgIf
   ],
   templateUrl: './playlist-details.component.html',
   styleUrl: './playlist-details.component.css'
@@ -34,6 +38,9 @@ export class PlaylistDetailsComponent {
 
   genreService: GenreService = inject(GenreService);
   genres!: Genre[];
+
+  user:String = "2"
+  musicService: MusicService = inject(MusicService);
 
   @ViewChild(PlaybarComponent) playbarComponent!: PlaybarComponent;
 
@@ -80,5 +87,37 @@ export class PlaylistDetailsComponent {
 
   playSong(song: Music) {
     this.playbarComponent.playSong(song, this.playlist);
+  }
+
+  musicLiked(id: number) {
+    return this.musics.filter(m => m.id == id)[0].likes.filter(l => l.id == Number(this.user)).length > 0;
+  }
+
+  likeMusic(id: number) {
+    this.musicService.likeMusic(id, Number(this.user)).then((res) => {
+      if (res.ok){
+        if (this.id != null) {
+          this.playlistService.getPlaylist(this.id).then((playlist) => {
+            this.playlist = playlist;
+            this.musics = playlist.musics;
+          });
+        }
+      }
+    });
+
+  }
+
+  dislikeMusic(id: number) {
+    this.musicService.dislikeMusic(id, Number(this.user)).then((res) => {
+      if (res.ok){
+        if (this.id != null) {
+          this.playlistService.getPlaylist(this.id).then((playlist) => {
+            this.playlist = playlist;
+            this.musics = playlist.musics;
+          });
+        }
+      }
+    });
+
   }
 }

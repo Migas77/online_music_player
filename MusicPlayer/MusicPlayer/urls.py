@@ -123,6 +123,8 @@ urlpatterns = [
     path('ws/deletePlaylist/<int:id>', views.delete_playlist),
     path('ws/addMusicToPlaylist/<int:songId>/<int:playlistId>', views.add_music_to_playlist),
     path('ws/deleteSongPlaylist/<int:songId>/<int:playlistId>', views.delete_song_playlist),
+    path('ws/addLike/<int:songId>/<int:userId>', views.add_like),
+    path('ws/removeLike/<int:songId>/<int:userId>', views.remove_like),
 
 
 
