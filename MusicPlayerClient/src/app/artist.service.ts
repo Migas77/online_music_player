@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
 import {Artist} from "./models/Artist";
-import {retry} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -56,11 +55,9 @@ export class ArtistService {
 
   async deleteArtist(id: number) {
     const url: string = this.baseURL + "deleteArtist/" + id;
-    const data = await fetch(url, {
+    return await fetch(url, {
       method: 'DELETE',
-    });
-    if (data.status != 204)
-      throw new Error()
-    return data.text()
+    })
+
   }
 }

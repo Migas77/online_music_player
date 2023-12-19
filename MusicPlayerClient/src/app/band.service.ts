@@ -1,7 +1,5 @@
-import { Injectable } from '@angular/core';
-import {Genre} from "./models/Genre";
+import {Injectable} from '@angular/core';
 import {Band} from "./models/Band";
-import {retry} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
@@ -59,11 +57,8 @@ export class BandService {
 
   async deleteBand(id: number) {
     const url: string = this.baseURL + "deleteBand/" + id;
-    const data = await fetch(url, {
+    return await fetch(url, {
       method: 'DELETE',
     });
-    if (data.status != 204)
-      throw new Error()
-    return data.text()
   }
 }

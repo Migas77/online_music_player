@@ -1,5 +1,4 @@
-import { Injectable } from '@angular/core';
-import {Music} from "./models/Music";
+import {Injectable} from '@angular/core';
 import {Genre} from "./models/Genre";
 
 @Injectable({
@@ -53,12 +52,9 @@ export class GenreService {
 
   async deleteGenre(id: number) {
     const url: string = this.baseURL + "deleteGenre/" + id;
-    const data = await fetch(url, {
+    return await fetch(url, {
       method: 'DELETE',
     });
-    if (data.status != 204)
-      throw new Error()
-    return data.text()
   }
 
   getGenreTitle(genre: Genre, genres: Genre[]) {

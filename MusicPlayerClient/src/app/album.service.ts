@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Album} from "./models/Album";
 
 @Injectable({
@@ -58,12 +58,9 @@ export class AlbumService {
 
   async deleteAlbum(id: number) {
     const url: string = this.baseURL + "deleteAlbum/" + id;
-    const data = await fetch(url, {
+    return await fetch(url, {
       method: 'DELETE',
-    });
-    if (data.status != 204)
-      throw new Error()
-    return data.text()
+    })
   }
 
   async getAlbumsByPerformer(performerId: number): Promise<Album[]> {
