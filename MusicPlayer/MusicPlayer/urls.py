@@ -125,6 +125,7 @@ urlpatterns = [
     path('ws/deleteSongPlaylist/<int:songId>/<int:playlistId>', views.delete_song_playlist),
     path('ws/addLike/<int:songId>/<int:userId>', views.add_like),
     path('ws/removeLike/<int:songId>/<int:userId>', views.remove_like),
+    path('ws/sortPlaylist/<int:playlistId>/<int:prevPosition>/<int:nextPosition>', views.sort_playlist),
 
 
 

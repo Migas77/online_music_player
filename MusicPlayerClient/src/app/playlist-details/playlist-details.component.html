@@ -1,9 +1,9 @@
 <h1 class="margin">{{playlistName}}</h1>
 <hr />
 <div class="overflow-x-auto">
-    <table class="table mt-1">
+    <table class="table mt-1" cdkDropList (cdkDropListDropped)="drop($event)">
       <tbody class="text-lg">
-      <tr class="" *ngFor="let music of musics">
+      <tr class="" *ngFor="let music of musics" cdkDrag>
         <td>
           <button (click)="playSong(music)">
             <i class="fa fa-play-circle text-3xl"></i>

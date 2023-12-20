@@ -5,6 +5,7 @@ import { Performer } from '../models/Performer';
 import { PerformerService } from '../performer.service';
 import { MusicService } from '../music.service';
 import { Playlist } from "../models/Playlist";
+import {PlaylistService} from "../playlist.service";
 
 @Component({
   selector: 'app-playbar',
@@ -30,9 +31,11 @@ export class PlaybarComponent {
   isAlbum: boolean = false;
   isArtist: boolean = false;
   isPlaying: boolean = false;
+  playlistOrder: number[] = [];
 
   musicService: MusicService = inject(MusicService);
   performerService: PerformerService = inject(PerformerService);
+  playlistService: PlaylistService = inject(PlaylistService);
 
   constructor(private elementRef: ElementRef) {
 
@@ -55,16 +58,9 @@ export class PlaybarComponent {
     });
   }
 
-  playSong(song: Music, playlist?:Playlist): void {
-    if (playlist) {
-      this.isPlaylist = true;
-      this.playlistMusics = playlist.musics;
-    } else {
-      this.isPlaylist = false;
-      this.playlistMusics = [];
-    }
+  playSong(song: Music): void {
     this.currentSong = song;
-    this.currentSongIndex = this.isPlaylist ? this.playlistMusics.indexOf(song) : this.isAlbum ? this.albumsMusics.indexOf(song) : this.isArtist ? this.artistsMusics.indexOf(song) : this.allMusics.indexOf(song);
+    this.currentSongIndex = this.isPlaylist ?  this.playlistMusics.findIndex(song1 => song1.id === song.id) : this.isAlbum ? this.albumsMusics.indexOf(song) : this.isArtist ? this.artistsMusics.indexOf(song) : this.allMusics.indexOf(song);
     this.audioElement.src = 'http://localhost:8000/' + song.audio_file;
     this.audioElement.currentTime = 0;
     this.isPlaying = true;
@@ -87,7 +83,20 @@ export class PlaybarComponent {
     console.log("PLAYLIST ALBUM: ", this.albumsMusics);
     this.playSong(this.albumsMusics[0]);
   }
-   
+
+  async playPlaylist(playlistId: number, song: Music): Promise<void> {
+    this.playlistMusics = []
+    await this.playlistService.getPlaylist(String(playlistId)).then((playlist) => {
+      this.playlistMusics = playlist.musics.sort((a: Music, b: Music) => {
+        return playlist.order.indexOf(a.id) - playlist.order.indexOf(b.id);
+      });
+    });
+    this.isPlaylist = true;
+    console.log("PLAYLIST PLAYLIST: ", this.playlistMusics);
+
+    this.playSong(song);
+  }
+
   async playArtist(performerId: number): Promise<void> {
     this.artistsMusics = []
     const songs = await this.musicService.getMusicsByPerformer(performerId);
@@ -109,6 +118,10 @@ export class PlaybarComponent {
       this.currentSongIndex++;
       this.playSong(this.isPlaylist ? this.playlistMusics[this.currentSongIndex] : this.isAlbum ? this.albumsMusics[this.currentSongIndex] : this.isArtist ? this.artistsMusics[this.currentSongIndex] : this.allMusics[this.currentSongIndex]);
     }
+    else {
+      this.currentSongIndex = 0;
+      this.playSong(this.isPlaylist ? this.playlistMusics[this.currentSongIndex] : this.isAlbum ? this.albumsMusics[this.currentSongIndex] : this.isArtist ? this.artistsMusics[this.currentSongIndex] : this.allMusics[this.currentSongIndex]);
+    }
   }
 
   togglePlay(): void {
@@ -119,10 +132,6 @@ export class PlaybarComponent {
       this.audioElement.pause();
       this.isPlaying = false;
     }
-  }
-
-  getName(performer: Performer): string {
-    return this.performerService.getPerformerName(performer, this.performers)
   }
 
   seekTo(event: any): void {

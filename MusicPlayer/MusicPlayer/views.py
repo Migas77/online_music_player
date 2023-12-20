@@ -605,7 +605,6 @@ def auth_sign_out(request):
     print(request.user.is_authenticated)
     return Response()
 
-
 @api_view(['GET'])
 def get_musics_by_genre(request):
     musics = Music.objects.all()
@@ -1053,3 +1052,40 @@ def remove_like(request, songId, userId):
     except Music.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     return Response(status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['POST'])
+def add_music_to_queue(request, songId):
+    music_ids = request.session.get("music_ids", [])
+    if songId not in music_ids:
+        music_ids.append(songId)
+        request.session.save()
+        return Response(status=status.HTTP_201_CREATED)
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['POST'])
+def remove_music_from_queue(request, songId):
+    music_ids = request.session.get("music_ids", [])
+    if songId in music_ids:
+        music_ids.remove(songId)
+        request.session.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    return Response(status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['POST'])
+def clear_queue(request):
+    music_ids = request.session.get("music_ids", [])
+    music_ids.clear()
+    request.session.save()
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['POST'])
+def sort_playlist(request, playlistId, prevPosition, nextPosition):
+    try:
+        playlist = Playlist.objects.get(id=playlistId)
+    except Playlist.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    playlist.change_order(prevPosition, nextPosition)
+    print(playlist.get_memberships())
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+

@@ -11,6 +11,8 @@ import {GenreService} from "../genre.service";
 import {PlaybarComponent} from "../playbar/playbar.component";
 import {FormsModule} from "@angular/forms";
 import {MusicService} from "../music.service";
+import {CdkDragDrop, CdkDropList, CdkDrag, moveItemInArray} from "@angular/cdk/drag-drop";
+
 
 @Component({
   selector: 'app-playlist-details',
@@ -19,7 +21,9 @@ import {MusicService} from "../music.service";
     NgForOf,
     PlaybarComponent,
     FormsModule,
-    NgIf
+    NgIf,
+    CdkDropList,
+    CdkDrag,
   ],
   templateUrl: './playlist-details.component.html',
   styleUrl: './playlist-details.component.css'
@@ -50,7 +54,12 @@ export class PlaylistDetailsComponent {
       this.playlistService.getPlaylist(this.id).then((playlist) => {
         this.playlist = playlist;
         this.playlistName = playlist.name;
+        //obter as musicas pela ordem da playlist
         this.musics = playlist.musics;
+        const order = playlist.order;
+        this.musics.sort((a, b) => {
+          return order.indexOf(a.id) - order.indexOf(b.id);
+        });
       });
     }
     this.performerService.getPerformers().then((performers) => {
@@ -60,6 +69,7 @@ export class PlaylistDetailsComponent {
     this.genreService.getGenres().then((genres) => {
       this.genres = genres;
     });
+
   }
 
   getPerformerName(performer: Performer) {
@@ -76,7 +86,9 @@ export class PlaylistDetailsComponent {
         if (this.id != null) {
           this.playlistService.getPlaylist(this.id).then((playlist) => {
             this.playlist = playlist;
-            this.musics = playlist.musics;
+            this.musics = playlist.musics.sort((a: Music, b: Music) => {
+              return playlist.order.indexOf(a.id) - playlist.order.indexOf(b.id);
+            });
           });
         }
         document.getElementById("closeModal")?.click();
@@ -86,7 +98,7 @@ export class PlaylistDetailsComponent {
   }
 
   playSong(song: Music) {
-    this.playbarComponent.playSong(song, this.playlist);
+    this.playbarComponent.playPlaylist(this.playlist.id, song);
   }
 
   musicLiked(id: number) {
@@ -99,12 +111,13 @@ export class PlaylistDetailsComponent {
         if (this.id != null) {
           this.playlistService.getPlaylist(this.id).then((playlist) => {
             this.playlist = playlist;
-            this.musics = playlist.musics;
+            this.musics = playlist.musics.sort((a: Music, b: Music) => {
+              return playlist.order.indexOf(a.id) - playlist.order.indexOf(b.id);
+            });
           });
         }
       }
     });
-
   }
 
   dislikeMusic(id: number) {
@@ -113,11 +126,30 @@ export class PlaylistDetailsComponent {
         if (this.id != null) {
           this.playlistService.getPlaylist(this.id).then((playlist) => {
             this.playlist = playlist;
-            this.musics = playlist.musics;
+            this.musics = playlist.musics.sort((a: Music, b: Music) => {
+              return playlist.order.indexOf(a.id) - playlist.order.indexOf(b.id);
+            });
           });
         }
       }
     });
+  }
 
+  drop(event: CdkDragDrop<Music[]>) {
+    moveItemInArray(this.musics, event.previousIndex, event.currentIndex);
+    this.playlistService.sortPlaylist(this.playlist.id, event.previousIndex, event.currentIndex).then((res) => {
+        if (res.ok){
+          if (this.id != null) {
+            this.playlistService.getPlaylist(this.id).then((playlist) => {
+              this.playlist = playlist;
+              this.musics = playlist.musics.sort((a: Music, b: Music) => {
+                  return playlist.order.indexOf(a.id) - playlist.order.indexOf(b.id);
+                }
+              );
+            });
+          }
+        }
+      }
+    );
   }
 }
