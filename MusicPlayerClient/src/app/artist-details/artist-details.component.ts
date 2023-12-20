@@ -1,7 +1,6 @@
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
-import { NgFor, NgIf } from '@angular/common';
+import { NgFor, NgIf, CommonModule } from '@angular/common';
 import { RouterLink, ActivatedRoute } from '@angular/router';
-import { CommonModule } from '@angular/common';
 import { FormGroup, FormBuilder, ReactiveFormsModule } from '@angular/forms';
 
 import { Album } from '../models/Album';
@@ -17,11 +16,18 @@ import { MusicService } from '../music.service';
 import { PlaylistService } from '../playlist.service';
 
 import { PlaybarComponent } from '../playbar/playbar.component';
-import { HomepageComponent } from '../homepage/homepage.component';
+
 @Component({
   selector: 'app-artist-details',
   standalone: true,
-  imports: [NgFor, NgIf, RouterLink, CommonModule, RouterLink, PlaybarComponent, ReactiveFormsModule],
+  imports: [
+    NgFor,
+    NgIf, 
+    RouterLink, 
+    CommonModule, 
+    PlaybarComponent, 
+    ReactiveFormsModule
+  ],
   templateUrl: './artist-details.component.html',
   styleUrl: './artist-details.component.css'
 })
@@ -31,26 +37,29 @@ export class ArtistDetailsComponent implements OnInit {
   albumService: AlbumService = inject(AlbumService);
   artistService: ArtistService = inject(ArtistService);
   musicService: MusicService = inject(MusicService);
+  playlistService : PlaylistService = inject(PlaylistService);
 
-  artistAlbums: Album[] = [];
   musicsByAlbum: { [key: number]: Music[] } = {};
-  performerDetails!: any;
-  performerMusics: Music[] = [];
-  allArtists: Artist[] = [];
 
   playlists : Playlist[] = [];
-  playlistService : PlaylistService = inject(PlaylistService)
+  allArtists: Artist[] = [];
+  artistAlbums: Album[] = [];
+
   currentMusicName! : string;
-  currentMusicId! : number;
+  
+  performerDetails!: any;
+
   musicAdded: boolean = false;
   musicAddedFailed: boolean = false;
+  musicAddedToQueue: boolean = false;
 
   createPlaylistForm!: FormGroup;
 
+  currentMusicId! : number;
   id!: number;
+  user: Number = 2;
 
   @ViewChild(PlaybarComponent) playbarComponent!: PlaybarComponent;
-  @ViewChild(HomepageComponent) homepageComponent!: HomepageComponent;
 
   constructor(private fb: FormBuilder, private route: ActivatedRoute)  {
     this.createPlaylistForm = this.fb.group({
@@ -89,9 +98,10 @@ export class ArtistDetailsComponent implements OnInit {
             });
           });
         });
+
       }
     });
-  }
+  };
 
   async addMusicToPlaylist(musicId: number, playlistId: number) {
     this.musicAdded = false;
@@ -111,11 +121,54 @@ export class ArtistDetailsComponent implements OnInit {
 
       }
     });
-  }
+  };
+
+  musicLiked(id: number) {
+    let found = false;
+    Object.values(this.musicsByAlbum).forEach(songs => {
+        let song = songs.find(m => m.id == id);
+        if (song && song.likes.filter(l => l.id == Number(this.user)).length > 0) {
+            found = true;
+        }
+    });
+    return found;
+  };
+
+  likeMusic(id: number) {
+    this.musicService.likeMusic(id, Number(this.user)).then((res) => {
+      if (res.ok){
+        this.albumService.getAlbumsByPerformer(this.id).then((albums) => {
+          this.artistAlbums = albums;
+
+          this.artistAlbums.forEach(album => {
+            this.musicService.getMusicsByAlbum(album.id).then((musics) => {
+              this.musicsByAlbum[album.id] = musics;
+            });
+          });
+        });
+      }
+    });
+  };
+
+  dislikeMusic(id: number) {
+    this.musicService.dislikeMusic(id, Number(this.user)).then((res) => {
+      if (res.ok) {
+        this.albumService.getAlbumsByPerformer(this.id).then((albums) => {
+          this.artistAlbums = albums;
+
+          this.artistAlbums.forEach(album => {
+            this.musicService.getMusicsByAlbum(album.id).then((musics) => {
+              this.musicsByAlbum[album.id] = musics;
+            });
+          });
+        });
+      }
+    });
+  };
 
   async onSubmitCreatePlaylist(): Promise<void>{
     const playlist = this.createPlaylistForm.value;
-    playlist.author = "2"
+    playlist.author = "2";
     this.playlistService.createPlaylist(playlist).then((res: any) => {
       if (res.ok) {
         console.log("Playlist created successfully");
@@ -126,27 +179,38 @@ export class ArtistDetailsComponent implements OnInit {
       }
     });
 
+  };
+
+  addToQueue(id: number) {
+    this.musicService.addToQueue(id).then((res) => {
+      if (res.ok) {
+        this.musicAddedToQueue = true;
+        setTimeout(() => {
+          this.musicAddedToQueue = false;
+        }, 3000);
+      }
+    });
   }
 
   getObjectSize(obj: { [key: string] : any}): number {
     return obj ? Object.keys(obj).length : 0;
-  }
+  };
 
   getArtist(artistId: number): Artist {
     return this.allArtists.find(artist => artist.id === artistId) ?? this.allArtists[0];
-  }
+  };
 
   playSong(song: Music): void {
     this.playbarComponent.playSong(song);
-  }
+  };
 
   playAlbum(albumId: number): void {
     this.playbarComponent.playAlbum(albumId);
-  }
+  };
 
   playArtist(artistId: number): void {
     this.playbarComponent.playArtist(artistId);
-  }
+  };
 
   getMusicsByAlbum(albumId: number): Music[] {
     let musics: Music[] = [];
@@ -155,6 +219,6 @@ export class ArtistDetailsComponent implements OnInit {
       musics = m;
     });
     return musics;
-  }
+  };
 
 }
