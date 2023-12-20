@@ -4,8 +4,8 @@ import { Music } from '../models/Music';
 import { Performer } from '../models/Performer';
 import { PerformerService } from '../performer.service';
 import { MusicService } from '../music.service';
-import { Playlist } from "../models/Playlist";
 import {PlaylistService} from "../playlist.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-playbar',
@@ -15,12 +15,12 @@ import {PlaylistService} from "../playlist.service";
   styleUrl: './playbar.component.css'
 })
 export class PlaybarComponent {
- 
+
   currentSongIndex: number | null = null;
   currentSong: Music | null = null;
 
   audioElement!: HTMLAudioElement;
-  
+
   performers: Performer[] = [];
   playlistMusics: Music[] = [];
   albumsMusics: Music[] = [];
@@ -31,13 +31,12 @@ export class PlaybarComponent {
   isAlbum: boolean = false;
   isArtist: boolean = false;
   isPlaying: boolean = false;
-  playlistOrder: number[] = [];
 
   musicService: MusicService = inject(MusicService);
   performerService: PerformerService = inject(PerformerService);
   playlistService: PlaylistService = inject(PlaylistService);
 
-  constructor(private elementRef: ElementRef) {
+  constructor(private elementRef: ElementRef, private router: Router) {
 
     this.musicService.getMusics().then((m: Music[]) => {
       this.allMusics = m;
@@ -84,7 +83,7 @@ export class PlaybarComponent {
     this.playSong(this.albumsMusics[0]);
   }
 
-  async playPlaylist(playlistId: number, song: Music): Promise<void> {
+  async playPlaylist(playlistId: number, song?: Music): Promise<void> {
     this.playlistMusics = []
     await this.playlistService.getPlaylist(String(playlistId)).then((playlist) => {
       this.playlistMusics = playlist.musics.sort((a: Music, b: Music) => {
@@ -93,8 +92,11 @@ export class PlaybarComponent {
     });
     this.isPlaylist = true;
     console.log("PLAYLIST PLAYLIST: ", this.playlistMusics);
-
-    this.playSong(song);
+    if (song) {
+      this.playSong(song);
+    } else {
+      this.playSong(this.playlistMusics[0]);
+    }
   }
 
   async playArtist(performerId: number): Promise<void> {
@@ -125,7 +127,17 @@ export class PlaybarComponent {
   }
 
   togglePlay(): void {
-    if (this.audioElement.paused) {
+    if (this.currentSong === null) {
+      if (this.router.url === "/") {
+        this.playSong(this.allMusics[0]);
+      } else if (this.router.url.startsWith("/playlist")) {
+        const playlistId = this.router.url.split("/")[2];
+        this.playPlaylist(Number(playlistId));
+      } else if (this.router.url.startsWith("/artistDetails")) {
+        const performerId = this.router.url.split("/")[2];
+        this.playArtist(Number(performerId));
+      }
+    } else if (this.audioElement.paused) {
       this.audioElement.play();
       this.isPlaying = true;
     } else {
