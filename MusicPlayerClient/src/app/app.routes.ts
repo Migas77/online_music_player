@@ -16,6 +16,7 @@ import { ArtistDetailsComponent } from './artist-details/artist-details.componen
 import {PlaylistsComponent} from "./playlists/playlists.component";
 import {PlaylistDetailsComponent} from "./playlist-details/playlist-details.component";
 import {AboutUsComponent} from "./about-us/about-us.component";
+import {QueueListComponent} from "./queue-list/queue-list.component";
 
 export const routes: Routes = [
   {path: '', component: HomepageComponent},
@@ -40,4 +41,5 @@ export const routes: Routes = [
   {path: 'playlists', component: PlaylistsComponent},
   {path: 'playlistDetails/:id', component: PlaylistDetailsComponent},
   {path: 'about-us', component: AboutUsComponent},
+  {path: 'queue', component: QueueListComponent},
 ];

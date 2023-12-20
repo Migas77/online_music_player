@@ -98,4 +98,20 @@ export class MusicService {
     const url: string = this.baseURL + 'removeLike/' + song_id + '/' + user_id;
     return fetch(url, { method: 'DELETE' });
   }
+
+  addToQueue(id: number) {
+    const url: string = this.baseURL + 'addQueue/' + id;
+    return fetch(url, { method: 'POST' });
+  }
+
+  getQueue() {
+    const url: string = this.baseURL + 'getQueue';
+    return fetch(url).then((response) => response.json());
+  }
+
+  removeQueueSong(currentMusicId: number) {
+    const url: string = this.baseURL + 'removeQueue/' + currentMusicId;
+    return fetch(url, { method: 'DELETE' });
+
+  }
 }

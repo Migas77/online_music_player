@@ -1055,12 +1055,12 @@ def remove_like(request, songId, userId):
 
 @api_view(['POST'])
 def add_music_to_queue(request, songId):
-    music_ids = request.session.get("music_ids", [])
-    if songId not in music_ids:
-        music_ids.append(songId)
-        request.session.save()
-        return Response(status=status.HTTP_201_CREATED)
-    return Response(status=status.HTTP_204_NO_CONTENT)
+   music_ids = request.session.get("music_ids", [])
+   if songId not in music_ids:
+       music_ids.append(songId)
+       request.session.save()
+       return Response(status=status.HTTP_201_CREATED)
+   return Response(status=status.HTTP_204_NO_CONTENT)
 
 @api_view(['POST'])
 def remove_music_from_queue(request, songId):
@@ -1078,6 +1078,15 @@ def clear_queue(request):
     request.session.save()
     return Response(status=status.HTTP_204_NO_CONTENT)
 
+@api_view(['GET'])
+def get_queue(request):
+   music_ids = request.session.get("music_ids", [])
+   request.session.modified = True
+   musics = Music.objects.filter(id__in=music_ids)
+   serializer = MusicSerializer(musics, many=True)
+   return Response(serializer.data)
+
+
 @api_view(['POST'])
 def sort_playlist(request, playlistId, prevPosition, nextPosition):
     try:
@@ -1085,7 +1094,7 @@ def sort_playlist(request, playlistId, prevPosition, nextPosition):
     except Playlist.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     playlist.change_order(prevPosition, nextPosition)
-    print(playlist.get_memberships())
     return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 

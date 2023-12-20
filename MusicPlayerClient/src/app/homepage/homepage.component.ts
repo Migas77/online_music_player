@@ -36,6 +36,7 @@ export class HomepageComponent {
   musicAdded: boolean = false;
   musicAddedFailed: boolean = false;
 
+  musicAddedToQueue: boolean = false;
   createPlaylistForm!: FormGroup;
 
   user: Number = 2;
@@ -161,4 +162,14 @@ export class HomepageComponent {
     });
   }
 
+  addToQueue(id: number) {
+    this.musicService.addToQueue(id).then((res) => {
+      if (res.ok) {
+        this.musicAddedToQueue = true;
+        setTimeout(() => {
+          this.musicAddedToQueue = false;
+        }, 3000);
+      }
+    });
+  }
 }
