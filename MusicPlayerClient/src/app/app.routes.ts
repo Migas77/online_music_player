@@ -17,6 +17,7 @@ import {PlaylistsComponent} from "./playlists/playlists.component";
 import {PlaylistDetailsComponent} from "./playlist-details/playlist-details.component";
 import {AboutUsComponent} from "./about-us/about-us.component";
 import {QueueListComponent} from "./queue-list/queue-list.component";
+import {superuserGuard} from "./superuser.guard";
 
 export const routes: Routes = [
   {path: '', component: HomepageComponent},
@@ -26,18 +27,18 @@ export const routes: Routes = [
   {path: 'albums', component: AlbumsComponent},
   {path: 'artists', component: ArtistsComponent},
   {path: 'bands', component: BandsComponent},
-  {path: 'admin', component: AdminComponent},
-  {path: 'addArtist', component: AddEditArtistComponent},
-  {path: 'editArtist/:id', component: AddEditArtistComponent},
-  {path: 'addGenre', component: AddEditGenreComponent},
-  {path: 'editGenre/:id', component: AddEditGenreComponent},
-  {path: 'addBand', component: AddEditBandComponent},
-  {path: 'editBand/:id', component: AddEditBandComponent},
-  {path: 'addAlbum', component: AddEditAlbumComponent},
-  {path: 'editAlbum/:id', component: AddEditAlbumComponent},
-  {path: 'addMusic', component: AddEditMusicComponent},
-  {path: 'editMusic/:id', component: AddEditMusicComponent},
-  {path: 'artistDetails/:id', component: ArtistDetailsComponent},
+  {path: 'admin', component: AdminComponent, canActivate: [superuserGuard]},
+  {path: 'addArtist', component: AddEditArtistComponent, canActivate: [superuserGuard]},
+  {path: 'editArtist/:id', component: AddEditArtistComponent, canActivate: [superuserGuard]},
+  {path: 'addGenre', component: AddEditGenreComponent, canActivate: [superuserGuard]},
+  {path: 'editGenre/:id', component: AddEditGenreComponent, canActivate: [superuserGuard]},
+  {path: 'addBand', component: AddEditBandComponent, canActivate: [superuserGuard]},
+  {path: 'editBand/:id', component: AddEditBandComponent, canActivate: [superuserGuard]},
+  {path: 'addAlbum', component: AddEditAlbumComponent, canActivate: [superuserGuard]},
+  {path: 'editAlbum/:id', component: AddEditAlbumComponent, canActivate: [superuserGuard]},
+  {path: 'addMusic', component: AddEditMusicComponent, canActivate: [superuserGuard]},
+  {path: 'editMusic/:id', component: AddEditMusicComponent, canActivate: [superuserGuard]},
+  {path: 'artistDetails/:id', component: ArtistDetailsComponent, canActivate: [superuserGuard]},
   {path: 'playlists', component: PlaylistsComponent},
   {path: 'playlistDetails/:id', component: PlaylistDetailsComponent},
   {path: 'about-us', component: AboutUsComponent},

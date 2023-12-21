@@ -29,7 +29,7 @@ from rest_framework.response import Response
 from MusicPlayer.serializers import MusicSerializer, GenreSerializer, AlbumSerializer, ArtistSerializer, BandSerializer, \
     PerformerSerializer, \
     ListenerSerializer, UserSerializer, PlaylistSerializer, MembershipSerializer
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 
@@ -572,13 +572,19 @@ In the frontend will only work with the access token which will be saved in the 
 refresh token as it is httponly)
 https://www.cyberchief.ai/2023/05/secure-jwt-token-storage.html
 """
+
+
 @api_view(['POST'])
 def auth_sign_in(request):
     serializer = TokenObtainPairSerializer(data=request.data, context={'request': request})
     serializer.is_valid(raise_exception=True)
     access = serializer.validated_data['access']
     refresh = serializer.validated_data['refresh']
-    response = Response({'access': str(access)})
+    response = Response({
+        "access": str(access),
+        "expiry": AccessToken(access).payload.get("exp"),
+        "isSuperUser": serializer.user.is_superuser
+    })
     response.set_cookie(key='refresh', value=refresh, httponly=True, samesite='None', secure=True)
     return response
 
@@ -589,10 +595,20 @@ def auth_sign_up(request):
     if serializer.is_valid():
         user = serializer.save()
         refresh = RefreshToken.for_user(user=user)
-        response = Response({'access': str(refresh.access_token)}, status=status.HTTP_201_CREATED)
+        access_token = str(refresh.access_token)
+        response = Response({
+            "access": access_token,
+            "expiry": AccessToken(access_token).payload.get("exp"),
+            "isSuperUser": user.is_superuser
+        }, status=status.HTTP_201_CREATED)
         response.set_cookie(key='refresh', value=refresh, httponly=True, samesite='None', secure=True)
         return response
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+def auth_get_role(request):
+    return Response({"isSuperUser": request.user.is_superuser})
 
 
 @api_view(['POST'])
@@ -603,6 +619,7 @@ def auth_sign_out(request):
     print(request.user)
     print(request.user.is_authenticated)
     return Response()
+
 
 @api_view(['GET'])
 def get_musics_by_genre(request):
@@ -1000,6 +1017,7 @@ def delete_song_playlist(request, songId, playlistId):
     membership.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
 
+
 @api_view(['GET'])
 def get_performer_information(request, performerId):
     try:
@@ -1011,6 +1029,7 @@ def get_performer_information(request, performerId):
 
     return Response(serializer.data)
 
+
 @api_view(['GET'])
 def get_musics_by_album(request, albumId):
     try:
@@ -1019,6 +1038,7 @@ def get_musics_by_album(request, albumId):
         return Response(status=status.HTTP_404_NOT_FOUND)
     serializer = MusicSerializer(musics, many=True)
     return Response(serializer.data)
+
 
 @api_view(['POST'])
 def add_like(request, songId, userId):
@@ -1035,6 +1055,7 @@ def add_like(request, songId, userId):
         return Response(status=status.HTTP_404_NOT_FOUND)
     return Response(status=status.HTTP_204_NO_CONTENT)
 
+
 @api_view(['DELETE'])
 def remove_like(request, songId, userId):
     try:
@@ -1049,14 +1070,16 @@ def remove_like(request, songId, userId):
         return Response(status=status.HTTP_404_NOT_FOUND)
     return Response(status=status.HTTP_204_NO_CONTENT)
 
+
 @api_view(['POST'])
 def add_music_to_queue(request, songId):
-   music_ids = request.session.get("music_ids", [])
-   if songId not in music_ids:
-       music_ids.append(songId)
-       request.session.save()
-       return Response(status=status.HTTP_201_CREATED)
-   return Response(status=status.HTTP_204_NO_CONTENT)
+    music_ids = request.session.get("music_ids", [])
+    if songId not in music_ids:
+        music_ids.append(songId)
+        request.session.save()
+        return Response(status=status.HTTP_201_CREATED)
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 @api_view(['POST'])
 def remove_music_from_queue(request, songId):
@@ -1067,6 +1090,7 @@ def remove_music_from_queue(request, songId):
         return Response(status=status.HTTP_204_NO_CONTENT)
     return Response(status=status.HTTP_404_NOT_FOUND)
 
+
 @api_view(['POST'])
 def clear_queue(request):
     music_ids = request.session.get("music_ids", [])
@@ -1074,13 +1098,14 @@ def clear_queue(request):
     request.session.save()
     return Response(status=status.HTTP_204_NO_CONTENT)
 
+
 @api_view(['GET'])
 def get_queue(request):
-   music_ids = request.session.get("music_ids", [])
-   request.session.modified = True
-   musics = Music.objects.filter(id__in=music_ids)
-   serializer = MusicSerializer(musics, many=True)
-   return Response(serializer.data)
+    music_ids = request.session.get("music_ids", [])
+    request.session.modified = True
+    musics = Music.objects.filter(id__in=music_ids)
+    serializer = MusicSerializer(musics, many=True)
+    return Response(serializer.data)
 
 
 @api_view(['POST'])
@@ -1091,6 +1116,3 @@ def sort_playlist(request, playlistId, prevPosition, nextPosition):
         return Response(status=status.HTTP_404_NOT_FOUND)
     playlist.change_order(prevPosition, nextPosition)
     return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-

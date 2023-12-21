@@ -1,6 +1,6 @@
 import {Component, inject} from '@angular/core';
 import {Router, RouterLink} from "@angular/router";
-import {NgOptimizedImage} from "@angular/common";
+import {NgIf, NgOptimizedImage} from "@angular/common";
 import {AuthService} from "../auth.service";
 
 @Component({
@@ -8,7 +8,8 @@ import {AuthService} from "../auth.service";
   standalone: true,
   imports: [
     RouterLink,
-    NgOptimizedImage
+    NgOptimizedImage,
+    NgIf
   ],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
