@@ -163,13 +163,10 @@ export class HomepageComponent {
   }
 
   addToQueue(id: number) {
-    this.musicService.addToQueue(id).then((res) => {
-      if (res.ok) {
-        this.musicAddedToQueue = true;
-        setTimeout(() => {
-          this.musicAddedToQueue = false;
-        }, 3000);
-      }
-    });
+    this.musicService.addToQueue(id);
+    this.musicAddedToQueue = true;
+    setTimeout(() => {
+      this.musicAddedToQueue = false;
+    }, 3000);
   }
 }

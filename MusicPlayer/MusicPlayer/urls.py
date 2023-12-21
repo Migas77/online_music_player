@@ -126,9 +126,6 @@ urlpatterns = [
     path('ws/addLike/<int:songId>/<int:userId>', views.add_like),
     path('ws/removeLike/<int:songId>/<int:userId>', views.remove_like),
     path('ws/sortPlaylist/<int:playlistId>/<int:prevPosition>/<int:nextPosition>', views.sort_playlist),
-    path('ws/addQueue/<int:songId>', views.add_music_to_queue),
-    path('ws/removeQueue/<int:songId>', views.remove_music_from_queue),
-    path('ws/getQueue', views.get_queue),
 
 
 

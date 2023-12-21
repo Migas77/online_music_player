@@ -38,10 +38,10 @@ export class PlaylistDetailsComponent {
   playlistName!: string;
 
   performerService: PerformerService = inject(PerformerService);
-  performers!: Performer[];
+  performers: Performer[] =  [];
 
   genreService: GenreService = inject(GenreService);
-  genres!: Genre[];
+  genres: Genre[] = [];
 
   user:String = "2"
   musicService: MusicService = inject(MusicService);

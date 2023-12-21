@@ -26,11 +26,11 @@
       <hr />
       <div class="display flex flex-wrap pt-5">
         <div *ngFor="let song of item.value">
-          <div class="card w-96 bg-base-100 shadow-xl m-5">
+          <div class="card w-80 bg-base-100 shadow-xl m-5">
             <div>
-              <figure><img [src]="'http://localhost:8000/' + song.image" class="object-right-top object-cover h-72 w-full rounded-tr-xl rounded-tl-xl" alt="musicCover"/></figure>
+              <figure><img [src]="'http://localhost:8000/' + song.image" class="object-right-top object-cover h-60 w-full rounded-tr-xl rounded-tl-xl" alt="musicCover"/></figure>
             </div>
-            <div class="card-body w-96 text-center">
+            <div class="card-body w-80 text-center">
               <h2 class="text-center songName">{{ song.name }}</h2>
               <h3 class="text-lg songPerformer"><a routerLink="artistDetails/{{ song.performer }}">{{ getName(song.performer) }}</a></h3>
               <div class="text-lg space-x-3 flex flex-row justify-center">
