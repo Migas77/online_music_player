@@ -25,7 +25,7 @@ export class HomepageComponent {
 
   searchForm!: FormGroup;
   musicsByGenre: { [key: string] :Music[]} = {};
-  allMusics: Music[] = [];
+  allMusics!: Music[];
   performers: Performer[] = [];
   searchResult: { [key: string] :Music[]} = {};
 
@@ -36,7 +36,10 @@ export class HomepageComponent {
   musicAdded: boolean = false;
   musicAddedFailed: boolean = false;
 
+  musicAddedToQueue: boolean = false;
   createPlaylistForm!: FormGroup;
+
+  user: Number = 2;
 
   constructor(private fb: FormBuilder, private elementRef: ElementRef) {
 
@@ -60,8 +63,11 @@ export class HomepageComponent {
 
     this.playlistService.getPlaylists().then((playlists : Playlist[]) => {
       this.playlists = playlists;
-      console.log(this.playlists)
     })
+
+    this.musicService.getMusics().then((musics: Music[]) => {
+      this.allMusics = musics;
+    });
   }
 
   async onSubmit(): Promise<void> {
@@ -90,7 +96,7 @@ export class HomepageComponent {
     return Object.keys(obj).length;
   }
 
-  async addMusicToPlaylist(musicId: number, playlistId: number) {
+  addMusicToPlaylist(musicId: number, playlistId: number) {
     this.musicAdded = false;
     this.musicAddedFailed = false;
     this.playlistService.addMusicToPlaylist(musicId, playlistId).then((res: any) => {
@@ -122,6 +128,48 @@ export class HomepageComponent {
         })
       }
     });
+  }
 
+  musicLiked(id: number) {
+    return this.allMusics.filter(m => m.id == id)[0].likes.filter(l => l.id == Number(this.user)).length > 0;
+  }
+
+  likeMusic(id: number) {
+    this.musicService.likeMusic(id, Number(this.user)).then((res) => {
+      if (res.ok){
+        this.musicService.getMusics().then((musics: Music[]) => {
+          this.allMusics = musics;
+        });
+        this.musicService.getMusicsByGenre().then((musics: { [key: string] :Music[]}) => {
+          this.musicsByGenre = musics;
+        });
+        this.onSubmit();
+      }
+    });
+  }
+
+  dislikeMusic(id: number) {
+    this.musicService.dislikeMusic(id, Number(this.user)).then((res) => {
+      if (res.ok) {
+        this.musicService.getMusics().then((musics: Music[]) => {
+          this.allMusics = musics;
+        });
+        this.musicService.getMusicsByGenre().then((musics: { [key: string] :Music[]}) => {
+          this.musicsByGenre = musics;
+        });
+        this.onSubmit();
+      }
+    });
+  }
+
+  addToQueue(id: number) {
+    this.musicService.addToQueue(id).then((res) => {
+      if (res.ok) {
+        this.musicAddedToQueue = true;
+        setTimeout(() => {
+          this.musicAddedToQueue = false;
+        }, 3000);
+      }
+    });
   }
 }

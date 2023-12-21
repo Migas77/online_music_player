@@ -4,7 +4,8 @@ import { Music } from '../models/Music';
 import { Performer } from '../models/Performer';
 import { PerformerService } from '../performer.service';
 import { MusicService } from '../music.service';
-import {Playlist} from "../models/Playlist";
+import {PlaylistService} from "../playlist.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-playbar',
@@ -15,20 +16,27 @@ import {Playlist} from "../models/Playlist";
 })
 export class PlaybarComponent {
 
-  allMusics: Music[] = [];
-  performers: Performer[] = [];
   currentSongIndex: number | null = null;
   currentSong: Music | null = null;
-  audioElement!: HTMLAudioElement;
-  isPlaying: boolean = false;
 
+  audioElement!: HTMLAudioElement;
+
+  performers: Performer[] = [];
   playlistMusics: Music[] = [];
+  albumsMusics: Music[] = [];
+  artistsMusics: Music[] = [];
+  allMusics: Music[] = [];
+
   isPlaylist: boolean = false;
+  isAlbum: boolean = false;
+  isArtist: boolean = false;
+  isPlaying: boolean = false;
 
   musicService: MusicService = inject(MusicService);
   performerService: PerformerService = inject(PerformerService);
+  playlistService: PlaylistService = inject(PlaylistService);
 
-  constructor(private elementRef: ElementRef) {
+  constructor(private elementRef: ElementRef, private router: Router) {
 
     this.musicService.getMusics().then((m: Music[]) => {
       this.allMusics = m;
@@ -49,16 +57,9 @@ export class PlaybarComponent {
     });
   }
 
-  playSong(song: Music, playlist?:Playlist): void {
-    if (playlist) {
-      this.isPlaylist = true;
-      this.playlistMusics = playlist.musics;
-    } else {
-      this.isPlaylist = false;
-      this.playlistMusics = [];
-    }
+  playSong(song: Music): void {
     this.currentSong = song;
-    this.currentSongIndex = this.isPlaylist ? this.playlistMusics.indexOf(song) : this.allMusics.indexOf(song);
+    this.currentSongIndex = this.isPlaylist ?  this.playlistMusics.findIndex(song1 => song1.id === song.id) : this.isAlbum ? this.albumsMusics.indexOf(song) : this.isArtist ? this.artistsMusics.indexOf(song) : this.allMusics.indexOf(song);
     this.audioElement.src = 'http://localhost:8000/' + song.audio_file;
     this.audioElement.currentTime = 0;
     this.isPlaying = true;
@@ -72,32 +73,77 @@ export class PlaybarComponent {
       });
   }
 
+  async playAlbum(albumId: number): Promise<void> {
+    this.albumsMusics = []
+    const songs = await this.musicService.getMusicsByAlbum(albumId);
+    console.log("SONGS: ", songs);
+    this.isAlbum = true;
+    this.albumsMusics = songs;
+    console.log("PLAYLIST ALBUM: ", this.albumsMusics);
+    this.playSong(this.albumsMusics[0]);
+  }
+
+  async playPlaylist(playlistId: number, song?: Music): Promise<void> {
+    this.playlistMusics = []
+    await this.playlistService.getPlaylist(String(playlistId)).then((playlist) => {
+      this.playlistMusics = playlist.musics.sort((a: Music, b: Music) => {
+        return playlist.order.indexOf(a.id) - playlist.order.indexOf(b.id);
+      });
+    });
+    this.isPlaylist = true;
+    console.log("PLAYLIST PLAYLIST: ", this.playlistMusics);
+    if (song) {
+      this.playSong(song);
+    } else {
+      this.playSong(this.playlistMusics[0]);
+    }
+  }
+
+  async playArtist(performerId: number): Promise<void> {
+    this.artistsMusics = []
+    const songs = await this.musicService.getMusicsByPerformer(performerId);
+    this.isArtist = true;
+    this.artistsMusics = songs;
+    console.log("PLAYLIST ARTIST: ", this.artistsMusics);
+    this.playSong(this.artistsMusics[0]);
+  }
+
   previousSong(): void {
     if (this.currentSongIndex !== null && this.currentSongIndex > 0) {
       this.currentSongIndex--;
-      this.playSong(this.isPlaylist ? this.playlistMusics[this.currentSongIndex] : this.allMusics[this.currentSongIndex]);
+      this.playSong(this.isPlaylist ? this.playlistMusics[this.currentSongIndex] : this.isAlbum ? this.albumsMusics[this.currentSongIndex] : this.isArtist ? this.artistsMusics[this.currentSongIndex] : this.allMusics[this.currentSongIndex]);
     }
   }
 
   nextSong(): void {
-    if (this.currentSongIndex !== null && this.currentSongIndex < (this.isPlaylist ? this.playlistMusics.length - 1 : this.allMusics.length - 1)) {
+    if (this.currentSongIndex !== null && this.currentSongIndex < (this.isPlaylist ? this.playlistMusics.length - 1 : this.isAlbum ? this.albumsMusics.length - 1 : this.isArtist ? this.artistsMusics.length - 1 : this.allMusics.length - 1)) {
       this.currentSongIndex++;
-      this.playSong(this.isPlaylist ? this.playlistMusics[this.currentSongIndex] : this.allMusics[this.currentSongIndex]);
+      this.playSong(this.isPlaylist ? this.playlistMusics[this.currentSongIndex] : this.isAlbum ? this.albumsMusics[this.currentSongIndex] : this.isArtist ? this.artistsMusics[this.currentSongIndex] : this.allMusics[this.currentSongIndex]);
+    }
+    else {
+      this.currentSongIndex = 0;
+      this.playSong(this.isPlaylist ? this.playlistMusics[this.currentSongIndex] : this.isAlbum ? this.albumsMusics[this.currentSongIndex] : this.isArtist ? this.artistsMusics[this.currentSongIndex] : this.allMusics[this.currentSongIndex]);
     }
   }
 
   togglePlay(): void {
-    if (this.audioElement.paused) {
+    if (this.currentSong === null) {
+      if (this.router.url === "/") {
+        this.playSong(this.allMusics[0]);
+      } else if (this.router.url.startsWith("/playlist")) {
+        const playlistId = this.router.url.split("/")[2];
+        this.playPlaylist(Number(playlistId));
+      } else if (this.router.url.startsWith("/artistDetails")) {
+        const performerId = this.router.url.split("/")[2];
+        this.playArtist(Number(performerId));
+      }
+    } else if (this.audioElement.paused) {
       this.audioElement.play();
       this.isPlaying = true;
     } else {
       this.audioElement.pause();
       this.isPlaying = false;
     }
-  }
-
-  getName(performer: Performer): string {
-    return this.performerService.getPerformerName(performer, this.performers)
   }
 
   seekTo(event: any): void {

@@ -1,0 +1,74 @@
+<div class="flex flex-row justify between relative pl-5">
+  <h1 class="font-bold">Song Queue</h1>
+    <div class="flex flex-row absolute right-5 top-5">
+      <button type="submit" class="btn btn-outline">Remove all songs</button>
+    </div>
+</div>
+<div class="overflow-x-auto">
+  <table class="table mt-1">
+    <tbody class="text-lg">
+    <tr *ngFor="let music of musics">
+      <td>
+        <button (click)="playSong(music)">
+          <i class="fa fa-play-circle text-3xl"></i>
+        </button>
+      </td>
+      <td>
+        <div class="flex items-center">
+          <div class="avatar">
+            <div class="mask mask-squircle h-60">
+              <img [src]="'http://localhost:8000/' + music.image" alt="Song Image"/>
+            </div>
+          </div>
+        </div>
+      </td>
+      <td >
+        <button class="like-button" *ngIf="musicLiked(music.id)" (click)="dislikeMusic(music.id)">
+          <i class="heart-icon fas fa-heart" style="color: #c061cb;"></i>
+        </button>
+        <button class="like-button" *ngIf="!musicLiked(music.id)" (click)="likeMusic(music.id)" >
+          <i class="heart-icon far fa-heart" style="color: #c061cb;"></i>
+        </button>
+        <span id="likes-count-{{ music.id }}">  {{ music.likes.length }} </span>
+      </td>
+      <td>
+        <div class="songName">{{ music.name }}</div>
+        <br />
+        <span class="badge badge-ghost badge-lg ">
+            <a >{{ getPerformerName(music.performer) }}</a>
+          </span>
+      </td>
+      <td>{{ getGenreTitle(music.genre) }}</td>
+      <td>
+        <button
+          class="btn btn-outline btn-error"
+          onclick="document.getElementById('modalDelete').show()"
+          (click)="currentMusicName = music.name; currentMusicId = music.id"
+        >
+          <i class="fa fa-trash-o text-lg"></i>
+        </button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+<dialog id="modalDelete" class="modal">
+  <div class="modal-box">
+    <h3 class="font-bold text-xl">Remove song from playlist!</h3>
+    <p class="py-4 text-lg">
+      Are you sure you want to remove <span class="font-bold">{{ currentMusicName }}</span> from playlist?
+    </p>
+    <div class="modal-action">
+      <button class="btn btn-error" (click)="removeSong()" >Yes</button>
+
+      <button
+        class="btn"
+        onclick="document.getElementById('modalDelete').close()"
+        id="closeModal"
+      >
+        Close
+      </button>
+    </div>
+  </div>
+</dialog>
+<app-playbar></app-playbar>

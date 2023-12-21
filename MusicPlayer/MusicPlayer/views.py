@@ -8,7 +8,7 @@ import json
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Album, Music, Artist, Playlist, Membership, Performer, Band, Genre
+from .models import Album, Music, Artist, Playlist, Membership, Performer, Band, Genre, Listener
 from django.contrib.auth import views as auth_views
 from MusicPlayer.forms import LoginForm, SignUpForm, MusicSearchForm, AddEditArtistForm, AddEditMusicForm, \
     AddEditBandForm, \
@@ -604,7 +604,6 @@ def auth_sign_out(request):
     print(request.user.is_authenticated)
     return Response()
 
-
 @api_view(['GET'])
 def get_musics_by_genre(request):
     musics = Music.objects.all()
@@ -1000,3 +999,98 @@ def delete_song_playlist(request, songId, playlistId):
         return Response(status=status.HTTP_404_NOT_FOUND)
     membership.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['GET'])
+def get_performer_information(request, performerId):
+    try:
+        artist_details = Artist.objects.get(id=performerId)
+        serializer = ArtistSerializer(artist_details)
+    except Artist.DoesNotExist:
+        artist_details = Band.objects.get(id=performerId)
+        serializer = BandSerializer(artist_details)
+
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def get_musics_by_album(request, albumId):
+    try:
+        musics = Music.objects.filter(album=albumId)
+    except Music.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    serializer = MusicSerializer(musics, many=True)
+    return Response(serializer.data)
+
+@api_view(['POST'])
+def add_like(request, songId, userId):
+    try:
+        music = Music.objects.get(id=songId)
+        try:
+            user = Listener.objects.get(id=userId)
+            print(user)
+            music.likes.add(user)
+            return Response(status=status.HTTP_201_CREATED)
+        except Listener.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+    except Music.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['DELETE'])
+def remove_like(request, songId, userId):
+    try:
+        music = Music.objects.get(id=songId)
+        try:
+            user = Listener.objects.get(id=userId)
+            music.likes.remove(user)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Listener.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+    except Music.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['POST'])
+def add_music_to_queue(request, songId):
+   music_ids = request.session.get("music_ids", [])
+   if songId not in music_ids:
+       music_ids.append(songId)
+       request.session.save()
+       return Response(status=status.HTTP_201_CREATED)
+   return Response(status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['POST'])
+def remove_music_from_queue(request, songId):
+    music_ids = request.session.get("music_ids", [])
+    if songId in music_ids:
+        music_ids.remove(songId)
+        request.session.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    return Response(status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['POST'])
+def clear_queue(request):
+    music_ids = request.session.get("music_ids", [])
+    music_ids.clear()
+    request.session.save()
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['GET'])
+def get_queue(request):
+   music_ids = request.session.get("music_ids", [])
+   request.session.modified = True
+   musics = Music.objects.filter(id__in=music_ids)
+   serializer = MusicSerializer(musics, many=True)
+   return Response(serializer.data)
+
+
+@api_view(['POST'])
+def sort_playlist(request, playlistId, prevPosition, nextPosition):
+    try:
+        playlist = Playlist.objects.get(id=playlistId)
+    except Playlist.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    playlist.change_order(prevPosition, nextPosition)
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+

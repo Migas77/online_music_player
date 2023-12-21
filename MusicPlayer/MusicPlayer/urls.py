@@ -113,7 +113,9 @@ urlpatterns = [
     path('ws/performers', views.get_performers),
     path('ws/searchMusic', views.search_music),
     path('ws/getAlbumsByPerformer/<int:id>', views.get_albums_by_performer),
-    path('ws/getMusicsByArtist/<int:id>', views.get_musics_by_artist),
+    path('ws/getMusicsByPerformer/<int:id>', views.get_musics_by_artist),
+    path('ws/getPerformerDetails/<int:performerId>', views.get_performer_information),
+    path('ws/getMusicsByAlbum/<int:albumId>', views.get_musics_by_album),
     path('ws/playlists', views.get_playlists),
     path('ws/playlist/<int:id>', views.get_playlist),
     path('ws/addPlaylist', views.add_playlist),
@@ -121,6 +123,12 @@ urlpatterns = [
     path('ws/deletePlaylist/<int:id>', views.delete_playlist),
     path('ws/addMusicToPlaylist/<int:songId>/<int:playlistId>', views.add_music_to_playlist),
     path('ws/deleteSongPlaylist/<int:songId>/<int:playlistId>', views.delete_song_playlist),
+    path('ws/addLike/<int:songId>/<int:userId>', views.add_like),
+    path('ws/removeLike/<int:songId>/<int:userId>', views.remove_like),
+    path('ws/sortPlaylist/<int:playlistId>/<int:prevPosition>/<int:nextPosition>', views.sort_playlist),
+    path('ws/addQueue/<int:songId>', views.add_music_to_queue),
+    path('ws/removeQueue/<int:songId>', views.remove_music_from_queue),
+    path('ws/getQueue', views.get_queue),
 
 
 

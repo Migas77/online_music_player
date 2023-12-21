@@ -12,6 +12,10 @@
     </div>
   </form>
 </div>
+<div role="alert" class="alert alert-success mb-3.5" *ngIf="musicAddedToQueue" [ngClass]="{'fadeout': musicAddedToQueue}">
+  <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+  <span class="ml-3">Music added to queue</span>
+</div>
 <div class="mb-[150px]">
   <div *ngIf="(getObjectSize(searchResult) !== 0 && searchResult) || (getObjectSize(searchResult) === 0 && musicsByGenre)">
     <h2 class="font-regular" *ngIf="getObjectSize(searchResult) !== 0">
@@ -33,10 +37,14 @@
                 <button class="songlistplay" (click)="playSong(song)">
                   <i id="1" class="far songItemPlay fa-play-circle"></i>
                 </button>
-                <button>
-                  <i class="fa-solid fa-heart" style="color: #c10bbb;"></i> {{ song.likes.length }}
+                <button class="like-button" *ngIf="musicLiked(song.id)" (click)="dislikeMusic(song.id)">
+                  <i class="heart-icon fas fa-heart" style="color: #c061cb;"></i>
                 </button>
-                <button>
+                <button class="like-button" *ngIf="!musicLiked(song.id)" (click)="likeMusic(song.id)" >
+                  <i class="heart-icon far fa-heart" style="color: #c061cb;"></i>
+                </button>
+                <span id="likes-count-{{ song.id }}">  {{ song.likes.length }} </span>
+                <button (click)="addToQueue(song.id)">
                   <i class="fa-solid fa-cloud-arrow-down"></i>
                 </button>
                 <button onclick="document.getElementById('modalAddToPlaylist').show()" (click)="currentMusicName = song.name; currentMusicId = song.id">

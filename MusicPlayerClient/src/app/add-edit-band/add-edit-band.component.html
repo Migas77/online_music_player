@@ -7,23 +7,23 @@
     <form [formGroup]="addBandForm" (ngSubmit)="onSubmit()" enctype="multipart/form-data">
       <hr />
       <div class="form-group mt-[30px]">
-        <label>Name</label>
+        <label class="text-xl">Name</label>
         <br />
         <input type="text" placeholder="Name" class="input w-full max-w-3xl mb-[30px] mt-[3px]"  formControlName="name"/>
         <br />
-        <label>Description</label>
+        <label class="text-xl">Description</label>
         <br />
         <input type="text" placeholder="Description" class="input w-full max-w-3xl mb-[30px] mt-[3px]"  formControlName="description"/>
         <br />
-        <label>Image</label>
+        <label class="text-xl">Image</label>
         <br />
         <input type="file" class="file-input file-input-bordered w-full max-w-lg mb-[30px]" (change)="onFileChange($event)"/>
         <br />
-        <label>Members</label>
+        <label class="text-xl">Members</label>
         <br />
-        <div class="form-control max-w-xs" *ngFor="let member of members.controls; let i = index">
+        <div class="form-control max-w-xs " *ngFor="let member of members.controls; let i = index">
           <label class="label cursor-pointer">
-            <span class="label-text">{{ artists[i].name }}</span>
+            <span class="label-text text-xl">{{ artists[i].name }}</span>
             <input type="checkbox" checked="checked" class="checkbox" [formControl]="getMemberFormControl(i)"/>
           </label>
         </div>

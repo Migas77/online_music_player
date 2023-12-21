@@ -1,5 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Playlist} from "./models/Playlist";
+import {Music} from "./models/Music";
 
 @Injectable({
   providedIn: 'root'
@@ -44,5 +45,10 @@ export class PlaylistService {
     const url: string = this.baseURL + "deleteSongPlaylist/" + currentMusicId + "/" + id;
     return await fetch(url, {method: 'DELETE'});
 
+  }
+
+  sortPlaylist(id: number, previousIndex: number, currentIndex: number) {
+    const url: string = this.baseURL + "sortPlaylist/" + id + "/" + previousIndex + "/" + currentIndex;
+    return fetch(url, {method: 'POST'});
   }
 }

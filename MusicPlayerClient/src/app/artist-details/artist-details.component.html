@@ -1,1 +1,193 @@
-<p>artist-details works!</p>
+<div class="pb-[200px]">
+  <h1>Artist Details</h1>
+  <div *ngIf="getObjectSize(performerDetails) !== 0">
+    <div class="flex flex-row justify-center">
+      <div class="card card-compact w-[40%] bg-base-100 shadow-xl">
+        <figure>
+          <img
+            [src]="'http://localhost:8000/' + performerDetails.image"
+            alt="Performer"
+          />
+        </figure>
+        <div class="card-body">
+          <h2 class="card-title">{{ performerDetails.name }}</h2>
+          <div class="card-actions justify-end flex flex-row">
+            <button
+              class="btn btn-outline btn-secondary"
+              onclick="my_modal_1.showModal()"
+            >
+              Show Details
+            </button>
+            <div *ngIf="artistAlbums.length !== 0">
+              <button class="btn btn-outline btn-primary" (click)="playArtist(performerDetails.id)">Listen</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <dialog id="my_modal_1" class="modal">
+      <div class="modal-box">
+        <h3 class="font-bold text-2xl">Description</h3>
+        <p class="py-4 text-lg">{{ performerDetails.description }}</p>
+        <div *ngIf="performerDetails.members">
+          <h2>Members:</h2>
+          <div class="flex overflow-x-auto space-x-5 text-center">
+            <div *ngFor="let member of performerDetails.members">
+              <div class="avatar">
+                <div class="mask mask-squircle w-[10vw]">
+                  <img
+                    [src]="'http://localhost:8000/' + getArtist(member).image"
+                    alt="{{ getArtist(member).name }}"
+                  />
+                </div>
+              </div>
+              <p>
+                <a routerLink="/artistDetails/{{ member }}">{{
+                  getArtist(member).name
+                }}</a>
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="modal-action">
+          <form method="dialog">
+            <button class="btn btn-outline btn-error">Close</button>
+          </form>
+        </div>
+      </div>
+    </dialog>
+    <div class="pl-[30px] pt-[10px] pr-[30px]">
+      <h2>Albums</h2>
+      <hr />
+      <div role="alert" class="alert alert-success m-5" *ngIf="musicAddedToQueue" [ngClass]="{'fadeout': musicAddedToQueue}">
+        <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+        <span class="ml-3">Music added to queue</span>
+      </div>
+      <div *ngIf="artistAlbums.length > 0" class="pt-5 flex justify-center">
+        <div class="flex flex-col">
+          <div *ngFor="let album of artistAlbums" class="pt-[50px]">
+            <div class="card lg:card-side bg-base-100 shadow-xl">
+              <figure class="w-[20vw]"><img [src]="'http://localhost:8000/' + album.image" alt="Album"/></figure>
+              <div class="w-[60%] p-5">
+                <h2 class="card-title">{{album.name}}</h2>
+                <div class="flex flex-row text-lg">
+                  <p><i class="fa-regular fa-calendar" style="color: #c10bbb;"></i> {{ album.release_date }}</p>
+                </div>
+                <div class="flex flex-col">
+                  <div *ngFor="let music of musicsByAlbum[album.id]" class="pt-3 w-96">
+                    <div class="flex flex-row text-center bg-[#111] font-bold text-lg rounded-lg hover:bg-[#555] transition-colors duration-200 relative">
+                      <div class="flex flex-row justify-between pt-2 pb-2 pl-5 ">
+                          <div class="flex flex-row space-x-3">
+                            <button class="pt-1" (click)="playSong(music)"><i class="fa-solid fa-circle-play" style="color: #c10bbb;"></i></button>
+                            <span class="pt-1" >{{ music.name }}</span>
+                          </div>
+                          <div class="absolute right-0 space-x-3 pt-1 pr-5">
+                            <button class="like-button" *ngIf="musicLiked(music.id)" (click)="dislikeMusic(music.id)">
+                              <i class="heart-icon fas fa-heart" style="color: #c061cb;"></i>
+                            </button>
+                            <button class="like-button" *ngIf="!musicLiked(music.id)" (click)="likeMusic(music.id)" >
+                              <i class="heart-icon far fa-heart" style="color: #c061cb;"></i>
+                            </button>
+                            <span id="likes-count-{{ music.id }}">  {{ music.likes.length }} </span>
+                            <button (click)="addToQueue(music.id)">
+                              <i class="fa-solid fa-cloud-arrow-down"></i>
+                            </button>
+                            <button onclick="document.getElementById('modalAddToPlaylist').show()" (click)="currentMusicName = music.name; currentMusicId = music.id">
+                              <i class="fa-solid fa-square-plus"></i>
+                            </button>
+                          </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-actions justify-end p-5">
+                  <button class="btn btn-outline btn-primary" (click)="playAlbum(album.id)">Listen</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="artistAlbums.length === 0" class="pt-[30px] text-center text-2xl">
+        <p><i class="fa-solid fa-circle-exclamation"></i> No albums found</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<dialog id="modalAddToPlaylist" class="modal">
+  <div class="modal-box w-11/12 max-w-5xl">
+    <div role="alert" class="alert alert-success mb-3.5" *ngIf="musicAdded" [ngClass]="{'fadeout': musicAdded}">
+      <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+      <span class="ml-3">Music added to playlist</span>
+    </div>
+    <div role="alert" class="alert alert-warning mb-3.5" *ngIf="musicAddedFailed" [ngClass]="{'fadeout': musicAddedFailed}">
+      <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+      <span class="ml-3">Music already in playlist</span>
+    </div>
+    <h3 class="font-bold text-2xl">Playlists</h3>
+    <hr />
+    <div style="max-height: 400px; overflow-y: auto">
+      <table class="table ml-0 text-lg" id="playlistMusics">
+        <thead>
+        <tr class="text-lg">
+          <th></th>
+          <th>Name</th>
+          <th></th>
+        </tr>
+        </thead>
+        <tbody >
+        <tr *ngFor="let playlist of playlists" class="text-lg" >
+          <th>{{playlist.id}}</th>
+          <th>{{playlist.name}}</th>
+          <td>
+            <button>
+              <i class="fa fa-plus-square-o" (click)="addMusicToPlaylist(currentMusicId, playlist.id)"></i>
+            </button>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="modal-action">
+      <button
+        class="btn btn-active btn-primary"
+        onclick="document.getElementById('modalCreatePlaylist').show()"
+      >
+        New playlist
+      </button>
+      <form method="dialog">
+        <button class="btn" >Close</button>
+      </form>
+    </div>
+  </div>
+</dialog>
+
+
+<dialog id="modalCreatePlaylist" class="modal">
+  <div class="modal-box w-11/12 max-w-5xl">
+    <h3 class="font-bold text-lg">Create a new playlist</h3>
+    <hr />
+    <form [formGroup]="createPlaylistForm" (ngSubmit)="onSubmitCreatePlaylist()">
+      <div class="form-control" >
+        <label class="label">
+          <span class="label-text">Name</span>
+        </label>
+        <input
+          type="text"
+          placeholder="Playlist name"
+          class="input input-bordered"
+          formControlName="name"
+        />
+      </div>
+      <div class="modal-action">
+        <button class="btn btn-active btn-primary" type="submit" >Create</button>
+        <form method="dialog">
+          <button class="btn" id="closeAddPlaylistModal">Close</button>
+        </form>
+      </div>
+    </form>
+  </div>
+</dialog>
+
+<app-playbar></app-playbar>

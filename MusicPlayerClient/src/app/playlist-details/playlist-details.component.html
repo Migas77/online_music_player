@@ -1,9 +1,9 @@
 <h1 class="margin">{{playlistName}}</h1>
 <hr />
 <div class="overflow-x-auto">
-    <table class="table mt-1">
+    <table class="table mt-1" cdkDropList (cdkDropListDropped)="drop($event)">
       <tbody class="text-lg">
-      <tr class="" *ngFor="let music of musics">
+      <tr class="" *ngFor="let music of musics" cdkDrag>
         <td>
           <button (click)="playSong(music)">
             <i class="fa fa-play-circle text-3xl"></i>
@@ -12,21 +12,20 @@
         <td>
           <div class="flex items-center">
             <div class="avatar">
-              <div class="mask mask-squircle">
+              <div class="mask mask-squircle h-60">
                 <img [src]="'http://localhost:8000/' + music.image" alt="Song Image"/>
               </div>
             </div>
           </div>
         </td>
-        <td>
-          <button class="like-button">
+        <td >
+          <button class="like-button" *ngIf="musicLiked(music.id)" (click)="dislikeMusic(music.id)">
             <i class="heart-icon fas fa-heart" style="color: #c061cb;"></i>
           </button>
-          <span id="likes-count-{{ music.id }}"> likes </span>
-          <button class="like-button" >
+          <button class="like-button" *ngIf="!musicLiked(music.id)" (click)="likeMusic(music.id)" >
             <i class="heart-icon far fa-heart" style="color: #c061cb;"></i>
           </button>
-          <span id="likes-count-{{ music.id }}">  likes </span>
+          <span id="likes-count-{{ music.id }}">  {{ music.likes.length }} </span>
         </td>
         <td>
           <div class="songName">{{ music.name }}</div>
