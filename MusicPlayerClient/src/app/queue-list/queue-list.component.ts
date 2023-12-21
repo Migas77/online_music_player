@@ -30,23 +30,29 @@ export class QueueListComponent {
 
   currentMusicName!: string;
   currentMusicId!: number;
-  musics!: Music[];
-
-  id!: string | null;
+  musics: Music[] = [];
 
   performerService: PerformerService = inject(PerformerService);
-  performers!: Performer[];
+  performers: Performer[] = [];
 
   genreService: GenreService = inject(GenreService);
-  genres!: Genre[];
+  genres: Genre[] = [];
 
-  user:String = "2"
+  user: String = "2"
 
   @ViewChild(PlaybarComponent) playbarComponent!: PlaybarComponent;
 
-  constructor(private musicService: MusicService,  private route: ActivatedRoute) {
+  constructor(private musicService: MusicService, private route: ActivatedRoute) {
     this.musicService.getQueue().then((musics) => {
       this.musics = musics;
+    });
+
+    this.performerService.getPerformers().then((performers) => {
+      this.performers = performers;
+    });
+
+    this.genreService.getGenres().then((genres) => {
+      this.genres = genres;
     });
   }
 
@@ -60,24 +66,20 @@ export class QueueListComponent {
 
   likeMusic(id: number) {
     this.musicService.likeMusic(id, Number(this.user)).then((res) => {
-      if (res.ok){
-        if (this.id != null) {
-          this.musicService.getQueue().then((musics) => {
-            this.musics = musics;
-          });
-        }
+      if (res.ok) {
+        this.musicService.getQueue().then((musics) => {
+          this.musics = musics;
+        });
       }
     });
   }
 
   dislikeMusic(id: number) {
     this.musicService.dislikeMusic(id, Number(this.user)).then((res) => {
-      if (res.ok){
-        if (this.id != null) {
-           this.musicService.getQueue().then((musics) => {
-              this.musics = musics;
-           });
-        }
+      if (res.ok) {
+        this.musicService.getQueue().then((musics) => {
+          this.musics = musics;
+        });
       }
     });
   }
@@ -90,16 +92,18 @@ export class QueueListComponent {
     return this.genreService.getGenreTitle(genre, this.genres);
   }
 
-  removeSong() {
-    this.musicService.removeQueueSong(this.currentMusicId).then((res) => {
-      if (res.ok){
-        if (this.id != null) {
-          this.musicService.getQueue().then((musics) => {
-            this.musics = musics;
-          });
-        }
-        document.getElementById("closeModal")?.click();
-      }
+  async removeSong() {
+    await this.musicService.removeQueueSong(this.currentMusicId);
+    document.getElementById("closeModal")?.click();
+    this.musicService.getQueue().then((musics) => {
+      this.musics = musics;
+    });
+  }
+
+  async clearQueue() {
+    await this.musicService.clearQueue();
+    this.musicService.getQueue().then((musics) => {
+      this.musics = musics;
     });
 
   }

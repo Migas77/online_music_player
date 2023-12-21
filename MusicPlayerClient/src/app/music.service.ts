@@ -99,19 +99,40 @@ export class MusicService {
     return fetch(url, { method: 'DELETE' });
   }
 
-  addToQueue(id: number) {
-    const url: string = this.baseURL + 'addQueue/' + id;
-    return fetch(url, { method: 'POST' });
+  async addToQueue(id: number) {
+    const music = await this.getMusic(String(id));
+    const queue = JSON.parse(localStorage.getItem('queue') || '[]');
+    const isMusicInQueue = queue.some((queuedMusic: Music) => queuedMusic.id === music.id);
+
+    if (!isMusicInQueue){
+      queue.unshift(music);
+    } else {
+      const index = queue.findIndex((queuedMusic: Music) => queuedMusic.id === music.id);
+      queue.splice(index, 1);
+      queue.unshift(music);
+    }
+
+    localStorage.setItem('queue', JSON.stringify(queue));
   }
 
-  getQueue() {
-    const url: string = this.baseURL + 'getQueue';
-    return fetch(url).then((response) => response.json());
+  async getQueue() {
+    const queue = JSON.parse(localStorage.getItem('queue') || '[]');
+    let q: Music[] = []
+    for (let i = 0; i < queue.length; i++){
+       await this.getMusic(queue[i].id).then((music: Music) => q.push(music))
+    }
+    return q
   }
 
-  removeQueueSong(currentMusicId: number) {
-    const url: string = this.baseURL + 'removeQueue/' + currentMusicId;
-    return fetch(url, { method: 'DELETE' });
+  async removeQueueSong(currentMusicId: number) {
+    let queue = JSON.parse(localStorage.getItem('queue')!);
+    const music = await this.getMusic(String(currentMusicId));
+    let index = queue.findIndex((m: Music) => m.id == music.id);
+    queue.splice(index, 1);
+    localStorage.setItem('queue', JSON.stringify(queue));
+  }
 
+  clearQueue() {
+    localStorage.removeItem('queue');
   }
 }

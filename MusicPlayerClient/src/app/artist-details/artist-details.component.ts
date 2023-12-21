@@ -22,10 +22,10 @@ import { PlaybarComponent } from '../playbar/playbar.component';
   standalone: true,
   imports: [
     NgFor,
-    NgIf, 
-    RouterLink, 
-    CommonModule, 
-    PlaybarComponent, 
+    NgIf,
+    RouterLink,
+    CommonModule,
+    PlaybarComponent,
     ReactiveFormsModule
   ],
   templateUrl: './artist-details.component.html',
@@ -46,7 +46,7 @@ export class ArtistDetailsComponent implements OnInit {
   artistAlbums: Album[] = [];
 
   currentMusicName! : string;
-  
+
   performerDetails!: any;
 
   musicAdded: boolean = false;
@@ -70,7 +70,6 @@ export class ArtistDetailsComponent implements OnInit {
 
     this.playlistService.getPlaylists().then((playlists : Playlist[]) => {
       this.playlists = playlists;
-      console.log(this.playlists)
     })
   }
 
@@ -81,14 +80,14 @@ export class ArtistDetailsComponent implements OnInit {
         this.artistService.getArtists().then((artists) => {
           this.allArtists = artists;
         });
-   
+
         this.performerService.getPerformerDetails(this.id).then((performer) => {
           if ('members' in performer)
             this.performerDetails = performer as Band;
           else
             this.performerDetails = performer as Artist;
         });
-   
+
         this.albumService.getAlbumsByPerformer(this.id).then((albums) => {
           this.artistAlbums = albums;
 
@@ -182,14 +181,12 @@ export class ArtistDetailsComponent implements OnInit {
   };
 
   addToQueue(id: number) {
-    this.musicService.addToQueue(id).then((res) => {
-      if (res.ok) {
-        this.musicAddedToQueue = true;
-        setTimeout(() => {
-          this.musicAddedToQueue = false;
-        }, 3000);
-      }
-    });
+    this.musicService.addToQueue(id);
+    this.musicAddedToQueue = true;
+    setTimeout(() => {
+      this.musicAddedToQueue = false;
+      }, 3000);
+
   }
 
   getObjectSize(obj: { [key: string] : any}): number {
