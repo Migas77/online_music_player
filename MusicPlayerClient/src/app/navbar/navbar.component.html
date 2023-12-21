@@ -31,7 +31,7 @@
       </a>
     </li>
     <li class="nav-item_tp">
-      <a class="nav-link_tp" routerLink="/admin">
+      <a class="nav-link_tp" routerLink="/admin" *ngIf="true">
         <img
           src="assets/images/musicQueue.jpg"
           alt="Administrator Panel"
@@ -41,18 +41,20 @@
         >
       </a>
     </li>
-    <li class="nav-item_tp">
-      <a class="nav-link_tp" (click)="signout()">
+    <li class="nav-item_tp" *ngIf="true">
+      <a class="nav-link_tp" (click)="signout()" style="cursor: pointer">
         <img src="assets/images/user.jpeg" alt="Log Out" />
         <span class="link-text_tp">Log out</span>
       </a>
     </li>
-    <li class="nav-item_tp">
-      <a class="nav-link_tp" routerLink="/auth">
-        <img src="assets/images/user.jpeg" alt="Rating & Review" />
-        <span class="link-text_tp">Log in</span>
-      </a>
-    </li>
+    <ng-template #login>
+      <li class="nav-item_tp">
+        <a class="nav-link_tp" routerLink="/auth">
+          <img src="assets/images/user.jpeg" alt="Rating & Review" />
+          <span class="link-text_tp">Log in</span>
+        </a>
+      </li>
+    </ng-template>
   </ul>
 </nav>
 

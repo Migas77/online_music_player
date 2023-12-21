@@ -29,7 +29,7 @@ from rest_framework.response import Response
 from MusicPlayer.serializers import MusicSerializer, GenreSerializer, AlbumSerializer, ArtistSerializer, BandSerializer, \
     PerformerSerializer, \
     ListenerSerializer, UserSerializer, PlaylistSerializer, MembershipSerializer
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 
@@ -566,7 +566,6 @@ def listGenres(request):
 ### Web Services 2nd Project
 
 
-
 """
 In auth_sign_in and auth_sign_up I send the access token in response and the refresh token in an httponly cookie
 In the frontend will only work with the access token which will be saved in the local storage (and not with the
@@ -574,13 +573,18 @@ refresh token as it is httponly)
 https://www.cyberchief.ai/2023/05/secure-jwt-token-storage.html
 """
 
+
 @api_view(['POST'])
 def auth_sign_in(request):
     serializer = TokenObtainPairSerializer(data=request.data, context={'request': request})
     serializer.is_valid(raise_exception=True)
     access = serializer.validated_data['access']
     refresh = serializer.validated_data['refresh']
-    response = Response({'access': str(access)})
+    response = Response({
+        "access": str(access),
+        "expiry": AccessToken(access).payload.get("exp"),
+        "isSuperUser": serializer.user.is_superuser
+    })
     response.set_cookie(key='refresh', value=refresh, httponly=True, samesite='None', secure=True)
     return response
 
@@ -591,19 +595,31 @@ def auth_sign_up(request):
     if serializer.is_valid():
         user = serializer.save()
         refresh = RefreshToken.for_user(user=user)
-        response = Response({'access': str(refresh.access_token)}, status=status.HTTP_201_CREATED)
+        access_token = str(refresh.access_token)
+        response = Response({
+            "access": access_token,
+            "expiry": AccessToken(access_token).payload.get("exp"),
+            "isSuperUser": user.is_superuser
+        }, status=status.HTTP_201_CREATED)
         response.set_cookie(key='refresh', value=refresh, httponly=True, samesite='None', secure=True)
         return response
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['POST'])
+def auth_get_role(request):
+    return Response({"isSuperUser": request.user.is_superuser})
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def auth_sign_out(request):
     token = request.COOKIES.get('token')
     print(token)
     print(request.user)
     print(request.user.is_authenticated)
     return Response()
+
 
 @api_view(['GET'])
 def get_musics_by_genre(request):
@@ -615,8 +631,6 @@ def get_musics_by_genre(request):
 
 
 @api_view(['GET'])
-# @authentication_classes([SessionAuthentication, TokenAuthentication])
-# @permission_classes([IsAuthenticated])
 def get_musics(request):
     musics = Music.objects.all()
     serializer = MusicSerializer(musics, many=True)
@@ -994,7 +1008,6 @@ def add_music_to_playlist(request, songId, playlistId):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-
 @api_view(['DELETE'])
 def delete_song_playlist(request, songId, playlistId):
     try:
@@ -1003,6 +1016,7 @@ def delete_song_playlist(request, songId, playlistId):
         return Response(status=status.HTTP_404_NOT_FOUND)
     membership.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 @api_view(['GET'])
 def get_performer_information(request, performerId):
@@ -1015,6 +1029,7 @@ def get_performer_information(request, performerId):
 
     return Response(serializer.data)
 
+
 @api_view(['GET'])
 def get_musics_by_album(request, albumId):
     try:
@@ -1023,6 +1038,7 @@ def get_musics_by_album(request, albumId):
         return Response(status=status.HTTP_404_NOT_FOUND)
     serializer = MusicSerializer(musics, many=True)
     return Response(serializer.data)
+
 
 @api_view(['POST'])
 def add_like(request, songId, userId):
@@ -1038,6 +1054,7 @@ def add_like(request, songId, userId):
     except Music.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 @api_view(['DELETE'])
 def remove_like(request, songId, userId):
@@ -1061,6 +1078,3 @@ def sort_playlist(request, playlistId, prevPosition, nextPosition):
         return Response(status=status.HTTP_404_NOT_FOUND)
     playlist.change_order(prevPosition, nextPosition)
     return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-
