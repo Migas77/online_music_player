@@ -576,14 +576,14 @@ https://www.cyberchief.ai/2023/05/secure-jwt-token-storage.html
 
 @api_view(['POST'])
 def auth_sign_in(request):
+    print(request.data)
     serializer = TokenObtainPairSerializer(data=request.data, context={'request': request})
     serializer.is_valid(raise_exception=True)
-    access = serializer.validated_data['access']
+    access = AccessToken(serializer.validated_data['access'])
+    access.payload["is_superuser"] = serializer.user.is_superuser
     refresh = serializer.validated_data['refresh']
     response = Response({
-        "access": str(access),
-        "expiry": AccessToken(access).payload.get("exp"),
-        "isSuperUser": serializer.user.is_superuser
+        "access": str(access)
     })
     response.set_cookie(key='refresh', value=refresh, httponly=True, samesite='None', secure=True)
     return response
@@ -591,24 +591,19 @@ def auth_sign_in(request):
 
 @api_view(['POST'])
 def auth_sign_up(request):
+    print(request.data)
     serializer = UserSerializer(data=request.data)
     if serializer.is_valid():
         user = serializer.save()
         refresh = RefreshToken.for_user(user=user)
-        access_token = str(refresh.access_token)
+        access = refresh.access_token
+        access.payload["is_superuser"] = user.is_superuser
         response = Response({
-            "access": access_token,
-            "expiry": AccessToken(access_token).payload.get("exp"),
-            "isSuperUser": user.is_superuser
+            "access": str(access)
         }, status=status.HTTP_201_CREATED)
         response.set_cookie(key='refresh', value=refresh, httponly=True, samesite='None', secure=True)
         return response
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-@api_view(['POST'])
-def auth_get_role(request):
-    return Response({"isSuperUser": request.user.is_superuser})
 
 
 @api_view(['POST'])

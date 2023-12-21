@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import {Signin} from "./models/Signin";
 import {Signup} from "./models/Signup";
 import {AuthResponse} from "./models/AuthResponse";
-import {SuperUserResponse} from "./models/SuperUserResponse";
+import {JwtHelperService} from "@auth0/angular-jwt";
 
 
 @Injectable({
@@ -10,35 +10,27 @@ import {SuperUserResponse} from "./models/SuperUserResponse";
 })
 export class AuthService {
   private baseURL : string = "http://localhost:8000/ws/auth/";
-  isSuperUser: boolean | null = null;
-  isLoggedIn: boolean | null = null;
+  helper : JwtHelperService = new JwtHelperService()
+  isLoggedIn: boolean = false;
 
-  constructor() {
-    //this.isLoggedIn = this.IsLoggedIn()
-    //this.IsSuperUser()
-    //  .then((res : boolean) => this.isSuperUser = res)
-  }
+  constructor() {}
 
   IsLoggedIn(): boolean {
-    console.log("LOG IN")
-    const expiry: string | null = localStorage.getItem("expiry");
-    if (expiry === null) {
+    console.log("IsLoggedIn")
+    const access: string | null = localStorage.getItem("access")
+    if (access===null) {
       return false;
     }
-    return Date.now() < parseInt(expiry);
+    return Math.floor(Date.now() / 1000) < parseInt(this.helper.decodeToken(access).exp);
   }
 
-  async IsSuperUser() : Promise<boolean>{
-    console.log("SUPERUSER")
-    // Obviously, for security reasons I'm not going to save the role of the user in the localStorage
-    // saved in memory (if user refreshes page we do another api call to find out if it's superUser)
-    const url: string = this.baseURL + "get-role";
-    const data: Response = await fetch(url, {
-      method: 'POST', headers: {
-        'Content-Type': 'application/json'
-      }
-    });
-    return data.json()
+  IsSuperUser() : boolean {
+    console.log("IsSuperUser")
+    const access: string | null = localStorage.getItem("access")
+    if (access===null) {
+      return false;
+    }
+    return this.helper.decodeToken(access).is_superuser
   }
 
   async signin(user: Signin): Promise<void> {
@@ -62,6 +54,7 @@ export class AuthService {
   }
 
   async signout(): Promise<void>{
+    console.log(this.helper.decodeToken(localStorage.getItem("access") as string))
     const url: string = this.baseURL + "sign-out";
     const data: Response = await fetch(url, {
       method: 'POST'
@@ -69,14 +62,13 @@ export class AuthService {
     // if (data.status !== 201)
     // throw new Error(JSON.stringify(await data.json()))
     localStorage.clear();
-    this.isSuperUser = null;
+    this.isLoggedIn = false;
   }
 
   private setSession(authResponse : AuthResponse){
     console.log(authResponse)
     localStorage.setItem("access", authResponse.access);
-    localStorage.setItem("expiry", authResponse.expiry);
-    this.isSuperUser = authResponse.isSuperUser
+    this.isLoggedIn = true
   }
 
 }

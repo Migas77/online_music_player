@@ -18,9 +18,11 @@ import {PlaylistDetailsComponent} from "./playlist-details/playlist-details.comp
 import {AboutUsComponent} from "./about-us/about-us.component";
 import {QueueListComponent} from "./queue-list/queue-list.component";
 import {superuserGuard} from "./superuser.guard";
+import {authGuard} from "./auth.guard";
 
 export const routes: Routes = [
   {path: '', component: HomepageComponent},
+  {path: 'about-us', component: AboutUsComponent},
   {path: 'auth', component: AuthComponent},
   {path: 'musics', component: MusicsComponent},
   {path: 'genres', component: GenresComponent},
@@ -39,8 +41,7 @@ export const routes: Routes = [
   {path: 'addMusic', component: AddEditMusicComponent, canActivate: [superuserGuard]},
   {path: 'editMusic/:id', component: AddEditMusicComponent, canActivate: [superuserGuard]},
   {path: 'artistDetails/:id', component: ArtistDetailsComponent, canActivate: [superuserGuard]},
-  {path: 'playlists', component: PlaylistsComponent},
-  {path: 'playlistDetails/:id', component: PlaylistDetailsComponent},
-  {path: 'about-us', component: AboutUsComponent},
-  {path: 'queue', component: QueueListComponent},
+  {path: 'playlists', component: PlaylistsComponent, canActivate: [authGuard]},
+  {path: 'playlistDetails/:id', component: PlaylistDetailsComponent, canActivate: [authGuard]},
+  {path: 'queue', component: QueueListComponent, canActivate: [authGuard]},
 ];

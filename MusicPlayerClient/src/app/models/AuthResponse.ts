@@ -1,6 +1,4 @@
-import {SuperUserResponse} from "./SuperUserResponse";
 
-export interface AuthResponse extends SuperUserResponse{
-  access : string,
-  expiry : string,
+export interface AuthResponse{
+  access : string
 }

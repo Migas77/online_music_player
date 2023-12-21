@@ -82,7 +82,6 @@ urlpatterns = [
     ### Web Services 2nd Project
     path('ws/auth/sign-in', views.auth_sign_in),
     path('ws/auth/sign-up', views.auth_sign_up),
-    path('ws/auth/get-role', views.auth_get_role),
     path('ws/auth/sign-out', views.auth_sign_out),
     path('ws/auth/refresh', TokenRefreshView.as_view()),
     path('ws/musicsbygenre', views.get_musics_by_genre),
