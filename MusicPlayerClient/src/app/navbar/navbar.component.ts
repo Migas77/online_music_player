@@ -1,5 +1,5 @@
 import {Component, inject} from '@angular/core';
-import {RouterLink} from "@angular/router";
+import {Router, RouterLink} from "@angular/router";
 import {NgOptimizedImage} from "@angular/common";
 import {AuthService} from "../auth.service";
 
@@ -16,7 +16,11 @@ import {AuthService} from "../auth.service";
 export class NavbarComponent {
   authService : AuthService = inject(AuthService)
 
+  constructor(private router : Router) { }
+
   signout() {
     this.authService.signout()
+      .then(res => void this.router.navigate(['/auth']))
+      .catch(error => console.log(error.message()));
   }
 }

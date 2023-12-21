@@ -566,14 +566,12 @@ def listGenres(request):
 ### Web Services 2nd Project
 
 
-
 """
 In auth_sign_in and auth_sign_up I send the access token in response and the refresh token in an httponly cookie
 In the frontend will only work with the access token which will be saved in the local storage (and not with the
 refresh token as it is httponly)
 https://www.cyberchief.ai/2023/05/secure-jwt-token-storage.html
 """
-
 @api_view(['POST'])
 def auth_sign_in(request):
     serializer = TokenObtainPairSerializer(data=request.data, context={'request': request})
@@ -598,6 +596,7 @@ def auth_sign_up(request):
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def auth_sign_out(request):
     token = request.COOKIES.get('token')
     print(token)
@@ -616,8 +615,6 @@ def get_musics_by_genre(request):
 
 
 @api_view(['GET'])
-# @authentication_classes([SessionAuthentication, TokenAuthentication])
-# @permission_classes([IsAuthenticated])
 def get_musics(request):
     musics = Music.objects.all()
     serializer = MusicSerializer(musics, many=True)
@@ -993,7 +990,6 @@ def add_music_to_playlist(request, songId, playlistId):
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 
 @api_view(['DELETE'])
