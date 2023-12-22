@@ -166,7 +166,10 @@ export class HomepageComponent {
   }
 
   musicLiked(id: number) {
-    return this.allMusics.filter(m => m.id == id)[0].likes.filter(l => l.id == Number(this.user)).length > 0;
+    if (this.allMusics.length > 0)
+      return this.allMusics.filter(m => m.id == id)[0].likes.filter(l => l.id == Number(this.user)).length > 0;
+    else
+      return false;
   }
 
   likeMusic(id: number) {
