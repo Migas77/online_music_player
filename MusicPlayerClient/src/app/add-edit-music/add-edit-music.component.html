@@ -17,16 +17,16 @@
           <option *ngFor="let genre of genres" [value]="genre.id" class="text-lg">{{ genre.title }}</option>
         </select>
         <br />
+        <label>Performer</label>
+        <br />
+        <select class="select w-full max-w-lg mb-[30px]" formControlName="performer" (change)="onPerformerSelect()">
+          <option *ngFor="let performer of performers" [value]="performer.id" class="text-lg">{{ performer.name }}</option>
+        </select>
+        <br />
         <label>Album</label>
         <br />
         <select class="select w-full max-w-lg mb-[30px]" formControlName="album">
           <option *ngFor="let album of albums" [value]="album.id" class="text-lg">{{ album.name }}</option>
-        </select>
-        <br />
-        <label>Performer</label>
-        <br />
-        <select class="select w-full max-w-lg mb-[30px]" formControlName="performer">
-          <option *ngFor="let performer of performers" [value]="performer.id" class="text-lg">{{ performer.name }}</option>
         </select>
         <br />
         <label>Image</label>

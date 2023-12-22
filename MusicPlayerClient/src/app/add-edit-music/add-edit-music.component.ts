@@ -53,10 +53,6 @@ export class AddEditMusicComponent implements OnInit {
       this.performers = this.performers.concat(bands)
     })
 
-    this.albumService.getAlbums().then((albums : Album[]) => {
-      this.albums = albums
-    })
-
     this.genreService.getGenres().then((genres : Genre[]) => {
       this.genres = genres
     })
@@ -117,6 +113,16 @@ export class AddEditMusicComponent implements OnInit {
         .catch(error => {
           this.submit_errors = JSON.parse(error.message)
         });
+    }
+  }
+
+  onPerformerSelect(): void {
+    const performer = this.addMusicForm.get('performer')?.value;
+
+    if (performer) {
+      this.albumService.getAlbumsByPerformer(performer).then((albuns) => {
+        this.albums = albuns
+      })
     }
   }
 

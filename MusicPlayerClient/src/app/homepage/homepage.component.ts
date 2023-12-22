@@ -40,6 +40,8 @@ export class HomepageComponent {
   createPlaylistForm!: FormGroup;
 
   user: Number = 2;
+  currentPage = 1;
+  itemsPerPage = 5;
 
   constructor(private fb: FormBuilder, private elementRef: ElementRef) {
 
@@ -84,16 +86,53 @@ export class HomepageComponent {
     }
   }
 
+  getObjectSize(obj: { [key: string] : any}): number {
+    return Object.keys(obj).length;
+  }
+
+  getCurrentPageItems(): { [key: string] :Music[] } {
+    const start = (this.currentPage - 1) * this.itemsPerPage;
+    const end = start + this.itemsPerPage;
+    const res: { [key: string] :Music[] } = {};
+
+    const allGenres = Object.keys(this.getObjectSize(this.searchResult) > 0 ? this.searchResult : this.musicsByGenre);
+    const genres = allGenres.slice(start, end);
+
+    genres.forEach(g => {
+      res[g] = this.getObjectSize(this.searchResult) > 0 ? this.searchResult[g] : this.musicsByGenre[g];
+    });
+
+    return res;
+  }
+
+  getTotalPages(): number {
+    return Math.ceil(Object.keys( this.getObjectSize(this.searchResult) > 0 ?  this.searchResult : this.musicsByGenre).length / this.itemsPerPage);
+  }
+
+  goToPage(page: number): void {
+    if (page >= 1 && page <= this.getTotalPages()) {
+      this.currentPage = page;
+    }
+  }
+
+  prevNextPage(isNext?: boolean): void {
+    if (isNext) {
+      if (this.currentPage < this.getTotalPages()) {
+        this.currentPage++;
+      }
+    } else {
+      if (this.currentPage > 1) {
+        this.currentPage--;
+      }
+    }
+  }
+
   getName(performer: Performer): string {
     return this.performerService.getPerformerName(performer, this.performers)
   }
 
   playSong(song: Music): void {
     this.playbarComponent.playSong(song);
-  }
-
-  getObjectSize(obj: { [key: string] : any}): number {
-    return Object.keys(obj).length;
   }
 
   addMusicToPlaylist(musicId: number, playlistId: number) {
