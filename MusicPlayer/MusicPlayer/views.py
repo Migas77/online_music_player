@@ -31,6 +31,7 @@ from MusicPlayer.serializers import MusicSerializer, GenreSerializer, AlbumSeria
     ListenerSerializer, UserSerializer, PlaylistSerializer, MembershipSerializer
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.exceptions import TokenError
 
 
 # Custom User
@@ -609,20 +610,20 @@ def auth_sign_up(request):
 def auth_refresh(request):
     if 'refresh' not in request.COOKIES:
         return Response(status=status.HTTP_400_BAD_REQUEST)
-    refresh = RefreshToken(request.COOKIES["refresh"])
-    user = Listener.objects.get(id=refresh.payload["user_id"])
-    new_access = refresh.access_token
-    new_access.payload["is_superuser"] = user.is_superuser
-    response = Response({
-        "access": str(new_access)
-    })
-    response.set_cookie(key='refresh', value=refresh, httponly=True, samesite='None', secure=True)
-    print(new_access)
-    print(refresh)
+    try:
+        refresh = RefreshToken(request.COOKIES["refresh"])
+        user = Listener.objects.get(id=refresh.payload["user_id"])
+        new_access = refresh.access_token
+        new_access.payload["is_superuser"] = user.is_superuser
+        response = Response({
+            "access": str(new_access)
+        })
+        response.set_cookie(key='refresh', value=refresh, httponly=True, samesite='None', secure=True)
+        print(new_access)
+        print(refresh)
+    except TokenError:
+        response = Response({"error": "refresh token expired"}, status=status.HTTP_401_UNAUTHORIZED)
     return response
-
-
-# eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzAzMjU3NTMwLCJpYXQiOjE3MDMyNTc0NzAsImp0aSI6IjA1YjY1MTYyMjQyNTRlOWFhZGFjZmU0NWY0NzY4YjFmIiwidXNlcl9pZCI6MSwiaXNfc3VwZXJ1c2VyIjp0cnVlfQ.fwxrH_6g4ZC6F5KNU30uks2rbfqE6zjNY7xCjYq_PZk
 
 
 @api_view(['GET'])

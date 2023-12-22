@@ -154,6 +154,14 @@ REST_FRAMEWORK = {
     ]
 }
 
+"""
+# JWT FOR TESTING
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(seconds=10),
+    "REFRESH_TOKEN_LIFETIME": timedelta(seconds=13),
+}
+"""
+
 # CORS (Cross-Origin Resource Sharing) config
 
 CORS_ALLOW_METHODS = [
