@@ -64,9 +64,12 @@ export class HomepageComponent {
       name: '',
     });
 
-    this.playlistService.getPlaylists().then((playlists : Playlist[]) => {
-      this.playlists = playlists;
-    })
+    if (this.authService.isLoggedIn){
+      this.playlistService.getPlaylists().then((playlists : Playlist[]) => {
+        this.playlists = playlists;
+      })
+    }
+
 
     this.musicService.getMusics().then((musics: Music[]) => {
       this.allMusics = musics;

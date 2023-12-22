@@ -607,7 +607,6 @@ def auth_sign_up(request):
 
 @api_view(['POST'])
 def auth_refresh(request):
-    print(request.user)
     if 'refresh' not in request.COOKIES:
         return Response(status=status.HTTP_400_BAD_REQUEST)
     refresh = RefreshToken(request.COOKIES["refresh"])
