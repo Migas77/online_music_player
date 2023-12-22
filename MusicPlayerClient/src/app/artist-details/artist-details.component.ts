@@ -193,8 +193,11 @@ export class ArtistDetailsComponent implements OnInit {
     return obj ? Object.keys(obj).length : 0;
   };
 
-  getArtist(artistId: number): Artist {
-    return this.allArtists.find(artist => artist.id === artistId) ?? this.allArtists[0];
+  getArtist(artistId: number): any {
+    if (artistId != null && this.allArtists.length > 0)
+      return this.allArtists.find(artist => artist.id === artistId) ?? this.allArtists[0];
+    else
+      return null;
   };
 
   playSong(song: Music): void {

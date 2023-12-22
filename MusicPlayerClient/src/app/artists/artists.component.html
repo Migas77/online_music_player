@@ -8,7 +8,7 @@
       </figure>
     </div>
     <div class=" card-body w-96">
-      <span class="card-title"> {{ artist.name }}</span>
+      <span class="card-title"><a routerLink="/artistDetails/{{ artist.id }}">{{ artist.name }}</a></span>
       <div class="card-actions justify-end ">
         <a class="btn btn-outline mr-2" routerLink="/editArtist/{{ artist.id }}"
         >Edit</a

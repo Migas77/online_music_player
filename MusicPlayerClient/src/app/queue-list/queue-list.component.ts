@@ -9,7 +9,7 @@ import {Performer} from "../models/Performer";
 import {GenreService} from "../genre.service";
 import {Genre} from "../models/Genre";
 import {MusicService} from "../music.service";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, RouterLink} from "@angular/router";
 
 @Component({
   selector: 'app-queue-list',
@@ -21,7 +21,8 @@ import {ActivatedRoute} from "@angular/router";
     CdkDropList,
     NgForOf,
     NgIf,
-    PlaybarComponent
+    PlaybarComponent,
+    RouterLink
   ],
   templateUrl: './queue-list.component.html',
   styleUrl: './queue-list.component.css'

@@ -36,15 +36,13 @@
               <div class="avatar">
                 <div class="mask mask-squircle w-[10vw]">
                   <img
-                    [src]="'http://localhost:8000/' + getArtist(member).image"
-                    alt="{{ getArtist(member).name }}"
+                    [src]="'http://localhost:8000/' + (getArtist(member) !== null ? getArtist(member).image : '') "
+                    alt="{{ getArtist(member) !== null ? getArtist(member).name : '' }}"
                   />
                 </div>
               </div>
               <p>
-                <a routerLink="/artistDetails/{{ member }}">{{
-                  getArtist(member).name
-                }}</a>
+                <a routerLink="/artistDetails/{{ member !== null ? member : null }}">{{ getArtist(member) !== null ? getArtist(member).name : '' }}</a>
               </p>
             </div>
           </div>
@@ -74,7 +72,7 @@
                   <p><i class="fa-regular fa-calendar" style="color: #c10bbb;"></i> {{ album.release_date }}</p>
                 </div>
                 <div class="flex flex-col">
-                  <div *ngFor="let music of musicsByAlbum[album.id]" class="pt-3 w-96">
+                  <div *ngFor="let music of musicsByAlbum[album.id]" class="pt-3 w-[25vw]">
                     <div class="flex flex-row text-center bg-[#111] font-bold text-lg rounded-lg hover:bg-[#555] transition-colors duration-200 relative">
                       <div class="flex flex-row justify-between pt-2 pb-2 pl-5 ">
                           <div class="flex flex-row space-x-3">

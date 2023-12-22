@@ -35,7 +35,7 @@
         <div class="songName">{{ music.name }}</div>
         <br />
         <span class="badge badge-ghost badge-lg ">
-            <a >{{ getPerformerName(music.performer) }}</a>
+            <a routerLink="/artistDetails/{{ music.performer }}">{{ getPerformerName(music.performer) }}</a>
           </span>
       </td>
       <td>{{ getGenreTitle(music.genre) }}</td>

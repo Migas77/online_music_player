@@ -1,6 +1,6 @@
 import {Component, inject, ViewChild} from '@angular/core';
 import {PlaylistService} from "../playlist.service";
-import {ActivatedRoute} from "@angular/router";
+import {ActivatedRoute, RouterLink, Router} from "@angular/router";
 import {Playlist} from "../models/Playlist";
 import {NgForOf, NgIf} from "@angular/common";
 import {Performer} from "../models/Performer";
@@ -24,6 +24,7 @@ import {CdkDragDrop, CdkDropList, CdkDrag, moveItemInArray} from "@angular/cdk/d
     NgIf,
     CdkDropList,
     CdkDrag,
+    RouterLink
   ],
   templateUrl: './playlist-details.component.html',
   styleUrl: './playlist-details.component.css'
@@ -48,7 +49,7 @@ export class PlaylistDetailsComponent {
 
   @ViewChild(PlaybarComponent) playbarComponent!: PlaybarComponent;
 
-  constructor(private playlistService: PlaylistService, private route: ActivatedRoute) {
+  constructor(private playlistService: PlaylistService, private route: ActivatedRoute, private router: Router) {
     this.id = this.route.snapshot.paramMap.get('id');
     if (this.id != null) {
       this.playlistService.getPlaylist(this.id).then((playlist) => {
@@ -70,6 +71,10 @@ export class PlaylistDetailsComponent {
       this.genres = genres;
     });
 
+  }
+
+  goToArtist(id: number) {
+    this.router.navigate(['/artist-details', id]);
   }
 
   getPerformerName(performer: Performer) {
