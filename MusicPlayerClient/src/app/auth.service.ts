@@ -21,7 +21,12 @@ export class AuthService {
     if (access===null) {
       return false;
     }
-    return Math.floor(Date.now() / 1000) < parseInt(this.helper.decodeToken(access).exp);
+    try {
+      return this.helper.isTokenExpired(access)
+    }catch (e) {
+      // if jwt token is invalid (maybe user changed local storage)
+      return false
+    }
   }
 
   IsSuperUser() : boolean {
@@ -30,7 +35,12 @@ export class AuthService {
     if (access===null) {
       return false;
     }
-    return this.helper.decodeToken(access).is_superuser
+    try {
+      return this.helper.decodeToken(access).is_superuser
+    }catch (e) {
+      // if jwt token is invalid (maybe user changed local storage)
+      return false
+    }
   }
 
   async signin(user: Signin): Promise<void> {
