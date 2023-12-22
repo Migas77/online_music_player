@@ -154,11 +154,6 @@ REST_FRAMEWORK = {
     ]
 }
 
-# JWT
-SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(seconds=5),
-}
-
 # CORS (Cross-Origin Resource Sharing) config
 
 CORS_ALLOW_METHODS = [

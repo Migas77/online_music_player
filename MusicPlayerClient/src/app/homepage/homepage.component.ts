@@ -28,7 +28,7 @@ export class HomepageComponent {
 
   searchForm!: FormGroup;
   musicsByGenre: { [key: string] :Music[]} = {};
-  allMusics!: Music[];
+  allMusics: Music[] = [];
   performers: Performer[] = [];
   searchResult: { [key: string] :Music[]} = {};
 

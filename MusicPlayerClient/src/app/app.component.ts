@@ -38,10 +38,9 @@ export class AppComponent{
         // REQUEST INTERCEPTOR (add JWT token if it exists and is valid)
         let access_token : string | null = localStorage.getItem("access")
         try {
-          console.log("REQUEST INTERCEPTOR")
-
           if (access_token !== null){
-            if (this.authService.helper.isTokenExpired(access_token)){
+            // quando o token tiver a 1 minuto e meio de expirar
+            if (this.authService.helper.decodeToken(access_token).exp - 90 < Math.floor(Date.now() / 1000)){
               if (this.semaphore){
                 this.semaphore = false;
                 // if access token is expired renew it
@@ -50,6 +49,7 @@ export class AppComponent{
                 this.refreshTokenPromise = firstValueFrom(this.http.post<AuthResponse>(url, {}, {withCredentials: true}))
                 await this.refreshTokenPromise.then((authResponse : AuthResponse) => {
                   // success refreshing token -> update local storage
+                  console.log("Refreshed Access Token")
                   localStorage.setItem("access", authResponse.access)
                   access_token = authResponse.access
                   this.semaphore = true
@@ -57,7 +57,6 @@ export class AppComponent{
               } else {
                 await this.refreshTokenPromise.then((authResponse : AuthResponse) => {
                   access_token = authResponse.access
-                  console.log(access_token)
                 })
               }
             }
@@ -79,7 +78,8 @@ export class AppComponent{
 
         // original fetch
         const response = await originalFetch(resource, config);
-        // RESPONSE INTERCEPTOR here (if 401 add fetch and set valid jwt)
+
+        // RESPONSE INTERCEPTOR
 
         return response;
       };
