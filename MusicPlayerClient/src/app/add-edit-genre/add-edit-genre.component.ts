@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {NgIf, NgTemplateOutlet} from "@angular/common";
-import {FormBuilder, FormGroup, ReactiveFormsModule} from "@angular/forms";
+import {AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule} from "@angular/forms";
 import {ActivatedRoute, Router} from "@angular/router";
 import {GenreService} from "../genre.service";
 import {ErrorDisplayComponent} from "../error-display/error-display.component";
@@ -30,7 +30,7 @@ export class AddEditGenreComponent implements OnInit{
   ngOnInit(): void {
     this.addGenreForm = this.fb.group({
       title: [''],
-      image: ['']
+      image: ['', this.validateImageFileType],
     });
 
     if (this.route.snapshot.paramMap.get('id')) {
@@ -78,5 +78,17 @@ export class AddEditGenreComponent implements OnInit{
     this.addGenreForm.get('image')?.updateValueAndValidity();
 
   }
+
+  validateImageFileType(control: AbstractControl): { [key: string]: any } | null {
+    const file = control.value;
+    if (file) {
+      const fileExtension = file.name.split('.').pop();
+      if (!['jpg', 'jpeg', 'png'].includes(fileExtension)) {
+        return { invalidFileType: true };
+      }
+    }
+    return null;
+  }
+
 
 }

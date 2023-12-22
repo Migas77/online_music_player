@@ -1,6 +1,6 @@
 import {Component, inject, OnInit} from '@angular/core';
 import {NgForOf, NgIf, NgTemplateOutlet} from "@angular/common";
-import {FormBuilder, FormGroup, ReactiveFormsModule} from "@angular/forms";
+import {AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule} from "@angular/forms";
 import {Artist} from "../models/Artist";
 import {ArtistService} from "../artist.service";
 import {BandService} from "../band.service";
@@ -44,7 +44,7 @@ export class AddEditAlbumComponent implements OnInit {
 
     this.addAlbumForm = this.fb.group({
       name: '',
-      image: '',
+      image: ['', this.validateImageFileType],
       release_date: '',
       performer: ''
     });
@@ -66,7 +66,7 @@ export class AddEditAlbumComponent implements OnInit {
   ngOnInit(): void {
     this.addAlbumForm = this.fb.group({
       name: '',
-      image: '',
+      image: ['', this.validateImageFileType],
       release_date: '',
       performer: ''
     });
@@ -100,6 +100,17 @@ export class AddEditAlbumComponent implements OnInit {
     this.addAlbumForm.patchValue({
       image: file
     });
+  }
+
+  validateImageFileType(control: AbstractControl): { [key: string]: any } | null {
+    const file = control.value;
+    if (file) {
+      const fileExtension = file.name.split('.').pop();
+      if (!['jpg', 'jpeg', 'png'].includes(fileExtension)) {
+        return { invalidFileType: true };
+      }
+    }
+    return null;
   }
 
 }

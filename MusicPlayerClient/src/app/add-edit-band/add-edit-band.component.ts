@@ -1,5 +1,6 @@
 import {Component, inject, OnInit} from '@angular/core';
 import {
+  AbstractControl,
   FormArray,
   FormBuilder,
   FormControl,
@@ -43,7 +44,7 @@ export class AddEditBandComponent implements OnInit{
       this.artists = artists
       this.addBandForm = this.fb.group({
         name: '',
-        image: '',
+        image: ['', this.validateImageFileType],
         description: '',
         members: this.route.snapshot.paramMap.get('id') ? this.fb.array([]) : this.fb.array(artists.map((a : Artist) => this.fb.control(false)))
       });
@@ -69,7 +70,7 @@ export class AddEditBandComponent implements OnInit{
   ngOnInit(): void {
     this.addBandForm = this.fb.group({
       name: '',
-      image: '',
+      image: ['', this.validateImageFileType],
       description: '',
       members: this.fb.array([])
     });
@@ -123,5 +124,16 @@ export class AddEditBandComponent implements OnInit{
     this.addBandForm.patchValue({
       image: file
     });
+  }
+
+  validateImageFileType(control: AbstractControl): { [key: string]: any } | null {
+    const file = control.value;
+    if (file) {
+      const fileExtension = file.name.split('.').pop();
+      if (!['jpg', 'jpeg', 'png'].includes(fileExtension)) {
+        return { invalidFileType: true };
+      }
+    }
+    return null;
   }
 }

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {FormBuilder, FormGroup, ReactiveFormsModule} from '@angular/forms';
+import {AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule} from '@angular/forms';
 import { ArtistService } from '../artist.service';
 import {ActivatedRoute, Router} from "@angular/router";
 import {CommonModule} from "@angular/common";
@@ -28,7 +28,7 @@ export class AddEditArtistComponent implements OnInit{
   ngOnInit(): void {
     this.addArtistForm = this.fb.group({
       name: [''],
-      image: [''],
+      image: ['', this.validateImageFileType],
       description: ['']
     });
 
@@ -76,5 +76,16 @@ export class AddEditArtistComponent implements OnInit{
     });
     this.addArtistForm.get('image')?.updateValueAndValidity();
 
+  }
+
+  validateImageFileType(control: AbstractControl): { [key: string]: any } | null {
+    const file = control.value;
+    if (file) {
+      const fileExtension = file.name.split('.').pop();
+      if (!['jpg', 'jpeg', 'png'].includes(fileExtension)) {
+        return { invalidFileType: true };
+      }
+    }
+    return null;
   }
 }
