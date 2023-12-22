@@ -47,17 +47,33 @@ export class AppComponent{
                 const url: string = baseURL + "auth/refresh";
                 // use http post instead of fetch because that would also be intercepted
                 this.refreshTokenPromise = firstValueFrom(this.http.post<AuthResponse>(url, {}, {withCredentials: true}))
-                await this.refreshTokenPromise.then((authResponse : AuthResponse) => {
-                  // success refreshing token -> update local storage
-                  console.log("Refreshed Access Token")
-                  localStorage.setItem("access", authResponse.access)
-                  access_token = authResponse.access
-                  this.semaphore = true
-                })
+                await this.refreshTokenPromise
+                  .then((authResponse : AuthResponse) => {
+                    // success refreshing token -> update local storage
+                    console.log("Refreshed Access Token")
+                    localStorage.setItem("access", authResponse.access)
+                    access_token = authResponse.access
+                  })
+                  .catch(res => {
+                    console.log("couldn't refresh token")
+                    // se o refresh token expirar faz-se logout
+                    if (res.status === 401 && res.error.error === "refresh token expired"){
+                      this.authService.clean()
+                      this.router.navigate(['/auth']);
+                    }
+                  })
+                  .finally(() => {
+                    this.semaphore = true
+                  })
               } else {
-                await this.refreshTokenPromise.then((authResponse : AuthResponse) => {
-                  access_token = authResponse.access
-                })
+                await this.refreshTokenPromise
+                  .then((authResponse : AuthResponse) => {
+                    access_token = authResponse.access
+                  })
+                  .catch(err => {
+                    // errors already handled above
+                    return
+                  })
               }
             }
 
@@ -72,7 +88,7 @@ export class AppComponent{
           }
         } catch (e) {
           // if jwt token is invalid (maybe user changed local storage) clean up and redirect
-          console.log("CLEANING UP")
+          console.log(e)
           this.authService.clean()
         }
 
@@ -80,7 +96,6 @@ export class AppComponent{
         const response = await originalFetch(resource, config);
 
         // RESPONSE INTERCEPTOR
-
 
         return response;
       };

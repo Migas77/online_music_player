@@ -168,14 +168,12 @@ export class ArtistDetailsComponent implements OnInit {
   async onSubmitCreatePlaylist(): Promise<void>{
     const playlist = this.createPlaylistForm.value;
     playlist.author = "2";
-    this.playlistService.createPlaylist(playlist).then((res: any) => {
-      if (res.ok) {
-        console.log("Playlist created successfully");
-        document.getElementById("closeAddPlaylistModal")?.click();
-        this.playlistService.getPlaylists().then((playlists : Playlist[]) => {
-          this.playlists = playlists;
-        })
-      }
+    this.playlistService.createPlaylist(playlist).then((res: Playlist) => {
+      console.log("Playlist created successfully");
+      document.getElementById("closeAddPlaylistModal")?.click();
+      this.playlistService.getPlaylists().then((playlists : Playlist[]) => {
+        this.playlists = playlists;
+      })
     });
 
   };

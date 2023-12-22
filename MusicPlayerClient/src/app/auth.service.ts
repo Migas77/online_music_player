@@ -77,6 +77,7 @@ export class AuthService{
     // credentials include -> save http only cookie
     if (data.status !== 200)
       throw new Error(JSON.stringify(await data.json()))
+    localStorage.clear()
     this.setSession(await data.json());
   }
 
@@ -88,6 +89,7 @@ export class AuthService{
     // credentials include -> save http only cookie
     if (data.status !== 201)
       throw new Error(JSON.stringify(await data.json()))
+    localStorage.clear()
     this.setSession(await data.json());
   }
 
