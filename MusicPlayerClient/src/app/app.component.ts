@@ -43,7 +43,7 @@ export class AppComponent{
               // if access token is expired renew it
               const url: string = baseURL + "auth/refresh";
               // use http post instead of fetch because that would also be intercepted
-              firstValueFrom(this.http.post<AuthResponse>(url, {}, {withCredentials: true})).then((authResponse : AuthResponse) => {
+              await firstValueFrom(this.http.post<AuthResponse>(url, {}, {withCredentials: true})).then((authResponse : AuthResponse) => {
                 console.log("token refreshed")
                 console.log(access_token)
                 // success refreshing token -> update local storage
