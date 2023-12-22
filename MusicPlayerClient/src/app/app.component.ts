@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import {Router, RouterOutlet} from '@angular/router';
 import {NavbarComponent} from "./navbar/navbar.component";
 import {AuthService} from "./auth.service";
+import {authGuard} from "./auth.guard";
 
 @Component({
   selector: 'app-root',
@@ -16,6 +17,7 @@ export class AppComponent{
   authService : AuthService = inject(AuthService);
 
   constructor(private router : Router) {
+
     if (typeof window !== 'undefined'){
       // monkey patching fetch
       const { fetch: originalFetch } = window;
