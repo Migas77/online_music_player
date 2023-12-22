@@ -15,17 +15,16 @@ export class AuthService {
 
   constructor() {}
 
-  IsLoggedIn(): boolean {
+  updateLoggedInStatus() : void {
     console.log("IsLoggedIn")
     const access: string | null = localStorage.getItem("access")
+    console.log("ACCESS: ",access)
     if (access===null) {
-      return false;
-    }
-    try {
-      return this.helper.isTokenExpired(access)
-    }catch (e) {
+      this.isLoggedIn = false;
+    } else {
       // if jwt token is invalid (maybe user changed local storage)
-      return false
+      // the exception will have to be caught outside the function
+      this.isLoggedIn = this.helper.isTokenExpired(access)
     }
   }
 
@@ -35,12 +34,14 @@ export class AuthService {
     if (access===null) {
       return false;
     }
-    try {
-      return this.helper.decodeToken(access).is_superuser
-    }catch (e) {
-      // if jwt token is invalid (maybe user changed local storage)
-      return false
-    }
+    // if jwt token is invalid (maybe user changed local storage)
+    // the exception will have to be caught outside the function
+    return this.helper.decodeToken(access).is_superuser
+  }
+
+  clean() : void {
+    localStorage.clear();
+    this.isLoggedIn = false;
   }
 
   async signin(user: Signin): Promise<void> {
@@ -71,8 +72,7 @@ export class AuthService {
     });
     // if (data.status !== 201)
     // throw new Error(JSON.stringify(await data.json()))
-    localStorage.clear();
-    this.isLoggedIn = false;
+    this.clean()
   }
 
   private setSession(authResponse : AuthResponse){

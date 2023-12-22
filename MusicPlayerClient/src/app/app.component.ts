@@ -1,7 +1,8 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, inject, OnInit} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {Router, RouterOutlet} from '@angular/router';
 import {NavbarComponent} from "./navbar/navbar.component";
+import {AuthService} from "./auth.service";
 
 @Component({
   selector: 'app-root',
@@ -12,7 +13,7 @@ import {NavbarComponent} from "./navbar/navbar.component";
 })
 export class AppComponent{
   title = 'Music Streaming';
-
+  authService : AuthService = inject(AuthService);
 
   constructor(private router : Router) {
     if (typeof window !== 'undefined'){
@@ -22,19 +23,26 @@ export class AppComponent{
       window.fetch = async (...args) => {
         let [resource, config ] = args;
 
-        // REQUEST INTERCEPTOR (add JWT token if it exists)
+        // REQUEST INTERCEPTOR (add JWT token if it exists and is valid)
         const access_token : string | null = localStorage.getItem("access")
-        if (access_token){
-          if (!config){
-            config = { headers: new Headers({"Authorization": `Bearer ${access_token}`}) };
-          }else if(!config.headers){
-            config.headers = new Headers({"Authorization": `Bearer ${access_token}`})
-          }else{
-            // check this again
-            config.headers = new Headers(config.headers)
-            config.headers.set("Authorization", `Bearer ${access_token}`)
+        try {
+          if (this.authService.helper.decodeToken() && access_token){
+            if (!config){
+              config = { headers: new Headers({"Authorization": `Bearer ${access_token}`}) };
+            }else if(!config.headers){
+              config.headers = new Headers({"Authorization": `Bearer ${access_token}`})
+            }else{
+              // check this again
+              config.headers = new Headers(config.headers)
+              config.headers.set("Authorization", `Bearer ${access_token}`)
+            }
           }
+        } catch (e) {
+          // if jwt token is invalid (maybe user changed local storage) clean up and redirect
+          this.authService.clean()
         }
+
+
 
         // original fetch
         const response = await originalFetch(resource, config);
