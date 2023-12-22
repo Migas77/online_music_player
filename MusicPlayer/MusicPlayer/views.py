@@ -595,13 +595,35 @@ def auth_sign_up(request):
         user = serializer.save()
         refresh = RefreshToken.for_user(user=user)
         access = refresh.access_token
-        access.payload["is_superuser"] = user.is_superuser
+        # user.is_superuser dar sempre false portanto mais vale pôr false
+        access.payload["is_superuser"] = False
         response = Response({
             "access": str(access)
         }, status=status.HTTP_201_CREATED)
         response.set_cookie(key='refresh', value=refresh, httponly=True, samesite='None', secure=True)
         return response
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+def auth_refresh(request):
+    print(request.user)
+    if 'refresh' not in request.COOKIES:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+    refresh = RefreshToken(request.COOKIES["refresh"])
+    user = Listener.objects.get(id=refresh.payload["user_id"])
+    new_access = refresh.access_token
+    new_access.payload["is_superuser"] = user.is_superuser
+    response = Response({
+        "access": str(new_access)
+    })
+    response.set_cookie(key='refresh', value=refresh, httponly=True, samesite='None', secure=True)
+    print(new_access)
+    print(refresh)
+    return response
+
+
+# eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzAzMjU3NTMwLCJpYXQiOjE3MDMyNTc0NzAsImp0aSI6IjA1YjY1MTYyMjQyNTRlOWFhZGFjZmU0NWY0NzY4YjFmIiwidXNlcl9pZCI6MSwiaXNfc3VwZXJ1c2VyIjp0cnVlfQ.fwxrH_6g4ZC6F5KNU30uks2rbfqE6zjNY7xCjYq_PZk
 
 
 @api_view(['GET'])
@@ -962,7 +984,6 @@ def get_playlist(request, id):
     return Response(serializer.data)
 
 
-
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def add_playlist(request):
@@ -1013,6 +1034,17 @@ def delete_song_playlist(request, songId, playlistId):
     return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def sort_playlist(request, playlistId, prevPosition, nextPosition):
+    try:
+        playlist = Playlist.objects.get(author=request.user, id=playlistId)
+    except Playlist.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    playlist.change_order(prevPosition, nextPosition)
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+
 @api_view(['GET'])
 def get_performer_information(request, performerId):
     try:
@@ -1036,6 +1068,7 @@ def get_musics_by_album(request, albumId):
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def add_like(request, songId, userId):
     try:
         music = Music.objects.get(id=songId)
@@ -1052,6 +1085,7 @@ def add_like(request, songId, userId):
 
 
 @api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
 def remove_like(request, songId, userId):
     try:
         music = Music.objects.get(id=songId)
@@ -1063,14 +1097,4 @@ def remove_like(request, songId, userId):
             return Response(status=status.HTTP_404_NOT_FOUND)
     except Music.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
-    return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-@api_view(['POST'])
-def sort_playlist(request, playlistId, prevPosition, nextPosition):
-    try:
-        playlist = Playlist.objects.get(id=playlistId)
-    except Playlist.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-    playlist.change_order(prevPosition, nextPosition)
     return Response(status=status.HTTP_204_NO_CONTENT)

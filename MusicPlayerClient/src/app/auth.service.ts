@@ -55,7 +55,7 @@ export class AuthService{
     }
   }
 
-  private setSession(authResponse : AuthResponse){
+  setSession(authResponse : AuthResponse){
     console.log(authResponse)
     localStorage.setItem("access", authResponse.access);
     this.isLoggedIn = true
@@ -71,8 +71,9 @@ export class AuthService{
   async signin(user: Signin): Promise<void> {
     const url: string = this.baseURL + "sign-in";
     const data: Response = await fetch(url, {
-      method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(user)
+      method: 'POST', credentials: "include", headers: {'Content-Type': 'application/json'}, body: JSON.stringify(user)
     });
+    // credentials include -> save http only cookie
     if (data.status !== 200)
       throw new Error(JSON.stringify(await data.json()))
     this.setSession(await data.json());
@@ -81,8 +82,9 @@ export class AuthService{
   async signup(user: Signup): Promise<void>{
     const url: string = this.baseURL + "sign-up";
     const data: Response = await fetch(url, {
-      method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(user)
+      method: 'POST', credentials: "include", headers: {'Content-Type': 'application/json'}, body: JSON.stringify(user)
     });
+    // credentials include -> save http only cookie
     if (data.status !== 201)
       throw new Error(JSON.stringify(await data.json()))
     this.setSession(await data.json());
