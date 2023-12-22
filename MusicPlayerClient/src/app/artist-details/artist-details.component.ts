@@ -16,6 +16,7 @@ import { MusicService } from '../music.service';
 import { PlaylistService } from '../playlist.service';
 
 import { PlaybarComponent } from '../playbar/playbar.component';
+import {AuthService} from "../auth.service";
 
 @Component({
   selector: 'app-artist-details',
@@ -38,6 +39,7 @@ export class ArtistDetailsComponent implements OnInit {
   artistService: ArtistService = inject(ArtistService);
   musicService: MusicService = inject(MusicService);
   playlistService : PlaylistService = inject(PlaylistService);
+  authService : AuthService = inject(AuthService)
 
   musicsByAlbum: { [key: number]: Music[] } = {};
 
@@ -64,13 +66,13 @@ export class ArtistDetailsComponent implements OnInit {
   constructor(private fb: FormBuilder, private route: ActivatedRoute)  {
     this.createPlaylistForm = this.fb.group({
       name: '',
-      author: '',
-      musics: '',
     });
 
-    this.playlistService.getPlaylists().then((playlists : Playlist[]) => {
-      this.playlists = playlists;
-    })
+    if (this.authService.isLoggedIn){
+      this.playlistService.getPlaylists().then((playlists : Playlist[]) => {
+        this.playlists = playlists;
+      })
+    }
   }
 
   ngOnInit(): void {
@@ -167,13 +169,10 @@ export class ArtistDetailsComponent implements OnInit {
 
   async onSubmitCreatePlaylist(): Promise<void>{
     const playlist = this.createPlaylistForm.value;
-    playlist.author = "2";
     this.playlistService.createPlaylist(playlist).then((res: Playlist) => {
       console.log("Playlist created successfully");
+      this.playlists.push(res)
       document.getElementById("closeAddPlaylistModal")?.click();
-      this.playlistService.getPlaylists().then((playlists : Playlist[]) => {
-        this.playlists = playlists;
-      })
     });
 
   };

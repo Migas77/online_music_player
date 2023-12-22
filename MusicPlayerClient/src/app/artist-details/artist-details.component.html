@@ -79,7 +79,7 @@
                             <button class="pt-1" (click)="playSong(music)"><i class="fa-solid fa-circle-play" style="color: #c10bbb;"></i></button>
                             <span class="pt-1" >{{ music.name }}</span>
                           </div>
-                          <div class="absolute right-0 space-x-3 pt-1 pr-5">
+                          <div class="absolute right-0 space-x-3 pt-1 pr-5" *ngIf="authService.isLoggedIn">
                             <button class="like-button" *ngIf="musicLiked(music.id)" (click)="dislikeMusic(music.id)">
                               <i class="heart-icon fas fa-heart" style="color: #c061cb;"></i>
                             </button>
@@ -135,8 +135,8 @@
         </tr>
         </thead>
         <tbody >
-        <tr *ngFor="let playlist of playlists" class="text-lg" >
-          <th>{{playlist.id}}</th>
+        <tr *ngFor="let playlist of playlists; let i=index" class="text-lg" >
+          <th>{{i + 1}}</th>
           <th>{{playlist.name}}</th>
           <td>
             <button>

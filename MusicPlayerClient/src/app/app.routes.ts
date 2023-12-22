@@ -29,6 +29,8 @@ export const routes: Routes = [
   {path: 'albums', component: AlbumsComponent},
   {path: 'artists', component: ArtistsComponent},
   {path: 'bands', component: BandsComponent},
+  {path: 'artistDetails/:id', component: ArtistDetailsComponent},
+  // administrator
   {path: 'admin', component: AdminComponent, canActivate: [superuserGuard]},
   {path: 'addArtist', component: AddEditArtistComponent, canActivate: [superuserGuard]},
   {path: 'editArtist/:id', component: AddEditArtistComponent, canActivate: [superuserGuard]},
@@ -40,7 +42,6 @@ export const routes: Routes = [
   {path: 'editAlbum/:id', component: AddEditAlbumComponent, canActivate: [superuserGuard]},
   {path: 'addMusic', component: AddEditMusicComponent, canActivate: [superuserGuard]},
   {path: 'editMusic/:id', component: AddEditMusicComponent, canActivate: [superuserGuard]},
-  {path: 'artistDetails/:id', component: ArtistDetailsComponent, canActivate: [superuserGuard]},
   {path: 'playlists', component: PlaylistsComponent, canActivate: [authGuard]},
   {path: 'playlistDetails/:id', component: PlaylistDetailsComponent, canActivate: [authGuard]},
   {path: 'queue', component: QueueListComponent, canActivate: [authGuard]},
