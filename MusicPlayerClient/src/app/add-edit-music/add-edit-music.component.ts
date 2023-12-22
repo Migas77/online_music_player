@@ -1,5 +1,5 @@
 import {Component, inject, OnInit} from '@angular/core';
-import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {NgForOf, NgIf, NgTemplateOutlet} from "@angular/common";
 import {Performer} from "../models/Performer";
 import {ArtistService} from "../artist.service";
@@ -84,11 +84,11 @@ export class AddEditMusicComponent implements OnInit {
   ngOnInit(): void {
     this.addMusicForm = this.fb.group({
       name: '',
-      image: '',
+      image: ['', this.validateImageFileType],
       genre: '',
       performer: '',
       album: '',
-      audio_file: '',
+      audio_file: ['', this.validateAudioFileType],
     });
   }
   async onSubmit(): Promise<void>{
@@ -125,6 +125,29 @@ export class AddEditMusicComponent implements OnInit {
       })
     }
   }
+
+  validateAudioFileType(control: AbstractControl): { [key: string]: any } | null {
+    const file = control.value;
+    if (file) {
+      const fileExtension = file.name.split('.').pop();
+      if (!['mp3', 'wav'].includes(fileExtension)) {
+        return { invalidFileType: true };
+      }
+    }
+    return null;
+  }
+
+  validateImageFileType(control: AbstractControl): { [key: string]: any } | null {
+    const file = control.value;
+    if (file) {
+      const fileExtension = file.name.split('.').pop();
+      if (!['jpg', 'jpeg', 'png'].includes(fileExtension)) {
+        return { invalidFileType: true };
+      }
+    }
+    return null;
+  }
+
 
   onFileChange(event: Event) {
     const file : File = (event.target as HTMLInputElement).files![0];

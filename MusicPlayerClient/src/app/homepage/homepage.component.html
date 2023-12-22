@@ -59,7 +59,7 @@
     </div>
   </div>
 
-  <div *ngIf="(getObjectSize(musicsByGenre) > itemsPerPage) || (getObjectSize(searchResult) > 0 && getObjectSize(searchResult) > itemsPerPage)" class="flex justify-center pb-[150px]">
+  <div *ngIf="(getObjectSize(musicsByGenre) > itemsPerPage) || (getObjectSize(searchResult) > 0 && getObjectSize(searchResult) > itemsPerPage)" class="flex justify-center pb-[180px]">
     <div class="join">
       <button class="join-item btn" (click)="prevNextPage()" [disabled]="currentPage === 1">«</button>
       <button class="join-item btn">Page {{ currentPage }}</button>
