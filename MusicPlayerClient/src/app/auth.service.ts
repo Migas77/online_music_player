@@ -32,16 +32,20 @@ export class AuthService{
   }
 
   updateLoggedInStatus() : void {
-    console.log("IsLoggedIn")
+    console.log("updateLoggedInStatus")
     const access: string | null = localStorage.getItem("access")
     if (access===null) {
       this.isLoggedIn = false;
+    } else {
+      // if jwt token is invalid (maybe user changed local storage)
+      // the exception will have to be caught outside the function
+      this.helper.decodeToken(access);
+      this.isLoggedIn = true
     }
-    this.isLoggedIn = true
   }
 
   updateIsSuperUserStatus() : void {
-    console.log("IsSuperUser")
+    console.log("updateIsSuperUserStatus")
     const access: string | null = localStorage.getItem("access")
     if (access===null) {
       this.isSuperUser = false;
