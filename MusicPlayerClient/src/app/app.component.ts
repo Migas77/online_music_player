@@ -8,6 +8,7 @@ import {AuthResponse} from "./models/AuthResponse";
 import {HttpClient, HttpErrorResponse, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {catchError, firstValueFrom, throwError} from "rxjs";
 import { HttpClientModule } from '@angular/common/http';
+import {constants} from "fs";
 
 @Component({
   selector: 'app-root',
@@ -23,6 +24,7 @@ export class AppComponent{
   // this holds any in-progress token refresh requests
   // with this single promise we synchronize multiple API calls,
   // ensuring they wait for the token refresh to complete before proceeding.
+  semaphore : boolean = true;
 
   constructor(private router : Router, private http: HttpClient) {
 
@@ -40,29 +42,31 @@ export class AppComponent{
 
           if (access_token !== null){
             if (this.authService.helper.isTokenExpired(access_token)){
-              // if access token is expired renew it
-              const url: string = baseURL + "auth/refresh";
-              // use http post instead of fetch because that would also be intercepted
-              await firstValueFrom(this.http.post<AuthResponse>(url, {}, {withCredentials: true})).then((authResponse : AuthResponse) => {
-                console.log("token refreshed")
-                console.log(access_token)
-                // success refreshing token -> update local storage
-                this.authService.setSession(authResponse)
-                access_token = authResponse.access
-              })
+              if (this.semaphore){
+                this.semaphore = false;
+                // if access token is expired renew it
+                const url: string = baseURL + "auth/refresh";
+                // use http post instead of fetch because that would also be intercepted
+                this.refreshTokenPromise = firstValueFrom(this.http.post<AuthResponse>(url, {}, {withCredentials: true}))
+                await this.refreshTokenPromise.then((authResponse : AuthResponse) => {
+                  // success refreshing token -> update local storage
+                  localStorage.setItem("access", authResponse.access)
+                  access_token = authResponse.access
+                  this.semaphore = true
+                })
+              } else {
+                await this.refreshTokenPromise.then((authResponse : AuthResponse) => {
+                  access_token = authResponse.access
+                  console.log(access_token)
+                })
+              }
             }
 
-
-            console.log(access_token)
             if (!config){
-              console.log("CALLED 1")
-              config = { headers: new Headers({"Authorization": `Bearer ${access_token}`}) };
+              config = { headers: new Headers({"Authorization": `Bearer ${access_token}`})};
             }else if(!config.headers){
-              console.log("CALLED 2")
               config.headers = new Headers({"Authorization": `Bearer ${access_token}`})
             }else{
-              console.log("CALLED 3")
-              // check this again
               config.headers = new Headers(config.headers)
               config.headers.set("Authorization", `Bearer ${access_token}`)
             }
@@ -73,13 +77,9 @@ export class AppComponent{
           this.authService.clean()
         }
 
-
-
-
-
         // original fetch
         const response = await originalFetch(resource, config);
-        // RESPONSE INTERCEPTOR here
+        // RESPONSE INTERCEPTOR here (if 401 add fetch and set valid jwt)
 
         return response;
       };

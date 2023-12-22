@@ -36,11 +36,8 @@ export class AuthService{
     const access: string | null = localStorage.getItem("access")
     if (access===null) {
       this.isLoggedIn = false;
-    } else {
-      // if jwt token is invalid (maybe user changed local storage)
-      // the exception will have to be caught outside the function
-      this.isLoggedIn = !this.helper.isTokenExpired(access)
     }
+    this.isLoggedIn = true
   }
 
   updateIsSuperUserStatus() : void {
