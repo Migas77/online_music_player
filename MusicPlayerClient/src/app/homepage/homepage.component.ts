@@ -9,6 +9,7 @@ import { PlaybarComponent } from '../playbar/playbar.component';
 import { RouterLink } from '@angular/router';
 import {Playlist} from "../models/Playlist";
 import {PlaylistService} from "../playlist.service";
+import {AuthService} from "../auth.service";
 
 @Component({
   selector: 'app-homepage',
@@ -22,6 +23,8 @@ export class HomepageComponent {
   @ViewChild(PlaybarComponent) playbarComponent!: PlaybarComponent;
   musicService: MusicService = inject(MusicService);
   performerService: PerformerService = inject(PerformerService);
+  playlistService : PlaylistService = inject(PlaylistService)
+  authService : AuthService = inject(AuthService)
 
   searchForm!: FormGroup;
   musicsByGenre: { [key: string] :Music[]} = {};
@@ -30,7 +33,7 @@ export class HomepageComponent {
   searchResult: { [key: string] :Music[]} = {};
 
   playlists : Playlist[] = [];
-  playlistService : PlaylistService = inject(PlaylistService)
+
   currentMusicName! : string;
   currentMusicId! : number;
   musicAdded: boolean = false;
@@ -59,8 +62,6 @@ export class HomepageComponent {
 
     this.createPlaylistForm = this.fb.group({
       name: '',
-      author: '',
-      musics: '',
     });
 
     this.playlistService.getPlaylists().then((playlists : Playlist[]) => {
@@ -156,17 +157,12 @@ export class HomepageComponent {
   }
 
   async onSubmitCreatePlaylist(): Promise<void>{
-    const playlist = this.createPlaylistForm.value;
-    playlist.author = "2"
-    this.playlistService.createPlaylist(playlist).then((res: any) => {
-      if (res.ok) {
-        console.log("Playlist created successfully");
+    const playlist = this.createPlaylistForm.value
+    this.playlistService.createPlaylist(playlist)
+      .then((res: Playlist) => {
+        this.playlists.push(res)
         document.getElementById("closeAddPlaylistModal")?.click();
-        this.playlistService.getPlaylists().then((playlists : Playlist[]) => {
-          this.playlists = playlists;
-        })
-      }
-    });
+      });
   }
 
   musicLiked(id: number) {

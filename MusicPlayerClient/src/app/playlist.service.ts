@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Playlist} from "./models/Playlist";
 import {Music} from "./models/Music";
+import {type} from "os";
 
 @Injectable({
   providedIn: 'root'
@@ -21,13 +22,10 @@ export class PlaylistService {
     return await fetch(url, { method: 'POST' });
   }
 
-  async createPlaylist(playlist: Playlist): Promise<Response> {
+  async createPlaylist(playlist: Playlist): Promise<Playlist> {
     const url: string = this.baseURL + "addPlaylist";
-    const formData = new FormData();
-    formData.append('name', playlist.name);
-    formData.append('author', playlist.author.toString());
-
-    return await fetch(url, {method: 'POST', body: formData});
+    const data = await fetch(url, {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(playlist)});
+    return data.json();
   }
 
   async deletePlaylist(playlistId: number) {

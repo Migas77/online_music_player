@@ -23,7 +23,7 @@ from django.utils.translation import gettext_lazy as _
 ### Web Services 2nd Project
 from rest_framework import status
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.response import Response
 from MusicPlayer.serializers import MusicSerializer, GenreSerializer, AlbumSerializer, ArtistSerializer, BandSerializer, \
@@ -576,7 +576,6 @@ https://www.cyberchief.ai/2023/05/secure-jwt-token-storage.html
 
 @api_view(['POST'])
 def auth_sign_in(request):
-    print(request.data)
     serializer = TokenObtainPairSerializer(data=request.data, context={'request': request})
     serializer.is_valid(raise_exception=True)
     access = AccessToken(serializer.validated_data['access'])
@@ -591,7 +590,6 @@ def auth_sign_in(request):
 
 @api_view(['POST'])
 def auth_sign_up(request):
-    print(request.data)
     serializer = UserSerializer(data=request.data)
     if serializer.is_valid():
         user = serializer.save()
@@ -604,16 +602,6 @@ def auth_sign_up(request):
         response.set_cookie(key='refresh', value=refresh, httponly=True, samesite='None', secure=True)
         return response
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def auth_sign_out(request):
-    token = request.COOKIES.get('token')
-    print(token)
-    print(request.user)
-    print(request.user.is_authenticated)
-    return Response()
 
 
 @api_view(['GET'])
@@ -660,15 +648,6 @@ def get_bands(request):
     return Response(serializer.data)
 
 
-@api_view(['POST'])
-def add_artist(request):
-    serializer = ArtistSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
 @api_view(['GET'])
 def get_artist(request, id):
     try:
@@ -679,7 +658,29 @@ def get_artist(request, id):
     return Response(serializer.data)
 
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated, IsAdminUser])
+def add_artist(request):
+    serializer = ArtistSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated, IsAdminUser])
+def delete_artist(request, id):
+    try:
+        artist = Artist.objects.get(id=id)
+    except Artist.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    artist.delete()
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+
 @api_view(['PUT'])
+@permission_classes([IsAuthenticated, IsAdminUser])
 def update_artist(request, id):
     try:
         artist = Artist.objects.get(id=id)
@@ -696,16 +697,6 @@ def update_artist(request, id):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['DELETE'])
-def delete_artist(request, id):
-    try:
-        artist = Artist.objects.get(id=id)
-    except Artist.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-    artist.delete()
-    return Response(status=status.HTTP_204_NO_CONTENT)
-
-
 @api_view(['GET'])
 def get_genre(request, id):
     try:
@@ -717,6 +708,7 @@ def get_genre(request, id):
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated, IsAdminUser])
 def add_genre(request):
     serializer = GenreSerializer(data=request.data)
     if serializer.is_valid():
@@ -726,6 +718,7 @@ def add_genre(request):
 
 
 @api_view(['DELETE'])
+@permission_classes([IsAuthenticated, IsAdminUser])
 def delete_genre(request, id):
     try:
         genre = Genre.objects.get(id=id)
@@ -736,6 +729,7 @@ def delete_genre(request, id):
 
 
 @api_view(['PUT'])
+@permission_classes([IsAuthenticated, IsAdminUser])
 def update_genre(request, id):
     try:
         genre = Genre.objects.get(id=id)
@@ -763,6 +757,7 @@ def get_band(request, id):
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated, IsAdminUser])
 def add_band(request):
     serializer = BandSerializer(data=request.data)
     if serializer.is_valid():
@@ -772,6 +767,7 @@ def add_band(request):
 
 
 @api_view(['DELETE'])
+@permission_classes([IsAuthenticated, IsAdminUser])
 def delete_band(request, id):
     try:
         band = Band.objects.get(id=id)
@@ -782,6 +778,7 @@ def delete_band(request, id):
 
 
 @api_view(['PUT'])
+@permission_classes([IsAuthenticated, IsAdminUser])
 def update_band(request, id):
     try:
         band = Band.objects.get(id=id)
@@ -809,6 +806,7 @@ def get_album(request, id):
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated, IsAdminUser])
 def add_album(request):
     serializer = AlbumSerializer(data=request.data)
     if serializer.is_valid():
@@ -818,6 +816,7 @@ def add_album(request):
 
 
 @api_view(['DELETE'])
+@permission_classes([IsAuthenticated, IsAdminUser])
 def delete_album(request, id):
     try:
         album = Album.objects.get(id=id)
@@ -828,6 +827,7 @@ def delete_album(request, id):
 
 
 @api_view(['PUT'])
+@permission_classes([IsAuthenticated, IsAdminUser])
 def update_album(request, id):
     try:
         album = Album.objects.get(id=id)
@@ -855,6 +855,7 @@ def get_music(request, id):
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated, IsAdminUser])
 def add_music(request):
     serializer = MusicSerializer(data=request.data)
     if serializer.is_valid():
@@ -864,6 +865,7 @@ def add_music(request):
 
 
 @api_view(['DELETE'])
+@permission_classes([IsAuthenticated, IsAdminUser])
 def delete_music(request, id):
     try:
         music = Music.objects.get(id=id)
@@ -874,6 +876,7 @@ def delete_music(request, id):
 
 
 @api_view(['PUT'])
+@permission_classes([IsAuthenticated, IsAdminUser])
 def update_music(request, id):
     try:
         music = Music.objects.get(id=id)
@@ -941,24 +944,28 @@ def get_musics_by_artist(request, id):
 
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_playlists(request):
-    playlists = Playlist.objects.all()
-    serializer = PlaylistSerializer(playlists, many=True)
+    print("GETTING PLAYLISTS: ", Playlist.objects.filter(author=request.user))
+    serializer = PlaylistSerializer(Playlist.objects.filter(author=request.user), many=True)
     return Response(serializer.data)
 
 
 @api_view(['GET'])
 def get_playlist(request, id):
     try:
-        playlist = Playlist.objects.get(id=id)
+        playlist = Playlist.objects.get(author=request.user, id=id)
     except Playlist.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     serializer = PlaylistSerializer(playlist)
     return Response(serializer.data)
 
 
+
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def add_playlist(request):
+    request.data["author"] = request.user.pk
     serializer = PlaylistSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
@@ -967,26 +974,14 @@ def add_playlist(request):
 
 
 @api_view(['DELETE'])
-def delete_playlist(request, id):
+@permission_classes([IsAuthenticated])
+def delete_playlist(request, playlist_id):
     try:
-        playlist = Playlist.objects.get(id=id)
+        playlist = Playlist.objects.get(author=request.user, id=playlist_id)
     except Playlist.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     playlist.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-@api_view(['PUT'])
-def update_playlist(request, id):
-    try:
-        playlist = Playlist.objects.get(id=id)
-    except Playlist.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-    serializer = PlaylistSerializer(playlist, data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['POST'])
@@ -1064,6 +1059,7 @@ def remove_like(request, songId, userId):
     except Music.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 @api_view(['POST'])
 def sort_playlist(request, playlistId, prevPosition, nextPosition):

@@ -28,12 +28,15 @@ export class AppComponent{
         // REQUEST INTERCEPTOR (add JWT token if it exists and is valid)
         const access_token : string | null = localStorage.getItem("access")
         try {
-          if (this.authService.helper.decodeToken() && access_token){
+          if (access_token && this.authService.helper.decodeToken(access_token)){
             if (!config){
+              console.log("CALLED 1")
               config = { headers: new Headers({"Authorization": `Bearer ${access_token}`}) };
             }else if(!config.headers){
+              console.log("CALLED 2")
               config.headers = new Headers({"Authorization": `Bearer ${access_token}`})
             }else{
+              console.log("CALLED 3")
               // check this again
               config.headers = new Headers(config.headers)
               config.headers.set("Authorization", `Bearer ${access_token}`)

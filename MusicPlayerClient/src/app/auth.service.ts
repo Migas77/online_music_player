@@ -16,7 +16,7 @@ export class AuthService{
 
   constructor() {
     try {
-      console.log("ONINIT AUTH SERVICE")
+      console.log("CONSTRUCTOR AUTH SERVICE")
       // need to update this because page may have been refreshed
       // I want to change some navbar icons based on if the user is logged in or if it's superUser
       this.updateLoggedInStatus()
@@ -86,16 +86,6 @@ export class AuthService{
     if (data.status !== 201)
       throw new Error(JSON.stringify(await data.json()))
     this.setSession(await data.json());
-  }
-
-  async signout(): Promise<void>{
-    const url: string = this.baseURL + "sign-out";
-    const data: Response = await fetch(url, {
-      method: 'POST'
-    });
-    // if (data.status !== 201)
-    // throw new Error(JSON.stringify(await data.json()))
-    this.clean()
   }
 
 }

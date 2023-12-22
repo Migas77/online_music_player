@@ -12,8 +12,8 @@
       </tr>
     </thead>
     <tbody class="text-lg">
-    <tr class="hover cursor-pointer" *ngFor="let playlist of playlists" (click)="goToDetails(playlist.id)">
-      <th>{{playlist.id}}</th>
+    <tr class="hover cursor-pointer" *ngFor="let playlist of playlists;let i = index;" (click)="goToDetails(playlist.id)">
+      <th>{{i + 1}}</th>
       <td>{{playlist.name}}</td>
       <td>{{playlist.author}}</td>
       <td>{{playlist.musics.length}}</td>

@@ -20,8 +20,7 @@ export class NavbarComponent {
   constructor(private router : Router) { }
 
   signout() {
-    this.authService.signout()
-      .then(res => void this.router.navigate(['/auth']))
-      .catch(error => console.log(error.message()));
+    this.authService.clean();
+    void this.router.navigate(['/auth'])
   }
 }
