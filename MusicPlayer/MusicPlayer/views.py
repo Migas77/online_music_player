@@ -952,6 +952,7 @@ def get_playlists(request):
 
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_playlist(request, id):
     try:
         playlist = Playlist.objects.get(author=request.user, id=id)
@@ -985,10 +986,11 @@ def delete_playlist(request, playlist_id):
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def add_music_to_playlist(request, songId, playlistId):
     try:
         song = Music.objects.get(id=songId)
-        playlist = Playlist.objects.get(id=playlistId)
+        playlist = Playlist.objects.get(author=request.user, id=playlistId)
     except (Music.DoesNotExist, Playlist.DoesNotExist):
         return Response(status=status.HTTP_404_NOT_FOUND)
     serializer = MembershipSerializer(data={'playlist': playlistId, 'music': songId})
@@ -999,9 +1001,12 @@ def add_music_to_playlist(request, songId, playlistId):
 
 
 @api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
 def delete_song_playlist(request, songId, playlistId):
     try:
         membership = Membership.objects.get(playlist=playlistId, music=songId)
+        if membership.playlist.author != request.user:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
     except Membership.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     membership.delete()

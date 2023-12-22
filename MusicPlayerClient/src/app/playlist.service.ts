@@ -42,7 +42,6 @@ export class PlaylistService {
   async removeSong(currentMusicId: number, id: number) {
     const url: string = this.baseURL + "deleteSongPlaylist/" + currentMusicId + "/" + id;
     return await fetch(url, {method: 'DELETE'});
-
   }
 
   sortPlaylist(id: number, previousIndex: number, currentIndex: number) {
