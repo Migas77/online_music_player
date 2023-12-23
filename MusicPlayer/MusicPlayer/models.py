@@ -130,7 +130,7 @@ class Music(MediaContent):
         duration_timedelta = timedelta(hours=round(hours),minutes=round(minutes), seconds=round(seconds))
 
         self.duration = duration_timedelta
-        super().save(*args, **kwargs)
+        super().save(update_fields=['duration'])
 
     def delete(self, using=None, keep_parents=False):
         for playl in self.playlist_set.all():

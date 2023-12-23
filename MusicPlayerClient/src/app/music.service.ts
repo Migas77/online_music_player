@@ -35,11 +35,13 @@ export class MusicService {
     formData.append('performer', music.performer);
     formData.append('album', music.album);
     formData.append('audio_file', music.audio_file);
-
-    return fetch(url, {
+    const data = await fetch(url, {
       method: 'POST',
       body: formData,
     });
+    if (data.status != 201)
+      throw new Error(JSON.stringify(await data.json()))
+    return data.json()
   }
 
   async updateMusic(id: string, music: any) {
@@ -52,10 +54,13 @@ export class MusicService {
     formData.append('album', music.album);
     formData.append('audio_file', music.audio_file);
 
-    return fetch(url, {
+    const data = await fetch(url, {
       method: 'PUT',
       body: formData,
     });
+    if (data.status != 200)
+      throw new Error(JSON.stringify(await data.json()))
+    return data.json()
   }
 
   async deleteMusic(id: number) {
