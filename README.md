@@ -1,10 +1,9 @@
 # online_music_player
-TP1 TPW
+TP1 & TP2 TPW
 
 ### Setup
 ```bash
-# clone repo 
-git clone git@github.com:Migas77/online_music_player.git
+# Backend / Django App
 # go inside project 
 cd MusicPlayer/
 # for translation to work in ubuntu (I don't know about MAC)
@@ -25,18 +24,44 @@ python3 manage.py createsuperuser
 # run
 python3 manage.py runserver
 ```
+```bash
+# go inside project 
+cd MusicPlayerClient/
+# install dependencies
+npm install
+ng serve
+```
 
-### Features
-- Online Music Player
-- Permite tocar músicas
-- Página com músicas agrupadas por géneros musicais
-- Páginas de artistas/bandas
-- Página de playlist e ordenação de músicas dentro da playlist
-- Página de músicas adicionadas a uma queue
-- Likes em músicas
-- AdminPage para adicionar, editar e remover Músicas, Géneros de Músicas, Albuns, Artistas e Bandas
+### Links
+- [vercel - angular](https://deploy-music-player.vercel.app)
+- [python-anywhere - django website](http://dianarrmiranda.pythonanywhere.com/)
+- [Github Project](https://github.com/Migas77/online_music_player)
+- **Credentials (email, username, password):**
+  - Admin (admin@gmail.com, admin, ADMINtpw12.)
+  - User normal sem privilégios de admin (user1@gmail.com, user1, User123.)
+  - Em ambas as passwords '.' está incluído na password
 
-### Detalhes da Implementação a destacar
+### Detalhes da Implementação a destacar (Projeto 2)
+- **Angular**
+  - JWT decoder
+  - Guardar jwt access tokens no local storage e os refresh tokens em http-only cookies (and because of this have to use include Credentials)
+  - if else, *ngFor, *NgClass, formGroups, [open]
+  - @Input para passar informação de um componente pai para o filho no componente error-display 
+  - verificação tipo de ficheiros em angular (images and audio files)
+  - criação de interceptor utilizando a monkey patching tecnique (e ao mesmo tempo tratar de vários requests para esperarem pelo mesmo token refresh -> explicado no relatório)
+  - Guards for user authorization
+- **Django + Django Rest Framework**
+  - criação de custom sign-in, sign-up and refresh endpoints para jwt
+  - Injetar atributo is_superuser em jwt
+  - passagem de access token no corpo da mensagem e refresh token como http cookies
+  - Utilização de @permission_classes([IsAuthenticated, IsAdminUser]) para autenticação/autorização de endpoints
+  - GET, POST, PUT, DELETE 
+  - nested serializers
+  - implementação de create method no UserSerializer para fazer o hashing da password quando se grava utilizador com aquele serializer
+
+
+
+### Detalhes da Implementação a destacar (Projeto 1)
   - **models.py**
     - Criação de um user custom (Listener) e de um manager correspondente (ListenerManager) com implementação de métodos create_user e create_super_user (permite criação de um superuser via command line);
     - Utilização de models abstratos (Media Content) e herança;
@@ -63,15 +88,15 @@ python3 manage.py runserver
     - Admin Page que permite adicionar, editar e eliminar Músicas, Géneros de Músicas, Albuns, Artistas e Bandas (Reutilização de Páginas para Adicionar e Editar verificando se existe ou não uma instância no form - {% if form.instance.id %});
 
 
-### Relativamente ao Python Anywhere
-- A versão que está no python anywhere difere da versão entregue em apenas uma feature. A versão entregue não permite criação de músicas duplicadas e essa é a versão que queremos que seja avaliada. De resto a versão no python anywhere e a entregue coincidem em todos os outros elementos podendo para todas as outras features guiar-se por lá se desejar.
-- Credenciais admin (apenas necessário username e password para login)
-  - email: admin@gmail.com
-  - username: admin
-  - password : ADMINtpw12.
-  - ('.' incluído na password)
-
-### [Link Github](https://github.com/Migas77/online_music_player)
+### Features
+- Online Music Player
+- Permite tocar músicas
+- Página com músicas agrupadas por géneros musicais
+- Páginas de artistas/bandas
+- Página de playlist e ordenação de músicas dentro da playlist
+- Página de músicas adicionadas a uma queue
+- Likes em músicas
+- AdminPage para adicionar, editar e remover Músicas, Géneros de Músicas, Albuns, Artistas e Bandas
 
 ### Autores 
 - Diana Miranda (107457)
