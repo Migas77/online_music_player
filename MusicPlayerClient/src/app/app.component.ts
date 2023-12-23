@@ -57,7 +57,7 @@ export class AppComponent{
                   .catch(res => {
                     console.log("couldn't refresh token")
                     // se o refresh token expirar faz-se logout
-                    if (res.status === 401 && res.error.error === "refresh token expired"){
+                    if (res.status === 401 && res.error.error === "refresh token expired or it doesn't exist"){
                       this.authService.clean()
                       this.router.navigate(['/auth']);
                     }

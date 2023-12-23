@@ -609,7 +609,7 @@ def auth_sign_up(request):
 @api_view(['POST'])
 def auth_refresh(request):
     if 'refresh' not in request.COOKIES:
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        return Response({"error": "refresh token expired or it doesn't exist"}, status=status.HTTP_401_UNAUTHORIZED)
     try:
         refresh = RefreshToken(request.COOKIES["refresh"])
         user = Listener.objects.get(id=refresh.payload["user_id"])
@@ -622,7 +622,7 @@ def auth_refresh(request):
         print(new_access)
         print(refresh)
     except TokenError:
-        response = Response({"error": "refresh token expired"}, status=status.HTTP_401_UNAUTHORIZED)
+        response = Response({"error": "refresh token expired or it doesn't exist"}, status=status.HTTP_401_UNAUTHORIZED)
     return response
 
 
