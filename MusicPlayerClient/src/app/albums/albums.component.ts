@@ -3,6 +3,7 @@ import {AlbumService} from "../album.service";
 import {Album} from "../models/Album";
 import {NgForOf, NgIf} from "@angular/common";
 import {RouterLink} from "@angular/router";
+import {BACKEND_URL} from "../consts";
 
 @Component({
   selector: 'app-albums',
@@ -35,4 +36,6 @@ export class AlbumsComponent {
       }
     });
   }
+
+  protected readonly BACKEND_URL = BACKEND_URL;
 }

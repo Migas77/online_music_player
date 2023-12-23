@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Music } from './models/Music';
+import {BASE_URL} from "./consts";
 
 @Injectable({
   providedIn: 'root',
 })
 export class MusicService {
-  private baseURL: string = 'http://localhost:8000/ws/';
+  private baseURL: string = BASE_URL;
 
   constructor() {}
 

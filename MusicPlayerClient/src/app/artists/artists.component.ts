@@ -4,6 +4,7 @@ import {Artist} from "../models/Artist";
 import {CommonModule, NgOptimizedImage} from "@angular/common";
 import {RouterLink} from "@angular/router";
 import {HttpClientModule} from "@angular/common/http";
+import {BACKEND_URL} from "../consts";
 
 @Component({
   selector: 'app-artists',
@@ -35,5 +36,5 @@ export class ArtistsComponent {
   }
 
 
-
+    protected readonly BACKEND_URL = BACKEND_URL;
 }

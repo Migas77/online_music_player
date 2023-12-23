@@ -6,6 +6,7 @@ import { PerformerService } from '../performer.service';
 import { MusicService } from '../music.service';
 import {PlaylistService} from "../playlist.service";
 import {Router} from "@angular/router";
+import {BACKEND_URL} from "../consts";
 
 @Component({
   selector: 'app-playbar',
@@ -60,7 +61,7 @@ export class PlaybarComponent {
   playSong(song: Music): void {
     this.currentSong = song;
     this.currentSongIndex = this.isPlaylist ?  this.playlistMusics.findIndex(song1 => song1.id === song.id) : this.isAlbum ? this.albumsMusics.indexOf(song) : this.isArtist ? this.artistsMusics.indexOf(song) : this.allMusics.indexOf(song);
-    this.audioElement.src = 'http://localhost:8000/' + song.audio_file;
+    this.audioElement.src = BACKEND_URL + song.audio_file;
     this.audioElement.currentTime = 0;
     this.isPlaying = true;
     this.audioElement.load();

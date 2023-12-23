@@ -17,6 +17,7 @@ import { PlaylistService } from '../playlist.service';
 
 import { PlaybarComponent } from '../playbar/playbar.component';
 import {AuthService} from "../auth.service";
+import {BACKEND_URL} from "../consts";
 
 @Component({
   selector: 'app-artist-details',
@@ -218,4 +219,5 @@ export class ArtistDetailsComponent implements OnInit {
     return musics;
   };
 
+  protected readonly BACKEND_URL = BACKEND_URL;
 }

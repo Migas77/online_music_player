@@ -3,13 +3,14 @@ import {Signin} from "./models/Signin";
 import {Signup} from "./models/Signup";
 import {AuthResponse} from "./models/AuthResponse";
 import {JwtHelperService} from "@auth0/angular-jwt";
+import {BASE_URL} from "./consts";
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService{
-  private baseURL : string = "http://localhost:8000/ws/auth/";
+  private baseURL : string = BASE_URL + "auth/";
   helper : JwtHelperService = new JwtHelperService()
   isLoggedIn!: boolean;
   isSuperUser!: boolean;

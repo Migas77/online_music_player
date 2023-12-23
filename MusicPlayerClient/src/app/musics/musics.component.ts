@@ -3,6 +3,7 @@ import {Music} from "../models/Music";
 import {MusicService} from "../music.service";
 import {NgForOf, NgIf} from "@angular/common";
 import {RouterLink} from "@angular/router";
+import {BACKEND_URL} from "../consts";
 
 @Component({
   selector: 'app-musics',
@@ -38,4 +39,5 @@ export class MusicsComponent {
     });
   }
 
+    protected readonly BACKEND_URL = BACKEND_URL;
 }

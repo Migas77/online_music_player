@@ -5,7 +5,7 @@
       <div class="card card-compact w-[40%] bg-base-100 shadow-xl">
         <figure>
           <img
-            [src]="'http://localhost:8000/' + performerDetails.image"
+            [src]="BACKEND_URL + performerDetails.image"
             alt="Performer"
           />
         </figure>
@@ -36,7 +36,7 @@
               <div class="avatar">
                 <div class="mask mask-squircle w-[10vw]">
                   <img
-                    [src]="'http://localhost:8000/' + (getArtist(member) !== null ? getArtist(member).image : '') "
+                    [src]="BACKEND_URL + (getArtist(member) !== null ? getArtist(member).image : '') "
                     alt="{{ getArtist(member) !== null ? getArtist(member).name : '' }}"
                   />
                 </div>
@@ -65,7 +65,7 @@
         <div class="flex flex-col">
           <div *ngFor="let album of artistAlbums" class="pt-[50px]">
             <div class="card lg:card-side bg-base-100 shadow-xl">
-              <figure class="w-[20vw]"><img [src]="'http://localhost:8000/' + album.image" alt="Album"/></figure>
+              <figure class="w-[20vw]"><img [src]="BACKEND_URL + album.image" alt="Album"/></figure>
               <div class="w-[60%] p-5">
                 <h2 class="card-title">{{album.name}}</h2>
                 <div class="flex flex-row text-lg">

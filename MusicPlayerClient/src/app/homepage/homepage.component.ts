@@ -10,6 +10,7 @@ import { RouterLink } from '@angular/router';
 import {Playlist} from "../models/Playlist";
 import {PlaylistService} from "../playlist.service";
 import {AuthService} from "../auth.service";
+import {BACKEND_URL} from "../consts";
 
 @Component({
   selector: 'app-homepage',
@@ -210,4 +211,6 @@ export class HomepageComponent {
       this.musicAddedToQueue = false;
     }, 3000);
   }
+
+  protected readonly BACKEND_URL = BACKEND_URL;
 }

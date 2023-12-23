@@ -11,6 +11,7 @@ import {Genre} from "../models/Genre";
 import {MusicService} from "../music.service";
 import {ActivatedRoute, RouterLink} from "@angular/router";
 import {AuthService} from "../auth.service";
+import {BACKEND_URL} from "../consts";
 
 @Component({
   selector: 'app-queue-list',
@@ -109,4 +110,6 @@ export class QueueListComponent {
     });
 
   }
+
+  protected readonly BACKEND_URL = BACKEND_URL;
 }

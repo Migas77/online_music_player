@@ -3,12 +3,11 @@ import { CommonModule } from '@angular/common';
 import {Router, RouterOutlet} from '@angular/router';
 import {NavbarComponent} from "./navbar/navbar.component";
 import {AuthService} from "./auth.service";
-import {baseURL} from "./consts";
+import {BASE_URL} from "./consts";
 import {AuthResponse} from "./models/AuthResponse";
-import {HttpClient, HttpErrorResponse, HttpHeaders, HttpResponse} from "@angular/common/http";
-import {catchError, firstValueFrom, throwError} from "rxjs";
+import {HttpClient} from "@angular/common/http";
+import {firstValueFrom} from "rxjs";
 import { HttpClientModule } from '@angular/common/http';
-import {constants} from "fs";
 
 @Component({
   selector: 'app-root',
@@ -44,7 +43,7 @@ export class AppComponent{
               if (this.semaphore){
                 this.semaphore = false;
                 // if access token is expired renew it
-                const url: string = baseURL + "auth/refresh";
+                const url: string = BASE_URL + "auth/refresh";
                 // use http post instead of fetch because that would also be intercepted
                 this.refreshTokenPromise = firstValueFrom(this.http.post<AuthResponse>(url, {}, {withCredentials: true}))
                 await this.refreshTokenPromise

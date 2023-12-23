@@ -13,6 +13,7 @@ import {FormsModule} from "@angular/forms";
 import {MusicService} from "../music.service";
 import {CdkDragDrop, CdkDropList, CdkDrag, moveItemInArray} from "@angular/cdk/drag-drop";
 import {AuthService} from "../auth.service";
+import {BACKEND_URL} from "../consts";
 
 
 @Component({
@@ -159,4 +160,6 @@ export class PlaylistDetailsComponent {
       }
     );
   }
+
+  protected readonly BACKEND_URL = BACKEND_URL;
 }

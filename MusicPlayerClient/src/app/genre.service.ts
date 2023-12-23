@@ -1,12 +1,13 @@
 import {Injectable} from '@angular/core';
 import {Genre} from "./models/Genre";
+import {BASE_URL} from "./consts";
 
 @Injectable({
   providedIn: 'root'
 })
 export class GenreService {
 
-  private baseURL : string = "http://localhost:8000/ws/";
+  private baseURL : string = BASE_URL;
 
   constructor() { }
 

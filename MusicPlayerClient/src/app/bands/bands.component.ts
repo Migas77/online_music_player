@@ -3,6 +3,7 @@ import {Band} from "../models/Band";
 import {BandService} from "../band.service";
 import { CommonModule } from '@angular/common';
 import {RouterLink} from "@angular/router";
+import {BACKEND_URL} from "../consts";
 
 @Component({
   selector: 'app-bands',
@@ -32,4 +33,6 @@ export class BandsComponent {
       }
     });
   }
+
+  protected readonly BACKEND_URL = BACKEND_URL;
 }

@@ -3,6 +3,7 @@ import {Genre} from "../models/Genre";
 import {GenreService} from "../genre.service";
 import {NgForOf, NgIf} from "@angular/common";
 import {RouterLink} from "@angular/router";
+import {BACKEND_URL} from "../consts";
 
 @Component({
   selector: 'app-genres',
@@ -37,4 +38,6 @@ export class GenresComponent {
       }
     });
   }
+
+  protected readonly BACKEND_URL = BACKEND_URL;
 }

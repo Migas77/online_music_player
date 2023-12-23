@@ -4,7 +4,7 @@
   <div class="card w-96 bg-base-100 shadow-xl m-5" *ngFor="let band of bands">
     <div >
       <figure *ngIf="band.image">
-        <img [src]="'http://localhost:8000/' + band.image" class="object-right-top object-cover h-60 h-full w-full rounded-tr-xl rounded-tl-xl"  alt="1" />
+        <img [src]="BACKEND_URL + band.image" class="object-right-top object-cover h-60 h-full w-full rounded-tr-xl rounded-tl-xl"  alt="1" />
       </figure>
     </div>
     <div class=" card-body w-96">

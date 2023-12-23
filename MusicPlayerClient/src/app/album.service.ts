@@ -1,12 +1,13 @@
 import {Injectable} from '@angular/core';
 import {Album} from "./models/Album";
+import {BASE_URL} from "./consts";
 
 @Injectable({
   providedIn: 'root'
 })
 export class AlbumService {
 
-  private baseURL : string = "http://localhost:8000/ws/";
+  private baseURL : string = BASE_URL;
 
   constructor() { }
 

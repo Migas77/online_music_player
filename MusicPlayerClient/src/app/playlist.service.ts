@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {Playlist} from "./models/Playlist";
 import {Music} from "./models/Music";
 import {type} from "os";
+import {BASE_URL} from "./consts";
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,7 @@ export class PlaylistService {
 
   constructor() { }
 
-  private baseURL : string = "http://localhost:8000/ws/";
+  private baseURL : string = BASE_URL;
   async getPlaylists(): Promise<Playlist[]> {
     const url: string = this.baseURL + "playlists";
     const data: Response = await fetch(url);

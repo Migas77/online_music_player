@@ -28,7 +28,7 @@
           <div *ngFor="let song of item.value">
             <div class="card w-80 bg-base-100 shadow-xl m-5">
               <div>
-                <figure><img [src]="'http://localhost:8000/' + song.image" class="object-right-top object-cover h-60 w-full rounded-tr-xl rounded-tl-xl" alt="musicCover"/></figure>
+                <figure><img [src]="BACKEND_URL + song.image" class="object-right-top object-cover h-60 w-full rounded-tr-xl rounded-tl-xl" alt="musicCover"/></figure>
               </div>
               <div class="card-body w-80 text-center">
                 <h2 class="text-center songName">{{ song.name }}</h2>
