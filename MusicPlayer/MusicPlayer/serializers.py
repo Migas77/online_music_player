@@ -64,7 +64,7 @@ class MusicSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Music
-        fields = ('id', 'name', 'likes', 'genre', 'performer', 'album', 'image', 'audio_file')
+        fields = ('id', 'name', 'likes', 'genre', 'performer', 'album', 'image', 'audio_file', 'duration')
 
 class PlaylistSerializer(serializers.ModelSerializer):
     musics = MusicSerializer(many=True, read_only=True)

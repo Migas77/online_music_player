@@ -11,5 +11,6 @@ export interface Music{
   performer : Performer,
   album : Album,
   image : string,
-  audio_file : string
+  audio_file : string,
+  duration : Date
 }
