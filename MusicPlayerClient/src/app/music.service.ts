@@ -94,13 +94,13 @@ export class MusicService {
     return (await data.json()) ?? [];
   }
 
-  async likeMusic(song_id: number, user_id: number) {
-    const url: string = this.baseURL + 'addLike/' + song_id + '/' + user_id;
+  async likeMusic(song_id: number) {
+    const url: string = this.baseURL + 'addLike/' + song_id;
     return fetch(url, { method: 'POST' });
   }
 
-  dislikeMusic(song_id: number, user_id: number) {
-    const url: string = this.baseURL + 'removeLike/' + song_id + '/' + user_id;
+  dislikeMusic(song_id: number) {
+    const url: string = this.baseURL + 'removeLike/' + song_id;
     return fetch(url, { method: 'DELETE' });
   }
 

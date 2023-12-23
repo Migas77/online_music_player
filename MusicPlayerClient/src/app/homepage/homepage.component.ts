@@ -170,13 +170,13 @@ export class HomepageComponent {
 
   musicLiked(id: number) {
     if (this.allMusics.length > 0)
-      return this.allMusics.filter(m => m.id == id)[0].likes.filter(l => l.id == Number(this.user)).length > 0;
+      return this.allMusics.filter(m => m.id == id)[0].likes.filter(l => l.id == this.authService.userId).length > 0;
     else
       return false;
   }
 
   likeMusic(id: number) {
-    this.musicService.likeMusic(id, Number(this.user)).then((res) => {
+    this.musicService.likeMusic(id).then((res) => {
       if (res.ok){
         this.musicService.getMusics().then((musics: Music[]) => {
           this.allMusics = musics;
@@ -190,7 +190,7 @@ export class HomepageComponent {
   }
 
   dislikeMusic(id: number) {
-    this.musicService.dislikeMusic(id, Number(this.user)).then((res) => {
+    this.musicService.dislikeMusic(id).then((res) => {
       if (res.ok) {
         this.musicService.getMusics().then((musics: Music[]) => {
           this.allMusics = musics;

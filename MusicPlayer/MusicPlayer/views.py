@@ -1069,32 +1069,22 @@ def get_musics_by_album(request, albumId):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def add_like(request, songId, userId):
+def add_like(request, songId):
     try:
         music = Music.objects.get(id=songId)
-        try:
-            user = Listener.objects.get(id=userId)
-            print(user)
-            music.likes.add(user)
-            return Response(status=status.HTTP_201_CREATED)
-        except Listener.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+        music.likes.add(request.user)
+        return Response(status=status.HTTP_201_CREATED)
     except Music.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
-    return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
-def remove_like(request, songId, userId):
+def remove_like(request, songId):
     try:
         music = Music.objects.get(id=songId)
-        try:
-            user = Listener.objects.get(id=userId)
-            music.likes.remove(user)
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        except Listener.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+        music.likes.remove(request.user)
+        return Response(status=status.HTTP_204_NO_CONTENT)
     except Music.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
-    return Response(status=status.HTTP_204_NO_CONTENT)
+

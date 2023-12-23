@@ -128,7 +128,7 @@ export class ArtistDetailsComponent implements OnInit {
     let found = false;
     Object.values(this.musicsByAlbum).forEach(songs => {
         let song = songs.find(m => m.id == id);
-        if (song && song.likes.filter(l => l.id == Number(this.user)).length > 0) {
+        if (song && song.likes.filter(l => l.id == this.authService.userId).length > 0) {
             found = true;
         }
     });
@@ -136,7 +136,7 @@ export class ArtistDetailsComponent implements OnInit {
   };
 
   likeMusic(id: number) {
-    this.musicService.likeMusic(id, Number(this.user)).then((res) => {
+    this.musicService.likeMusic(id).then((res) => {
       if (res.ok){
         this.albumService.getAlbumsByPerformer(this.id).then((albums) => {
           this.artistAlbums = albums;
@@ -152,7 +152,7 @@ export class ArtistDetailsComponent implements OnInit {
   };
 
   dislikeMusic(id: number) {
-    this.musicService.dislikeMusic(id, Number(this.user)).then((res) => {
+    this.musicService.dislikeMusic(id).then((res) => {
       if (res.ok) {
         this.albumService.getAlbumsByPerformer(this.id).then((albums) => {
           this.artistAlbums = albums;

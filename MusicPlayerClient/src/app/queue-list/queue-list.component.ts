@@ -10,6 +10,7 @@ import {GenreService} from "../genre.service";
 import {Genre} from "../models/Genre";
 import {MusicService} from "../music.service";
 import {ActivatedRoute, RouterLink} from "@angular/router";
+import {AuthService} from "../auth.service";
 
 @Component({
   selector: 'app-queue-list',
@@ -29,6 +30,8 @@ import {ActivatedRoute, RouterLink} from "@angular/router";
 })
 export class QueueListComponent {
 
+  authService : AuthService = inject(AuthService);
+
   currentMusicName!: string;
   currentMusicId!: number;
   musics: Music[] = [];
@@ -38,8 +41,6 @@ export class QueueListComponent {
 
   genreService: GenreService = inject(GenreService);
   genres: Genre[] = [];
-
-  user: String = "2"
 
   @ViewChild(PlaybarComponent) playbarComponent!: PlaybarComponent;
 
@@ -62,11 +63,11 @@ export class QueueListComponent {
   }
 
   musicLiked(id: number) {
-    return this.musics.filter(m => m.id == id)[0].likes.filter(l => l.id == Number(this.user)).length > 0;
+    return this.musics.filter(m => m.id == id)[0].likes.filter(l => l.id == this.authService.userId).length > 0;
   }
 
   likeMusic(id: number) {
-    this.musicService.likeMusic(id, Number(this.user)).then((res) => {
+    this.musicService.likeMusic(id).then((res) => {
       if (res.ok) {
         this.musicService.getQueue().then((musics) => {
           this.musics = musics;
@@ -76,7 +77,7 @@ export class QueueListComponent {
   }
 
   dislikeMusic(id: number) {
-    this.musicService.dislikeMusic(id, Number(this.user)).then((res) => {
+    this.musicService.dislikeMusic(id).then((res) => {
       if (res.ok) {
         this.musicService.getQueue().then((musics) => {
           this.musics = musics;

@@ -13,6 +13,7 @@ export class AuthService{
   helper : JwtHelperService = new JwtHelperService()
   isLoggedIn!: boolean;
   isSuperUser!: boolean;
+  userId! : number;
 
   constructor() {
     try {
@@ -39,7 +40,7 @@ export class AuthService{
     } else {
       // if jwt token is invalid (maybe user changed local storage)
       // the exception will have to be caught outside the function
-      this.helper.decodeToken(access);
+      this.userId = this.helper.decodeToken(access).user_id;
       this.isLoggedIn = true
     }
   }

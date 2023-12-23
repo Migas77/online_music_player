@@ -12,6 +12,7 @@ import {PlaybarComponent} from "../playbar/playbar.component";
 import {FormsModule} from "@angular/forms";
 import {MusicService} from "../music.service";
 import {CdkDragDrop, CdkDropList, CdkDrag, moveItemInArray} from "@angular/cdk/drag-drop";
+import {AuthService} from "../auth.service";
 
 
 @Component({
@@ -31,6 +32,8 @@ import {CdkDragDrop, CdkDropList, CdkDrag, moveItemInArray} from "@angular/cdk/d
 })
 export class PlaylistDetailsComponent {
 
+  authService : AuthService = inject(AuthService);
+
   id!: string | null;
   playlist!: Playlist;
   currentMusicName!: string;
@@ -44,7 +47,6 @@ export class PlaylistDetailsComponent {
   genreService: GenreService = inject(GenreService);
   genres: Genre[] = [];
 
-  user:String = "2"
   musicService: MusicService = inject(MusicService);
 
   @ViewChild(PlaybarComponent) playbarComponent!: PlaybarComponent;
@@ -107,11 +109,11 @@ export class PlaylistDetailsComponent {
   }
 
   musicLiked(id: number) {
-    return this.musics.filter(m => m.id == id)[0].likes.filter(l => l.id == Number(this.user)).length > 0;
+    return this.musics.filter(m => m.id == id)[0].likes.filter(l => l.id == this.authService.userId).length > 0;
   }
 
   likeMusic(id: number) {
-    this.musicService.likeMusic(id, Number(this.user)).then((res) => {
+    this.musicService.likeMusic(id).then((res) => {
       if (res.ok){
         if (this.id != null) {
           this.playlistService.getPlaylist(this.id).then((playlist) => {
@@ -126,7 +128,7 @@ export class PlaylistDetailsComponent {
   }
 
   dislikeMusic(id: number) {
-    this.musicService.dislikeMusic(id, Number(this.user)).then((res) => {
+    this.musicService.dislikeMusic(id).then((res) => {
       if (res.ok){
         if (this.id != null) {
           this.playlistService.getPlaylist(this.id).then((playlist) => {
