@@ -62,7 +62,9 @@ export class AuthService{
     console.log(authResponse)
     localStorage.setItem("access", authResponse.access);
     this.isLoggedIn = true
-    this.isSuperUser = this.helper.decodeToken(authResponse.access).is_superuser
+    let decoded_token = this.helper.decodeToken(authResponse.access)
+    this.isSuperUser = decoded_token.is_superuser
+    this.userId = decoded_token.user_id
   }
 
   clean() : void {
